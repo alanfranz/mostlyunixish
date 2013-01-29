@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: bash | Mostly Unixish]]></title>
+  <link href="http://mostlyunixish.franzoni.eu/blog/categories/bash/atom.xml" rel="self"/>
+  <link href="http://mostlyunixish.franzoni.eu/"/>
+  <updated>2013-01-29T15:43:32+01:00</updated>
+  <id>http://mostlyunixish.franzoni.eu/</id>
+  <author>
+    <name><![CDATA[Alan Franzoni]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Disown is your friend]]></title>
+    <link href="http://mostlyunixish.franzoni.eu/blog/2012/08/22/disown-is-your-friend/"/>
+    <updated>2012-08-22T19:22:00+02:00</updated>
+    <id>http://mostlyunixish.franzoni.eu/blog/2012/08/22/disown-is-your-friend</id>
+    <content type="html"><![CDATA[<p>Bash builtin <em>disown</em> is a not-so-well known <a href="http://www.gnu.org/software/bash/manual/html_node/Job-Control-Builtins.html">job control command</a>, and yet
+it's an extremely useful one.</p>
+
+<p>So what? You've started a remote ssh session, launched some command which is taking very, very long to complete, and you just want to go home, or maybe you
+feel your connectivity may drop, and so on... and you forgot to launch <a href="http://www.gnu.org/software/screen">screen</a> (possibly with <a href="https://launchpad.net/byobu">byobu</a>)
+or <a href="http://tmux.sourceforge.net">tmux</a> before starting your work!</p>
+
+<p>Now you're desperate and you'd just like to go home, but you fear your longstanding jobs will quit if you close your terminal.</p>
+
+<p>Just background your job, launch <em>disown</em> and all the jobs in background will receive no notification whatsoever of your saying goodbye to them;
+of course you won't be able to read their output to the terminal.</p>
+]]></content>
+  </entry>
+  
+</feed>

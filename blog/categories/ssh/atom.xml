@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: ssh | Mostly Unixish]]></title>
+  <link href="http://mostlyunixish.franzoni.eu/blog/categories/ssh/atom.xml" rel="self"/>
+  <link href="http://mostlyunixish.franzoni.eu/"/>
+  <updated>2013-01-29T15:43:32+01:00</updated>
+  <id>http://mostlyunixish.franzoni.eu/</id>
+  <author>
+    <name><![CDATA[Alan Franzoni]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[ssh-copy-id with nonstandard sshd port]]></title>
+    <link href="http://mostlyunixish.franzoni.eu/blog/2012/11/06/ssh-copy-id-with-nonstandard-sshd-port/"/>
+    <updated>2012-11-06T22:49:00+01:00</updated>
+    <id>http://mostlyunixish.franzoni.eu/blog/2012/11/06/ssh-copy-id-with-nonstandard-sshd-port</id>
+    <content type="html"><![CDATA[<p><a href="http://linux.die.net/man/1/ssh-copy-id">ssh-copy-id</a> is a cool script which is usually distributed along openssh client nowadays;
+it performs an automatic install of your local public SSH key to a remote server. Its syntax is simply:</p>
+
+<p><code>ssh-copy-id [-i [identity_file]] [user@]machine</code></p>
+
+<p>You may have spotted there's no builtin way of telling it what's the port of the remote server; a workaround exists which leverages
+the way arguments are passed to the script (it's a simple bash file, take a look at it. You can find various versions around <a href="https://gist.github.com/378862">the internet</a>).</p>
+
+<p>Just do this:</p>
+
+<p><code>ssh-copy-id '-p [port_number] [-i [identity_file]] [user@]machine'</code></p>
+
+<p>And enjoy your newly-added SSH key!</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[ssh client: stopping key verification complaints inside your own private network]]></title>
+    <link href="http://mostlyunixish.franzoni.eu/blog/2012/08/26/ssh-client-stop-complaining-inside-my-network/"/>
+    <updated>2012-08-26T15:55:00+02:00</updated>
+    <id>http://mostlyunixish.franzoni.eu/blog/2012/08/26/ssh-client-stop-complaining-inside-my-network</id>
+    <content type="html"><![CDATA[<p>If you develop enough software, most probably you'll have a test/development network at your service.</p>
+
+<p>In such networks, which are usually handled through a virtualization infrastructure, machines come and go very quickly.
+But ssh clients are usually unhappy about that:</p>
+
+<pre><code>alan@melquiades:/etc/ssh$ ssh root@192.168.0.208
+The authenticity of host '192.168.0.208 (192.168.0.208)' can't be established.
+RSA key fingerprint is 31:4d:8b:97:c8:57:04:85:6a:1b:72:54:46:ab:04:bc.
+Are you sure you want to continue connecting (yes/no)? yes
+Warning: Permanently added '192.168.0.208' (RSA) to the list of known hosts.
+root@192.168.0.208's password: 
+</code></pre>
+
+<p>The first time you connect, you're asked if the fingerprint is correct. The second time you'll just be allowed to connect:</p>
+
+<pre><code>alan@melquiades:/etc/ssh$ ssh root@192.168.0.208
+root@192.168.0.208's password: 
+</code></pre>
+
+<p>What then if the machine at such ip address changes, because it's rebuilt or modified and the ssh host key is not retained?</p>
+
+<pre><code>alan@melquiades:/etc/ssh$ ssh root@192.168.0.208
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@    WARNING: REMOTE HOST IDENTIFICATION HAS CHANGED!     @
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+IT IS POSSIBLE THAT SOMEONE IS DOING SOMETHING NASTY!
+Someone could be eavesdropping on you right now (man-in-the-middle attack)!
+It is also possible that a host key has just been changed.
+The fingerprint for the RSA key sent by the remote host is
+7b:42:03:5f:5c:8d:5a:2b:6a:a4:1e:d6:0d:05:de:38.
+Please contact your system administrator.
+Add correct host key in /Users/alan/.ssh/known_hosts to get rid of this message.
+Offending RSA key in /Users/alan/.ssh/known_hosts:111
+  remove with: ssh-keygen -f "/Users/alan/.ssh/known_hosts" -R 192.168.0.208
+RSA host key for 192.168.0.208 has changed and you have requested strict checking.
+Host key verification failed.
+</code></pre>
+
+<p>From the point of view of openssh this may be a serious security breach, and you should fear such message if it happens in the wild if you haven't touched a server -
+a MitM attack is probably going on!</p>
+
+<p>What about your local network? <code>ssh-keygen -R 192.168.0.208</code> will solve that, but you probably didn't need host key authentication since the beginning.</p>
+
+<p>So, just add this:</p>
+
+<pre><code>Host 192.168.0.*
+    CheckHostIP no
+    UserKnownHostsFile /dev/null
+    StrictHostKeyChecking no
+</code></pre>
+
+<p>at the beginning of your <code>/etc/ssh/ssh_config</code> file, and feel good.</p>
+
+<p>Now, anytime you try connecting inside your network you'll be greeted by this:</p>
+
+<pre><code>alan@melquiades:/etc/ssh$ ssh root@192.168.0.208
+Warning: Permanently added '192.168.0.208' (RSA) to the list of known hosts.
+root@192.168.0.208's password: 
+</code></pre>
+
+<p>No confirmations whatsoever.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Disown is your friend]]></title>
+    <link href="http://mostlyunixish.franzoni.eu/blog/2012/08/22/disown-is-your-friend/"/>
+    <updated>2012-08-22T19:22:00+02:00</updated>
+    <id>http://mostlyunixish.franzoni.eu/blog/2012/08/22/disown-is-your-friend</id>
+    <content type="html"><![CDATA[<p>Bash builtin <em>disown</em> is a not-so-well known <a href="http://www.gnu.org/software/bash/manual/html_node/Job-Control-Builtins.html">job control command</a>, and yet
+it's an extremely useful one.</p>
+
+<p>So what? You've started a remote ssh session, launched some command which is taking very, very long to complete, and you just want to go home, or maybe you
+feel your connectivity may drop, and so on... and you forgot to launch <a href="http://www.gnu.org/software/screen">screen</a> (possibly with <a href="https://launchpad.net/byobu">byobu</a>)
+or <a href="http://tmux.sourceforge.net">tmux</a> before starting your work!</p>
+
+<p>Now you're desperate and you'd just like to go home, but you fear your longstanding jobs will quit if you close your terminal.</p>
+
+<p>Just background your job, launch <em>disown</em> and all the jobs in background will receive no notification whatsoever of your saying goodbye to them;
+of course you won't be able to read their output to the terminal.</p>
+]]></content>
+  </entry>
+  
+</feed>

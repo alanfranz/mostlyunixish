@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: ubuntu | Mostly Unixish]]></title>
+  <link href="http://mostlyunixish.franzoni.eu/blog/categories/ubuntu/atom.xml" rel="self"/>
+  <link href="http://mostlyunixish.franzoni.eu/"/>
+  <updated>2013-01-29T15:43:32+01:00</updated>
+  <id>http://mostlyunixish.franzoni.eu/</id>
+  <author>
+    <name><![CDATA[Alan Franzoni]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Purging outdated kernels on systems with unattended-upgrades]]></title>
+    <link href="http://mostlyunixish.franzoni.eu/blog/2012/06/25/purging-outdated-kernels-on-systems-with-enabled-autoupdate/"/>
+    <updated>2012-06-25T07:33:00+02:00</updated>
+    <id>http://mostlyunixish.franzoni.eu/blog/2012/06/25/purging-outdated-kernels-on-systems-with-enabled-autoupdate</id>
+    <content type="html"><![CDATA[<p>Whenever I install a production system/server I tend to enable full automatic updating, because
+it's usually better that something breaks because of a failed update rather than leaving a production machine unpatched; and if you pick a rather stable distribution (Centos or Ubuntu LTS are good examples) chances that you'll end up with a broken system are fairly low.</p>
+
+<p>Btw let's get back to the point: in such cases you may end up with a disk which was filled up with obsolete kernels. The following snippets allows you to get all outdated kernels which are not in use, so you can automagically pipe its output to an <code>apt-get remove -y</code> in a cron job.</p>
+
+<p>That may sound trivial, but what happens if you're not careful (e.g. if you try deleting all kernels but the latest) is that you might try removing the currently running kernel - and it's pretty bad if that happens in an unattended cron job.</p>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span> (ubuntu_get_obsolete_kernel_and_headers_pkgs.py)</span> <a href='/downloads/code/ubuntu_get_obsolete_kernel_and_headers_pkgs.py'>download</a></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="c">#!/usr/bin/env python</span>
+</span><span class='line'>
+</span><span class='line'><span class="c"># print all installed kernel/headers/etc BUT the current and the latest;</span>
+</span><span class='line'><span class="c"># suitable to be used with apt-get remove.</span>
+</span><span class='line'><span class="c"># requires aptitude to be installed. Works on Ubuntu and probably Debian</span>
+</span><span class='line'>
+</span><span class='line'><span class="kn">from</span> <span class="nn">subprocess</span> <span class="kn">import</span> <span class="n">check_output</span>
+</span><span class='line'><span class="kn">import</span> <span class="nn">re</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">def</span> <span class="nf">runcmd</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">check_output</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">split</span><span class="p">())</span>
+</span><span class='line'>
+</span><span class='line'><span class="c"># should work for anything until kernel 3.100</span>
+</span><span class='line'><span class="n">kernel_version_pattern</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s">&quot;[23]\.\d{1,2}\.\d{1,2}-\d{1,3}&quot;</span><span class="p">)</span>
+</span><span class='line'><span class="k">def</span> <span class="nf">get_kernel_version</span><span class="p">(</span><span class="n">kernelstring</span><span class="p">):</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">kernel_version_pattern</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">kernelstring</span><span class="p">)</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">def</span> <span class="nf">get_providing_packages</span><span class="p">(</span><span class="n">pkg</span><span class="p">):</span>
+</span><span class='line'>    <span class="k">return</span> <span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span> <span class="o">!=</span> <span class="s">&quot;&quot;</span><span class="p">,</span>
+</span><span class='line'>        <span class="nb">map</span><span class="p">(</span><span class="nb">str</span><span class="o">.</span><span class="n">strip</span><span class="p">,</span>
+</span><span class='line'>            <span class="n">runcmd</span><span class="p">(</span><span class="s">&#39;aptitude search ~i~P</span><span class="si">%s</span><span class="s"> -F</span><span class="si">%%</span><span class="s">p&#39;</span> <span class="o">%</span> <span class="n">pkg</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">)</span>
+</span><span class='line'>            <span class="p">)</span>
+</span><span class='line'>        <span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">def</span> <span class="nf">get_nonmatching_packages</span><span class="p">(</span><span class="n">package_list</span><span class="p">,</span> <span class="n">excluding</span><span class="p">):</span>
+</span><span class='line'>    <span class="k">return</span> <span class="p">[</span><span class="n">k</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">package_list</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">get_kernel_version</span><span class="p">(</span><span class="n">k</span><span class="p">)</span> <span class="ow">in</span>
+</span><span class='line'>        <span class="n">excluding</span><span class="p">]</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'><span class="n">all_kernels</span> <span class="o">=</span> <span class="n">get_providing_packages</span><span class="p">(</span><span class="s">&quot;linux-image&quot;</span><span class="p">)</span>
+</span><span class='line'><span class="n">all_kernels</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span> <span class="c"># lexicographical</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">kernel_versions</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="n">get_kernel_version</span><span class="p">,</span> <span class="n">all_kernels</span><span class="p">)</span>
+</span><span class='line'><span class="n">latest_version</span> <span class="o">=</span> <span class="n">kernel_versions</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+</span><span class='line'><span class="n">current_version</span> <span class="o">=</span> <span class="n">get_kernel_version</span><span class="p">(</span><span class="n">runcmd</span><span class="p">(</span><span class="s">&quot;uname -r&quot;</span><span class="p">))</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">kernels_to_remove</span> <span class="o">=</span> <span class="n">get_nonmatching_packages</span><span class="p">(</span><span class="n">all_kernels</span><span class="p">,</span> <span class="p">(</span><span class="n">current_version</span><span class="p">,</span>
+</span><span class='line'>    <span class="n">latest_version</span><span class="p">))</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'><span class="n">all_headers</span> <span class="o">=</span> <span class="n">get_providing_packages</span><span class="p">(</span><span class="s">&quot;linux-headers&quot;</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">headers_to_remove</span> <span class="o">=</span> <span class="n">get_nonmatching_packages</span><span class="p">(</span><span class="n">all_headers</span><span class="p">,</span> <span class="p">(</span><span class="n">current_version</span><span class="p">,</span>
+</span><span class='line'>    <span class="n">latest_version</span><span class="p">))</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">print</span> <span class="s">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">kernels_to_remove</span> <span class="o">+</span> <span class="n">headers_to_remove</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<p>Suggested use in a cron job, of course, is just:</p>
+
+<p><code>
+apt-get remove --purge `ubuntu_get_obsolete_kernel_and_headers_pkgs.py`
+</code></p>
+]]></content>
+  </entry>
+  
+</feed>
