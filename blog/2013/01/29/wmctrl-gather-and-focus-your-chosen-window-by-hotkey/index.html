@@ -5,11 +5,11 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Category: linux - Mostly Unixish</title>
+  <title>Wmctrl: gather and focus your chosen window by hotkey - Mostly Unixish</title>
   <meta name="author" content="Alan Franzoni">
 
   
-  <meta name="description" content="Category: linux">
+  <meta name="description" content="I find it extremely handy to be able to recall my windows by just using the keyboard. It&#8217;s pretty easy to do in Linux, just use: wmctrl -x -R & &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,7 +18,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://mostlyunixish.franzoni.eublog/categories/linux/">
+  <link rel="canonical" href="http://mostlyunixish.franzoni.eu/blog/2013/01/29/wmctrl-gather-and-focus-your-chosen-window-by-hotkey/">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <script src="/javascripts/modernizr-2.0.js"></script>
@@ -65,78 +65,114 @@
   <div id="main">
     <div id="content">
       <div>
-<article role="article">
+<article class="hentry" role="article">
   
   <header>
-    <h1 class="entry-title">Category: Linux</h1>
+    
+      <h1 class="entry-title">Wmctrl: Gather and Focus Your Chosen Window by Hotkey</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-01-29T18:35:00+01:00" pubdate data-updated="true">Jan 29<span>th</span>, 2013</time>
+        
+      </p>
     
   </header>
-  
-  <div id="blog-archives" class="category">
 
 
+<div class="entry-content"><p>I find it extremely handy to be able to recall my windows by just using the keyboard.</p>
 
-  
-  <h2>2012</h2>
+<p>It&#8217;s pretty easy to do in Linux, just use:</p>
 
-<article>
-  
-<h1><a href="/blog/2012/08/26/ssh-client-stop-complaining-inside-my-network/">ssh client: stopping key verification complaints inside your own private network</a></h1>
-<time datetime="2012-08-26T15:55:00+02:00" pubdate><span class='month'>Aug</span> <span class='day'>26</span> <span class='year'>2012</span></time>
+<p><code>wmctrl -x -R &lt;WM_CLASS&gt;</code></p>
 
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/linux/'>linux</a>, <a class='category' href='/blog/categories/ssh/'>ssh</a></span>
-</footer>
+<p>you can find the WM_CLASS of any window using this command:</p>
 
+<p><code>xprop | grep WM_CLASS</code></p>
 
-</article>
+<p>then clicking on the desired Window. There may be more than one match, just choose one.</p>
 
+<p>Example:</p>
 
+<p><code>wmctrl -x -R "Gnome-terminal"</code></p>
 
-<article>
-  
-<h1><a href="/blog/2012/08/23/thunderbird-temporary-directory/">Thunderbird temporary directory</a></h1>
-<time datetime="2012-08-23T20:18:00+02:00" pubdate><span class='month'>Aug</span> <span class='day'>23</span> <span class='year'>2012</span></time>
-
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/linux/'>linux</a>, <a class='category' href='/blog/categories/temporary/'>temporary</a>, <a class='category' href='/blog/categories/thunderbird/'>thunderbird</a></span>
-</footer>
-
-
-</article>
-
-
-
-<article>
-  
-<h1><a href="/blog/2012/08/22/disown-is-your-friend/">Disown is your friend</a></h1>
-<time datetime="2012-08-22T19:22:00+02:00" pubdate><span class='month'>Aug</span> <span class='day'>22</span> <span class='year'>2012</span></time>
-
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/bash/'>bash</a>, <a class='category' href='/blog/categories/linux/'>linux</a>, <a class='category' href='/blog/categories/ssh/'>ssh</a></span>
-</footer>
-
-
-</article>
-
-
-
-<article>
-  
-<h1><a href="/blog/2012/06/25/purging-outdated-kernels-on-systems-with-enabled-autoupdate/">Purging outdated kernels on systems with unattended-upgrades</a></h1>
-<time datetime="2012-06-25T07:33:00+02:00" pubdate><span class='month'>Jun</span> <span class='day'>25</span> <span class='year'>2012</span></time>
-
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/debian/'>debian</a>, <a class='category' href='/blog/categories/linux/'>linux</a>, <a class='category' href='/blog/categories/maintenance/'>maintenance</a>, <a class='category' href='/blog/categories/ubuntu/'>ubuntu</a>, <a class='category' href='/blog/categories/update/'>update</a></span>
-</footer>
-
-
-</article>
-
+<p>When you execute such command, the windows matching such class will be gathered on the
+current workspace and focused; you can assign global hotkeys in Gnome with System ->
+Preferences -> Keyboard -> Shortcuts. The Windows key (Super) is usually a great candidate
+for such global hotkeys.</p>
 </div>
 
+
+  <footer>
+    <p class="meta">
+      
   
+
+<span class="byline author vcard">Posted by <span class="fn">Alan Franzoni</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-01-29T18:35:00+01:00" pubdate data-updated="true">Jan 29<span>th</span>, 2013</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/productivity/'>productivity</a>, <a class='category' href='/blog/categories/xwindows/'>xwindows</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://mostlyunixish.franzoni.eu/blog/2013/01/29/wmctrl-gather-and-focus-your-chosen-window-by-hotkey/" data-via="franzeur" data-counturl="http://mostlyunixish.franzoni.eu/blog/2013/01/29/wmctrl-gather-and-focus-your-chosen-window-by-hotkey/" >Tweet</a>
+  
+  
+  <div class="g-plusone" data-size="medium"></div>
+  
+  
+    <div class="fb-like" data-send="true" data-width="450" data-show-faces="false"></div>
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2012/11/06/ssh-copy-id-with-nonstandard-sshd-port/" title="Previous Post: ssh-copy-id with nonstandard sshd port">&laquo; ssh-copy-id with nonstandard sshd port</a>
+      
+      
+    </p>
+  </footer>
 </article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
 
 </div>
 
@@ -208,7 +244,10 @@
       var disqus_shortname = 'mostlyunixish';
       
         
-        var disqus_script = 'count.js';
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://mostlyunixish.franzoni.eu/blog/2013/01/29/wmctrl-gather-and-focus-your-chosen-window-by-hotkey/';
+        var disqus_url = 'http://mostlyunixish.franzoni.eu/blog/2013/01/29/wmctrl-gather-and-focus-your-chosen-window-by-hotkey/';
+        var disqus_script = 'embed.js';
       
     (function () {
       var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;

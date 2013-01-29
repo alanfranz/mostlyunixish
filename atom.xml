@@ -4,7 +4,7 @@
   <title><![CDATA[Mostly Unixish]]></title>
   <link href="http://mostlyunixish.franzoni.eu/atom.xml" rel="self"/>
   <link href="http://mostlyunixish.franzoni.eu/"/>
-  <updated>2013-01-29T15:43:32+01:00</updated>
+  <updated>2013-01-29T18:27:38+01:00</updated>
   <id>http://mostlyunixish.franzoni.eu/</id>
   <author>
     <name><![CDATA[Alan Franzoni]]></name>
@@ -12,6 +12,34 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Wmctrl: gather and focus your chosen window by hotkey]]></title>
+    <link href="http://mostlyunixish.franzoni.eu/blog/2013/01/29/wmctrl-gather-and-focus-your-chosen-window-by-hotkey/"/>
+    <updated>2013-01-29T18:35:00+01:00</updated>
+    <id>http://mostlyunixish.franzoni.eu/blog/2013/01/29/wmctrl-gather-and-focus-your-chosen-window-by-hotkey</id>
+    <content type="html"><![CDATA[<p>I find it extremely handy to be able to recall my windows by just using the keyboard.</p>
+
+<p>It&#8217;s pretty easy to do in Linux, just use:</p>
+
+<p><code>wmctrl -x -R &lt;WM_CLASS&gt;</code></p>
+
+<p>you can find the WM_CLASS of any window using this command:</p>
+
+<p><code>xprop | grep WM_CLASS</code></p>
+
+<p>then clicking on the desired Window. There may be more than one match, just choose one.</p>
+
+<p>Example:</p>
+
+<p><code>wmctrl -x -R "Gnome-terminal"</code></p>
+
+<p>When you execute such command, the windows matching such class will be gathered on the
+current workspace and focused; you can assign global hotkeys in Gnome with System ->
+Preferences -> Keyboard -> Shortcuts. The Windows key (Super) is usually a great candidate
+for such global hotkeys.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[ssh-copy-id with nonstandard sshd port]]></title>
