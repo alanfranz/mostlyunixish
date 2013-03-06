@@ -41,11 +41,17 @@
         <lastmod>2013-01-29T18:27:35+01:00</lastmod>
     </url>
     <url>
+        <loc>
+            http://mostlyunixish.franzoni.eu/blog/2013/03/06/apt-get-update-fixing-package-index-files-are-corrupted/
+        </loc>
+        <lastmod>2013-03-06T10:41:39+01:00</lastmod>
+    </url>
+    <url>
         <loc>http://mostlyunixish.franzoni.eu/</loc>
-        <lastmod>2013-01-29T18:27:35+01:00</lastmod>
+        <lastmod>2013-03-06T10:41:39+01:00</lastmod>
     </url>
     <url>
         <loc>http://mostlyunixish.franzoni.eu/blog/archives/</loc>
-        <lastmod>2013-01-29T18:27:35+01:00</lastmod>
+        <lastmod>2013-03-06T10:41:39+01:00</lastmod>
     </url>
 </urlset>

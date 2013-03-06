@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: deb | Mostly Unixish]]></title>
+  <link href="http://mostlyunixish.franzoni.eu/blog/categories/deb/atom.xml" rel="self"/>
+  <link href="http://mostlyunixish.franzoni.eu/"/>
+  <updated>2013-03-06T14:47:01+01:00</updated>
+  <id>http://mostlyunixish.franzoni.eu/</id>
+  <author>
+    <name><![CDATA[Alan Franzoni]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[apt-get update: fixing 'package index files are corrupted']]></title>
+    <link href="http://mostlyunixish.franzoni.eu/blog/2013/03/06/apt-get-update-fixing-package-index-files-are-corrupted/"/>
+    <updated>2013-03-06T13:34:00+01:00</updated>
+    <id>http://mostlyunixish.franzoni.eu/blog/2013/03/06/apt-get-update-fixing-package-index-files-are-corrupted</id>
+    <content type="html"><![CDATA[<p>Sometimes when performing your daily <code>apt-get update</code>, you'll experience messages like</p>
+
+<blockquote>
+E: The package lists or status file could not be parsed or opened.
+</blockquote>
+
+
+<p>or</p>
+
+<blockquote>
+The package index files are corrupted
+</blockquote>
+
+
+<p>Such messages usually don't go away for quite a long time, and may prevent legitimate updates from installing.</p>
+
+<p>This usually happens even more frequently if using a proxy to access apt archives.</p>
+
+<p>While I don't know what's the root problem, I've got a quick workaround that seems to fix the immediate error:</p>
+
+<pre>
+sudo -s -H bash -c 'apt-get clean && rm -f /var/lib/apt/lists/* ; rm -f /var/lib/apt/lists/partial/* && apt-get clean && apt-get update'
+</pre>
+
+]]></content>
+  </entry>
+  
+</feed>
