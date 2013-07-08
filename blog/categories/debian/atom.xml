@@ -4,7 +4,7 @@
   <title><![CDATA[Category: debian | Mostly Unixish]]></title>
   <link href="http://mostlyunixish.franzoni.eu/blog/categories/debian/atom.xml" rel="self"/>
   <link href="http://mostlyunixish.franzoni.eu/"/>
-  <updated>2013-03-06T14:47:01+01:00</updated>
+  <updated>2013-07-08T16:12:48+02:00</updated>
   <id>http://mostlyunixish.franzoni.eu/</id>
   <author>
     <name><![CDATA[Alan Franzoni]]></name>
@@ -155,7 +155,7 @@ it's usually better that something breaks because of a failed update rather than
 <p>Suggested use in a cron job, of course, is just:</p>
 
 <p><code>
-apt-get remove --purge `ubuntu_get_obsolete_kernel_and_headers_pkgs.py`
+apt-get remove --purge -y `ubuntu_get_obsolete_kernel_and_headers_pkgs.py`
 </code></p>
 ]]></content>
   </entry>
