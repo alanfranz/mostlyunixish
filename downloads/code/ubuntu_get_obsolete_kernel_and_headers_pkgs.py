@@ -37,10 +37,13 @@ current_version = get_kernel_version(runcmd("uname -r"))
 kernels_to_remove = get_nonmatching_packages(all_kernels, (current_version,
     latest_version))
 
+impl_headers = get_providing_packages("linux-headers")
 
-all_headers = get_providing_packages("linux-headers")
-
-headers_to_remove = get_nonmatching_packages(all_headers, (current_version,
+headers_to_remove = get_nonmatching_packages(impl_headers, (current_version,
     latest_version))
+
+# This seems to be needed in Ubuntu >= 13.04
+#base_headers_to_remove = [header.replace("-generic", "") for header in headers_to_remove]
+#headers_to_remove += base_headers_to_remove
 
 print " ".join(kernels_to_remove + headers_to_remove)
