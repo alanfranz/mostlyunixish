@@ -10,7 +10,7 @@
 
   
   <meta name="description" content="Whenever I install a production system/server I tend to enable full automatic updating, because
-it&#8217;s usually better that something breaks &hellip;">
+it&rsquo;s usually better that something breaks &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -19,7 +19,7 @@ it&#8217;s usually better that something breaks &hellip;">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://mostlyunixish.franzoni.eu/blog/page/3/">
+  <link rel="canonical" href="http://mostlyunixish.franzoni.eu/mostlyunixish/blog/page/3/">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <script src="/javascripts/modernizr-2.0.js"></script>
@@ -50,7 +50,7 @@ it&#8217;s usually better that something breaks &hellip;">
   
 <form action="http://google.com/search" method="get">
   <fieldset role="search">
-    <input type="hidden" name="q" value="site:mostlyunixish.franzoni.eu" />
+    <input type="hidden" name="q" value="site:mostlyunixish.franzoni.eu/mostlyunixish" />
     <input class="search" type="text" name="q" results="0" placeholder="Search"/>
   </fieldset>
 </form>
@@ -97,11 +97,11 @@ it&#8217;s usually better that something breaks &hellip;">
 
 
   <div class="entry-content"><p>Whenever I install a production system/server I tend to enable full automatic updating, because
-it&#8217;s usually better that something breaks because of a failed update rather than leaving a production machine unpatched; and if you pick a rather stable distribution (Centos or Ubuntu LTS are good examples) chances that you&#8217;ll end up with a broken system are fairly low.</p>
+it&rsquo;s usually better that something breaks because of a failed update rather than leaving a production machine unpatched; and if you pick a rather stable distribution (Centos or Ubuntu LTS are good examples) chances that you&rsquo;ll end up with a broken system are fairly low.</p>
 
-<p>Btw let&#8217;s get back to the point: in such cases you may end up with a disk which was filled up with obsolete kernels. The following snippets allows you to get all outdated kernels which are not in use, so you can automagically pipe its output to an <code>apt-get remove -y</code> in a cron job.</p>
+<p>Btw let&rsquo;s get back to the point: in such cases you may end up with a disk which was filled up with obsolete kernels. The following snippets allows you to get all outdated kernels which are not in use, so you can automagically pipe its output to an <code>apt-get remove -y</code> in a cron job.</p>
 
-<p>That may sound trivial, but what happens if you&#8217;re not careful (e.g. if you try deleting all kernels but the latest) is that you might try removing the currently running kernel - and it&#8217;s pretty bad if that happens in an unattended cron job.</p>
+<p>That may sound trivial, but what happens if you&rsquo;re not careful (e.g. if you try deleting all kernels but the latest) is that you might try removing the currently running kernel &ndash; and it&rsquo;s pretty bad if that happens in an unattended cron job.</p>
 
 <figure class='code'><figcaption><span> (ubuntu_get_obsolete_kernel_and_headers_pkgs.py)</span> <a href='/downloads/code/ubuntu_get_obsolete_kernel_and_headers_pkgs.py'>download</a></figcaption>
  <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
@@ -150,9 +150,6 @@ it&#8217;s usually better that something breaks because of a failed update rathe
 <span class='line-number'>44</span>
 <span class='line-number'>45</span>
 <span class='line-number'>46</span>
-<span class='line-number'>47</span>
-<span class='line-number'>48</span>
-<span class='line-number'>49</span>
 </pre></td><td class='code'><pre><code class='python'><span class='line'><span class="c">#!/usr/bin/env python</span>
 </span><span class='line'>
 </span><span class='line'><span class="c"># print all installed kernel/headers/etc BUT the current and the latest;</span>
@@ -192,14 +189,11 @@ it&#8217;s usually better that something breaks because of a failed update rathe
 </span><span class='line'><span class="n">kernels_to_remove</span> <span class="o">=</span> <span class="n">get_nonmatching_packages</span><span class="p">(</span><span class="n">all_kernels</span><span class="p">,</span> <span class="p">(</span><span class="n">current_version</span><span class="p">,</span>
 </span><span class='line'>    <span class="n">latest_version</span><span class="p">))</span>
 </span><span class='line'>
-</span><span class='line'><span class="n">impl_headers</span> <span class="o">=</span> <span class="n">get_providing_packages</span><span class="p">(</span><span class="s">&quot;linux-headers&quot;</span><span class="p">)</span>
 </span><span class='line'>
-</span><span class='line'><span class="n">headers_to_remove</span> <span class="o">=</span> <span class="n">get_nonmatching_packages</span><span class="p">(</span><span class="n">impl_headers</span><span class="p">,</span> <span class="p">(</span><span class="n">current_version</span><span class="p">,</span>
+</span><span class='line'><span class="n">all_headers</span> <span class="o">=</span> <span class="n">get_providing_packages</span><span class="p">(</span><span class="s">&quot;linux-headers&quot;</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">headers_to_remove</span> <span class="o">=</span> <span class="n">get_nonmatching_packages</span><span class="p">(</span><span class="n">all_headers</span><span class="p">,</span> <span class="p">(</span><span class="n">current_version</span><span class="p">,</span>
 </span><span class='line'>    <span class="n">latest_version</span><span class="p">))</span>
-</span><span class='line'>
-</span><span class='line'><span class="c"># This seems to be needed in Ubuntu &gt;= 13.04</span>
-</span><span class='line'><span class="c">#base_headers_to_remove = [header.replace(&quot;-generic&quot;, &quot;&quot;) for header in headers_to_remove]</span>
-</span><span class='line'><span class="c">#headers_to_remove += base_headers_to_remove</span>
 </span><span class='line'>
 </span><span class='line'><span class="k">print</span> <span class="s">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">kernels_to_remove</span> <span class="o">+</span> <span class="n">headers_to_remove</span><span class="p">)</span>
 </span></code></pre></td></tr></table></div></figure>
@@ -211,7 +205,7 @@ it&#8217;s usually better that something breaks because of a failed update rathe
 </pre></td><td class='code'><pre><code class=''><span class='line'>apt-get remove --purge -y `ubuntu_get_obsolete_kernel_and_headers_pkgs.py`</span></code></pre></td></tr></table></div></figure>
 
 
-<p><strong>WARNING</strong>: recent changes to the way Ubuntu marks dependencies and provided names for kernel headers require that you uncomment a couple of lines in the script towards the end; just remove the # at the beginning of the lines 46 and 47.</p>
+
 </div>
   
   
@@ -250,23 +244,23 @@ it&#8217;s usually better that something breaks because of a failed update rathe
   <div class="entry-content"><p>Some days ago I ranted about an issue I had with Mercurial and Dropbox; basically, I did put a mercurial repo in a dropbox
 folder, and ended up with <a href="http://twitter.com/franzeur/statuses/214769401055035392/">this kind of mess</a></p>
 
-<p>Mercurial repos inside Dropbox are not a great idea after all. But I had one problem: I sometimes forget to push changes to some files, and Dropbox comes to the rescue; at the same time I need history for such files, and I don&#8217;t want problems to arise.</p>
+<p>Mercurial repos inside Dropbox are not a great idea after all. But I had one problem: I sometimes forget to push changes to some files, and Dropbox comes to the rescue; at the same time I need history for such files, and I don&rsquo;t want problems to arise.</p>
 
 <p>I found quite an easy solution:</p>
 
 <ul>
-<li>Create your dropbox-aware folder, e.g. &#8220;somefolder&#8221;</li>
-<li>create a .hg folder inside it, e.g. &#8220;somefolder/.hg&#8221;</li>
+<li>Create your dropbox-aware folder, e.g. &ldquo;somefolder&rdquo;</li>
+<li>create a .hg folder inside it, e.g. &ldquo;somefolder/.hg&rdquo;</li>
 <li>now use your dropbox client, be it the CLI or the GUI, enable <a href="https://www.dropbox.com/help/175/en">Selective Sync</a> and remove such .hg folder from being synced on your current machine. You must take this step on all machines that you want to use with such technique.</li>
 <li>disabling sync for .hg should remove it from the somefolder directory.</li>
 </ul>
 
 
-<p>Now you can use <code>hg init</code> inside &#8220;somefolder&#8221;, and you&#8217;ll obtain a non-synced hg repository.</p>
+<p>Now you can use <code>hg init</code> inside &ldquo;somefolder&rdquo;, and you&rsquo;ll obtain a non-synced hg repository.</p>
 
 <p>What for? Whatever! I just create a repo on bitbucket and push/pull changes to/from here.</p>
 
-<p>On other machines, after making sure you&#8217;ve excluded .hg from syncing, you can just use</p>
+<p>On other machines, after making sure you&rsquo;ve excluded .hg from syncing, you can just use</p>
 
 <p><code>hg clone -U YOUR_REPO_URL</code></p>
 
@@ -275,7 +269,7 @@ folder, and ended up with <a href="http://twitter.com/franzeur/statuses/21476940
 <p>This way:</p>
 
 <ul>
-<li>it&#8217;s impossible to get errors or conflicts like the one I previously mentioned</li>
+<li>it&rsquo;s impossible to get errors or conflicts like the one I previously mentioned</li>
 <li>you get full storicization</li>
 <li>Dropbox syncs the actual working copy, letting you have the latest version always 100% synced without manual intervention.</li>
 </ul>
@@ -327,25 +321,13 @@ folder, and ended up with <a href="http://twitter.com/franzeur/statuses/21476940
 </section>
 
 
+
+
 <section>
   <h1>Latest Tweets</h1>
-  <ul id="tweets">
-    <li class="loading">Status updating&#8230;</li>
-  </ul>
-  <script type="text/javascript">
-    $.domReady(function(){
-      getTwitterFeed("franzeur", 3, true);
-    });
-  </script>
-  <script src="/javascripts/twitter.js" type="text/javascript"> </script>
-  
-    <a href="http://twitter.com/franzeur" class="twitter-follow-button" data-show-count="false">Follow @franzeur</a>
-  
+  <a class="twitter-timeline" href="https://twitter.com/franzeur" data-widget-id="361445337954672640">Tweets by @franzeur</a>
+  <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
 </section>
-
-
-
-
 
   
 </aside>

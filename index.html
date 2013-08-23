@@ -9,7 +9,7 @@
   <meta name="author" content="Alan Franzoni">
 
   
-  <meta name="description" content="Sometimes when performing your daily apt-get update, you&#8217;ll experience messages like E: The package lists or status file could not be parsed or &hellip;">
+  <meta name="description" content="Sometimes when performing your daily apt-get update, you&rsquo;ll experience messages like E: The package lists or status file could not be parsed or &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,7 +18,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://mostlyunixish.franzoni.eu/">
+  <link rel="canonical" href="http://mostlyunixish.franzoni.eu/mostlyunixish/">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <script src="/javascripts/modernizr-2.0.js"></script>
@@ -49,7 +49,7 @@
   
 <form action="http://google.com/search" method="get">
   <fieldset role="search">
-    <input type="hidden" name="q" value="site:mostlyunixish.franzoni.eu" />
+    <input type="hidden" name="q" value="site:mostlyunixish.franzoni.eu/mostlyunixish" />
     <input class="search" type="text" name="q" results="0" placeholder="Search"/>
   </fieldset>
 </form>
@@ -95,7 +95,7 @@
   </header>
 
 
-  <div class="entry-content"><p>Sometimes when performing your daily <code>apt-get update</code>, you&#8217;ll experience messages like</p>
+  <div class="entry-content"><p>Sometimes when performing your daily <code>apt-get update</code>, you&rsquo;ll experience messages like</p>
 
 <blockquote>
 E: The package lists or status file could not be parsed or opened.
@@ -109,11 +109,11 @@ The package index files are corrupted
 </blockquote>
 
 
-<p>Such messages usually don&#8217;t go away for quite a long time, and may prevent legitimate updates from installing.</p>
+<p>Such messages usually don&rsquo;t go away for quite a long time, and may prevent legitimate updates from installing.</p>
 
 <p>This usually happens even more frequently if using a proxy to access apt archives.</p>
 
-<p>While I don&#8217;t know what&#8217;s the root problem, I&#8217;ve got a quick workaround that seems to fix the immediate error:</p>
+<p>While I don&rsquo;t know what&rsquo;s the root problem, I&rsquo;ve got a quick workaround that seems to fix the immediate error:</p>
 
 <pre>
 sudo -s -H bash -c 'apt-get clean && rm -f /var/lib/apt/lists/* ; rm -f /var/lib/apt/lists/partial/* && apt-get clean && apt-get update'
@@ -156,7 +156,7 @@ sudo -s -H bash -c 'apt-get clean && rm -f /var/lib/apt/lists/* ; rm -f /var/lib
 
   <div class="entry-content"><p>I find it extremely handy to be able to recall my windows by just using the keyboard.</p>
 
-<p>It&#8217;s pretty easy to do in Linux, just use:</p>
+<p>It&rsquo;s pretty easy to do in Linux, just use:</p>
 
 <p><code>wmctrl -x -R &lt;WM_CLASS&gt;</code></p>
 
@@ -171,8 +171,8 @@ sudo -s -H bash -c 'apt-get clean && rm -f /var/lib/apt/lists/* ; rm -f /var/lib
 <p><code>wmctrl -x -R "Gnome-terminal"</code></p>
 
 <p>When you execute such command, the windows matching such class will be gathered on the
-current workspace and focused; you can assign global hotkeys in Gnome with System ->
-Preferences -> Keyboard -> Shortcuts. The Windows key (Super) is usually a great candidate
+current workspace and focused; you can assign global hotkeys in Gnome with System &ndash;>
+Preferences &ndash;> Keyboard &ndash;> Shortcuts. The Windows key (Super) is usually a great candidate
 for such global hotkeys.</p>
 </div>
   
@@ -214,8 +214,8 @@ it performs an automatic install of your local public SSH key to a remote server
 
 <p><code>ssh-copy-id [-i [identity_file]] [user@]machine</code></p>
 
-<p>You may have spotted there&#8217;s no builtin way of telling it what&#8217;s the port of the remote server; a workaround exists which leverages
-the way arguments are passed to the script (it&#8217;s a simple bash file, take a look at it. You can find various versions around <a href="https://gist.github.com/378862">the internet</a>).</p>
+<p>You may have spotted there&rsquo;s no builtin way of telling it what&rsquo;s the port of the remote server; a workaround exists which leverages
+the way arguments are passed to the script (it&rsquo;s a simple bash file, take a look at it. You can find various versions around <a href="https://gist.github.com/378862">the internet</a>).</p>
 
 <p>Just do this:</p>
 
@@ -267,25 +267,13 @@ the way arguments are passed to the script (it&#8217;s a simple bash file, take 
 </section>
 
 
+
+
 <section>
   <h1>Latest Tweets</h1>
-  <ul id="tweets">
-    <li class="loading">Status updating&#8230;</li>
-  </ul>
-  <script type="text/javascript">
-    $.domReady(function(){
-      getTwitterFeed("franzeur", 3, true);
-    });
-  </script>
-  <script src="/javascripts/twitter.js" type="text/javascript"> </script>
-  
-    <a href="http://twitter.com/franzeur" class="twitter-follow-button" data-show-count="false">Follow @franzeur</a>
-  
+  <a class="twitter-timeline" href="https://twitter.com/franzeur" data-widget-id="361445337954672640">Tweets by @franzeur</a>
+  <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
 </section>
-
-
-
-
 
   
 </aside>

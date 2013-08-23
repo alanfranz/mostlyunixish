@@ -19,7 +19,7 @@ folder, and ended up with &hellip;">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://mostlyunixish.franzoni.eu/blog/2012/06/21/dropbox-and-mercurial-and-lived-happily-ever-after/">
+  <link rel="canonical" href="http://mostlyunixish.franzoni.eu/mostlyunixish/blog/2012/06/21/dropbox-and-mercurial-and-lived-happily-ever-after/">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <script src="/javascripts/modernizr-2.0.js"></script>
@@ -50,7 +50,7 @@ folder, and ended up with &hellip;">
   
 <form action="http://google.com/search" method="get">
   <fieldset role="search">
-    <input type="hidden" name="q" value="site:mostlyunixish.franzoni.eu" />
+    <input type="hidden" name="q" value="site:mostlyunixish.franzoni.eu/mostlyunixish" />
     <input class="search" type="text" name="q" results="0" placeholder="Search"/>
   </fieldset>
 </form>
@@ -96,23 +96,23 @@ folder, and ended up with &hellip;">
 <div class="entry-content"><p>Some days ago I ranted about an issue I had with Mercurial and Dropbox; basically, I did put a mercurial repo in a dropbox
 folder, and ended up with <a href="http://twitter.com/franzeur/statuses/214769401055035392/">this kind of mess</a></p>
 
-<p>Mercurial repos inside Dropbox are not a great idea after all. But I had one problem: I sometimes forget to push changes to some files, and Dropbox comes to the rescue; at the same time I need history for such files, and I don&#8217;t want problems to arise.</p>
+<p>Mercurial repos inside Dropbox are not a great idea after all. But I had one problem: I sometimes forget to push changes to some files, and Dropbox comes to the rescue; at the same time I need history for such files, and I don&rsquo;t want problems to arise.</p>
 
 <p>I found quite an easy solution:</p>
 
 <ul>
-<li>Create your dropbox-aware folder, e.g. &#8220;somefolder&#8221;</li>
-<li>create a .hg folder inside it, e.g. &#8220;somefolder/.hg&#8221;</li>
+<li>Create your dropbox-aware folder, e.g. &ldquo;somefolder&rdquo;</li>
+<li>create a .hg folder inside it, e.g. &ldquo;somefolder/.hg&rdquo;</li>
 <li>now use your dropbox client, be it the CLI or the GUI, enable <a href="https://www.dropbox.com/help/175/en">Selective Sync</a> and remove such .hg folder from being synced on your current machine. You must take this step on all machines that you want to use with such technique.</li>
 <li>disabling sync for .hg should remove it from the somefolder directory.</li>
 </ul>
 
 
-<p>Now you can use <code>hg init</code> inside &#8220;somefolder&#8221;, and you&#8217;ll obtain a non-synced hg repository.</p>
+<p>Now you can use <code>hg init</code> inside &ldquo;somefolder&rdquo;, and you&rsquo;ll obtain a non-synced hg repository.</p>
 
 <p>What for? Whatever! I just create a repo on bitbucket and push/pull changes to/from here.</p>
 
-<p>On other machines, after making sure you&#8217;ve excluded .hg from syncing, you can just use</p>
+<p>On other machines, after making sure you&rsquo;ve excluded .hg from syncing, you can just use</p>
 
 <p><code>hg clone -U YOUR_REPO_URL</code></p>
 
@@ -121,7 +121,7 @@ folder, and ended up with <a href="http://twitter.com/franzeur/statuses/21476940
 <p>This way:</p>
 
 <ul>
-<li>it&#8217;s impossible to get errors or conflicts like the one I previously mentioned</li>
+<li>it&rsquo;s impossible to get errors or conflicts like the one I previously mentioned</li>
 <li>you get full storicization</li>
 <li>Dropbox syncs the actual working copy, letting you have the latest version always 100% synced without manual intervention.</li>
 </ul>
@@ -164,7 +164,7 @@ folder, and ended up with <a href="http://twitter.com/franzeur/statuses/21476940
     
       <div class="sharing">
   
-  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://mostlyunixish.franzoni.eu/blog/2012/06/21/dropbox-and-mercurial-and-lived-happily-ever-after/" data-via="franzeur" data-counturl="http://mostlyunixish.franzoni.eu/blog/2012/06/21/dropbox-and-mercurial-and-lived-happily-ever-after/" >Tweet</a>
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://mostlyunixish.franzoni.eu/mostlyunixish/blog/2012/06/21/dropbox-and-mercurial-and-lived-happily-ever-after/" data-via="franzeur" data-counturl="http://mostlyunixish.franzoni.eu/mostlyunixish/blog/2012/06/21/dropbox-and-mercurial-and-lived-happily-ever-after/" >Tweet</a>
   
   
   <div class="g-plusone" data-size="medium"></div>
@@ -222,25 +222,13 @@ folder, and ended up with <a href="http://twitter.com/franzeur/statuses/21476940
 </section>
 
 
+
+
 <section>
   <h1>Latest Tweets</h1>
-  <ul id="tweets">
-    <li class="loading">Status updating...</li>
-  </ul>
-  <script type="text/javascript">
-    $.domReady(function(){
-      getTwitterFeed("franzeur", 3, true);
-    });
-  </script>
-  <script src="/javascripts/twitter.js" type="text/javascript"> </script>
-  
-    <a href="http://twitter.com/franzeur" class="twitter-follow-button" data-show-count="false">Follow @franzeur</a>
-  
+  <a class="twitter-timeline" href="https://twitter.com/franzeur" data-widget-id="361445337954672640">Tweets by @franzeur</a>
+  <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
 </section>
-
-
-
-
 
   
 </aside>
@@ -261,8 +249,8 @@ folder, and ended up with <a href="http://twitter.com/franzeur/statuses/21476940
       
         
         // var disqus_developer = 1;
-        var disqus_identifier = 'http://mostlyunixish.franzoni.eu/blog/2012/06/21/dropbox-and-mercurial-and-lived-happily-ever-after/';
-        var disqus_url = 'http://mostlyunixish.franzoni.eu/blog/2012/06/21/dropbox-and-mercurial-and-lived-happily-ever-after/';
+        var disqus_identifier = 'http://mostlyunixish.franzoni.eu/mostlyunixish/blog/2012/06/21/dropbox-and-mercurial-and-lived-happily-ever-after/';
+        var disqus_url = 'http://mostlyunixish.franzoni.eu/mostlyunixish/blog/2012/06/21/dropbox-and-mercurial-and-lived-happily-ever-after/';
         var disqus_script = 'embed.js';
       
     (function () {

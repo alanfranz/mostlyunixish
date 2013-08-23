@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Category: mercurial | Mostly Unixish]]></title>
-  <link href="http://mostlyunixish.franzoni.eu/blog/categories/mercurial/atom.xml" rel="self"/>
-  <link href="http://mostlyunixish.franzoni.eu/"/>
-  <updated>2013-07-08T17:59:57+02:00</updated>
-  <id>http://mostlyunixish.franzoni.eu/</id>
+  <link href="http://mostlyunixish.franzoni.eu/mostlyunixish/blog/categories/mercurial/atom.xml" rel="self"/>
+  <link href="http://mostlyunixish.franzoni.eu/mostlyunixish/"/>
+  <updated>2013-08-23T12:34:31+02:00</updated>
+  <id>http://mostlyunixish.franzoni.eu/mostlyunixish/</id>
   <author>
     <name><![CDATA[Alan Franzoni]]></name>
     
@@ -15,29 +15,29 @@
   
   <entry>
     <title type="html"><![CDATA[Dropbox and Mercurial: and lived happily ever after]]></title>
-    <link href="http://mostlyunixish.franzoni.eu/blog/2012/06/21/dropbox-and-mercurial-and-lived-happily-ever-after/"/>
+    <link href="http://mostlyunixish.franzoni.eu/mostlyunixish/blog/2012/06/21/dropbox-and-mercurial-and-lived-happily-ever-after/"/>
     <updated>2012-06-21T13:12:00+02:00</updated>
-    <id>http://mostlyunixish.franzoni.eu/blog/2012/06/21/dropbox-and-mercurial-and-lived-happily-ever-after</id>
+    <id>http://mostlyunixish.franzoni.eu/mostlyunixish/blog/2012/06/21/dropbox-and-mercurial-and-lived-happily-ever-after</id>
     <content type="html"><![CDATA[<p>Some days ago I ranted about an issue I had with Mercurial and Dropbox; basically, I did put a mercurial repo in a dropbox
 folder, and ended up with <a href="http://twitter.com/franzeur/statuses/214769401055035392/">this kind of mess</a></p>
 
-<p>Mercurial repos inside Dropbox are not a great idea after all. But I had one problem: I sometimes forget to push changes to some files, and Dropbox comes to the rescue; at the same time I need history for such files, and I don't want problems to arise.</p>
+<p>Mercurial repos inside Dropbox are not a great idea after all. But I had one problem: I sometimes forget to push changes to some files, and Dropbox comes to the rescue; at the same time I need history for such files, and I don&rsquo;t want problems to arise.</p>
 
 <p>I found quite an easy solution:</p>
 
 <ul>
-<li>Create your dropbox-aware folder, e.g. "somefolder"</li>
-<li>create a .hg folder inside it, e.g. "somefolder/.hg"</li>
+<li>Create your dropbox-aware folder, e.g. &ldquo;somefolder&rdquo;</li>
+<li>create a .hg folder inside it, e.g. &ldquo;somefolder/.hg&rdquo;</li>
 <li>now use your dropbox client, be it the CLI or the GUI, enable <a href="https://www.dropbox.com/help/175/en">Selective Sync</a> and remove such .hg folder from being synced on your current machine. You must take this step on all machines that you want to use with such technique.</li>
 <li>disabling sync for .hg should remove it from the somefolder directory.</li>
 </ul>
 
 
-<p>Now you can use <code>hg init</code> inside "somefolder", and you'll obtain a non-synced hg repository.</p>
+<p>Now you can use <code>hg init</code> inside &ldquo;somefolder&rdquo;, and you&rsquo;ll obtain a non-synced hg repository.</p>
 
 <p>What for? Whatever! I just create a repo on bitbucket and push/pull changes to/from here.</p>
 
-<p>On other machines, after making sure you've excluded .hg from syncing, you can just use</p>
+<p>On other machines, after making sure you&rsquo;ve excluded .hg from syncing, you can just use</p>
 
 <p><code>hg clone -U YOUR_REPO_URL</code></p>
 
@@ -46,7 +46,7 @@ folder, and ended up with <a href="http://twitter.com/franzeur/statuses/21476940
 <p>This way:</p>
 
 <ul>
-<li>it's impossible to get errors or conflicts like the one I previously mentioned</li>
+<li>it&rsquo;s impossible to get errors or conflicts like the one I previously mentioned</li>
 <li>you get full storicization</li>
 <li>Dropbox syncs the actual working copy, letting you have the latest version always 100% synced without manual intervention.</li>
 </ul>
