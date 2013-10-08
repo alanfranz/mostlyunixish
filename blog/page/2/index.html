@@ -9,7 +9,8 @@
   <meta name="author" content="Alan Franzoni">
 
   
-  <meta name="description" content="If you develop enough software, most probably you&rsquo;ll have a test/development network at your service. In such networks, which are usually &hellip;">
+  <meta name="description" content="ssh-copy-id is a cool script which is usually distributed along openssh client nowadays;
+it performs an automatic install of your local public SSH &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,7 +19,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://mostlyunixish.franzoni.eu/mostlyunixish/blog/page/2/">
+  <link rel="canonical" href="http://mostlyunixish.franzoni.eu/blog/page/2/">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <script src="/javascripts/modernizr-2.0.js"></script>
@@ -49,7 +50,7 @@
   
 <form action="http://google.com/search" method="get">
   <fieldset role="search">
-    <input type="hidden" name="q" value="site:mostlyunixish.franzoni.eu/mostlyunixish" />
+    <input type="hidden" name="q" value="site:mostlyunixish.franzoni.eu" />
     <input class="search" type="text" name="q" results="0" placeholder="Search"/>
   </fieldset>
 </form>
@@ -66,6 +67,54 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2012/11/06/ssh-copy-id-with-nonstandard-sshd-port/">Ssh-copy-id With Nonstandard Sshd Port</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-11-06T22:49:00+01:00" pubdate data-updated="true">Nov 6<span>th</span>, 2012</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p><a href="http://linux.die.net/man/1/ssh-copy-id">ssh-copy-id</a> is a cool script which is usually distributed along openssh client nowadays;
+it performs an automatic install of your local public SSH key to a remote server. Its syntax is simply:</p>
+
+<p><code>ssh-copy-id [-i [identity_file]] [user@]machine</code></p>
+
+<p>You may have spotted there&rsquo;s no builtin way of telling it what&rsquo;s the port of the remote server; a workaround exists which leverages
+the way arguments are passed to the script (it&rsquo;s a simple bash file, take a look at it. You can find various versions around <a href="https://gist.github.com/378862">the internet</a>).</p>
+
+<p>Just do this:</p>
+
+<p><code>ssh-copy-id '-p [port_number] [-i [identity_file]] [user@]machine'</code></p>
+
+<p>And enjoy your newly-added SSH key!</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -217,52 +266,6 @@ root@192.168.0.208's password:
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2012/08/22/disown-is-your-friend/">Disown Is Your Friend</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-08-22T19:22:00+02:00" pubdate data-updated="true">Aug 22<span>nd</span>, 2012</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>Bash builtin <em>disown</em> is a not-so-well known <a href="http://www.gnu.org/software/bash/manual/html_node/Job-Control-Builtins.html">job control command</a>, and yet
-it&rsquo;s an extremely useful one.</p>
-
-<p>So what? You&rsquo;ve started a remote ssh session, launched some command which is taking very, very long to complete, and you just want to go home, or maybe you
-feel your connectivity may drop, and so on&hellip; and you forgot to launch <a href="http://www.gnu.org/software/screen">screen</a> (possibly with <a href="https://launchpad.net/byobu">byobu</a>)
-or <a href="http://tmux.sourceforge.net">tmux</a> before starting your work!</p>
-
-<p>Now you&rsquo;re desperate and you&rsquo;d just like to go home, but you fear your longstanding jobs will quit if you close your terminal.</p>
-
-<p>Just background your job, launch <em>disown</em> and all the jobs in background will receive no notification whatsoever of your saying goodbye to them;
-of course you won&rsquo;t be able to read their output to the terminal.</p>
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/blog/page/3/">&larr; Older</a>
@@ -280,6 +283,10 @@ of course you won&rsquo;t be able to read their output to the terminal.</p>
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2013/10/08/quick-log-for-bash-scripts/">Quick log for bash scripts, with line limit</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2013/03/06/apt-get-update-fixing-package-index-files-are-corrupted/">apt-get update: fixing &#8216;package index files are corrupted&#8217;</a>
       </li>
     
@@ -293,10 +300,6 @@ of course you won&rsquo;t be able to read their output to the terminal.</p>
     
       <li class="post">
         <a href="/blog/2012/08/26/ssh-client-stop-complaining-inside-my-network/">ssh client: stopping key verification complaints inside your own private network</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2012/08/23/thunderbird-temporary-directory/">Thunderbird temporary directory</a>
       </li>
     
   </ul>

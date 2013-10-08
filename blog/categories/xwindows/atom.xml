@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Category: xwindows | Mostly Unixish]]></title>
-  <link href="http://mostlyunixish.franzoni.eu/mostlyunixish/blog/categories/xwindows/atom.xml" rel="self"/>
-  <link href="http://mostlyunixish.franzoni.eu/mostlyunixish/"/>
-  <updated>2013-08-23T12:34:31+02:00</updated>
-  <id>http://mostlyunixish.franzoni.eu/mostlyunixish/</id>
+  <link href="http://mostlyunixish.franzoni.eu/blog/categories/xwindows/atom.xml" rel="self"/>
+  <link href="http://mostlyunixish.franzoni.eu/"/>
+  <updated>2013-10-08T20:59:05+02:00</updated>
+  <id>http://mostlyunixish.franzoni.eu/</id>
   <author>
     <name><![CDATA[Alan Franzoni]]></name>
     
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[Wmctrl: gather and focus your chosen window by hotkey]]></title>
-    <link href="http://mostlyunixish.franzoni.eu/mostlyunixish/blog/2013/01/29/wmctrl-gather-and-focus-your-chosen-window-by-hotkey/"/>
+    <link href="http://mostlyunixish.franzoni.eu/blog/2013/01/29/wmctrl-gather-and-focus-your-chosen-window-by-hotkey/"/>
     <updated>2013-01-29T18:35:00+01:00</updated>
-    <id>http://mostlyunixish.franzoni.eu/mostlyunixish/blog/2013/01/29/wmctrl-gather-and-focus-your-chosen-window-by-hotkey</id>
+    <id>http://mostlyunixish.franzoni.eu/blog/2013/01/29/wmctrl-gather-and-focus-your-chosen-window-by-hotkey</id>
     <content type="html"><![CDATA[<p>I find it extremely handy to be able to recall my windows by just using the keyboard.</p>
 
 <p>It&rsquo;s pretty easy to do in Linux, just use:</p>

@@ -9,8 +9,8 @@
   <meta name="author" content="Alan Franzoni">
 
   
-  <meta name="description" content="Whenever I install a production system/server I tend to enable full automatic updating, because
-it&rsquo;s usually better that something breaks &hellip;">
+  <meta name="description" content="Bash builtin disown is a not-so-well known job control command, and yet
+it&rsquo;s an extremely useful one. So what? You&rsquo;ve started a remote &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -19,7 +19,7 @@ it&rsquo;s usually better that something breaks &hellip;">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://mostlyunixish.franzoni.eu/mostlyunixish/blog/page/3/">
+  <link rel="canonical" href="http://mostlyunixish.franzoni.eu/blog/page/3/">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <script src="/javascripts/modernizr-2.0.js"></script>
@@ -50,7 +50,7 @@ it&rsquo;s usually better that something breaks &hellip;">
   
 <form action="http://google.com/search" method="get">
   <fieldset role="search">
-    <input type="hidden" name="q" value="site:mostlyunixish.franzoni.eu/mostlyunixish" />
+    <input type="hidden" name="q" value="site:mostlyunixish.franzoni.eu" />
     <input class="search" type="text" name="q" results="0" placeholder="Search"/>
   </fieldset>
 </form>
@@ -67,6 +67,52 @@ it&rsquo;s usually better that something breaks &hellip;">
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2012/08/22/disown-is-your-friend/">Disown Is Your Friend</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-08-22T19:22:00+02:00" pubdate data-updated="true">Aug 22<span>nd</span>, 2012</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Bash builtin <em>disown</em> is a not-so-well known <a href="http://www.gnu.org/software/bash/manual/html_node/Job-Control-Builtins.html">job control command</a>, and yet
+it&rsquo;s an extremely useful one.</p>
+
+<p>So what? You&rsquo;ve started a remote ssh session, launched some command which is taking very, very long to complete, and you just want to go home, or maybe you
+feel your connectivity may drop, and so on&hellip; and you forgot to launch <a href="http://www.gnu.org/software/screen">screen</a> (possibly with <a href="https://launchpad.net/byobu">byobu</a>)
+or <a href="http://tmux.sourceforge.net">tmux</a> before starting your work!</p>
+
+<p>Now you&rsquo;re desperate and you&rsquo;d just like to go home, but you fear your longstanding jobs will quit if you close your terminal.</p>
+
+<p>Just background your job, launch <em>disown</em> and all the jobs in background will receive no notification whatsoever of your saying goodbye to them;
+of course you won&rsquo;t be able to read their output to the terminal.</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -150,6 +196,9 @@ it&rsquo;s usually better that something breaks because of a failed update rathe
 <span class='line-number'>44</span>
 <span class='line-number'>45</span>
 <span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
 </pre></td><td class='code'><pre><code class='python'><span class='line'><span class="c">#!/usr/bin/env python</span>
 </span><span class='line'>
 </span><span class='line'><span class="c"># print all installed kernel/headers/etc BUT the current and the latest;</span>
@@ -189,11 +238,14 @@ it&rsquo;s usually better that something breaks because of a failed update rathe
 </span><span class='line'><span class="n">kernels_to_remove</span> <span class="o">=</span> <span class="n">get_nonmatching_packages</span><span class="p">(</span><span class="n">all_kernels</span><span class="p">,</span> <span class="p">(</span><span class="n">current_version</span><span class="p">,</span>
 </span><span class='line'>    <span class="n">latest_version</span><span class="p">))</span>
 </span><span class='line'>
+</span><span class='line'><span class="n">impl_headers</span> <span class="o">=</span> <span class="n">get_providing_packages</span><span class="p">(</span><span class="s">&quot;linux-headers&quot;</span><span class="p">)</span>
 </span><span class='line'>
-</span><span class='line'><span class="n">all_headers</span> <span class="o">=</span> <span class="n">get_providing_packages</span><span class="p">(</span><span class="s">&quot;linux-headers&quot;</span><span class="p">)</span>
-</span><span class='line'>
-</span><span class='line'><span class="n">headers_to_remove</span> <span class="o">=</span> <span class="n">get_nonmatching_packages</span><span class="p">(</span><span class="n">all_headers</span><span class="p">,</span> <span class="p">(</span><span class="n">current_version</span><span class="p">,</span>
+</span><span class='line'><span class="n">headers_to_remove</span> <span class="o">=</span> <span class="n">get_nonmatching_packages</span><span class="p">(</span><span class="n">impl_headers</span><span class="p">,</span> <span class="p">(</span><span class="n">current_version</span><span class="p">,</span>
 </span><span class='line'>    <span class="n">latest_version</span><span class="p">))</span>
+</span><span class='line'>
+</span><span class='line'><span class="c"># This seems to be needed in Ubuntu &gt;= 13.04</span>
+</span><span class='line'><span class="c">#base_headers_to_remove = [header.replace(&quot;-generic&quot;, &quot;&quot;) for header in headers_to_remove]</span>
+</span><span class='line'><span class="c">#headers_to_remove += base_headers_to_remove</span>
 </span><span class='line'>
 </span><span class='line'><span class="k">print</span> <span class="s">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">kernels_to_remove</span> <span class="o">+</span> <span class="n">headers_to_remove</span><span class="p">)</span>
 </span></code></pre></td></tr></table></div></figure>
@@ -205,7 +257,7 @@ it&rsquo;s usually better that something breaks because of a failed update rathe
 </pre></td><td class='code'><pre><code class=''><span class='line'>apt-get remove --purge -y `ubuntu_get_obsolete_kernel_and_headers_pkgs.py`</span></code></pre></td></tr></table></div></figure>
 
 
-
+<p><strong>WARNING</strong>: recent changes to the way Ubuntu marks dependencies and provided names for kernel headers require that you uncomment a couple of lines in the script towards the end; just remove the # at the beginning of the lines 46 and 47.</p>
 </div>
   
   
@@ -298,6 +350,10 @@ folder, and ended up with <a href="http://twitter.com/franzeur/statuses/21476940
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2013/10/08/quick-log-for-bash-scripts/">Quick log for bash scripts, with line limit</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2013/03/06/apt-get-update-fixing-package-index-files-are-corrupted/">apt-get update: fixing &#8216;package index files are corrupted&#8217;</a>
       </li>
     
@@ -311,10 +367,6 @@ folder, and ended up with <a href="http://twitter.com/franzeur/statuses/21476940
     
       <li class="post">
         <a href="/blog/2012/08/26/ssh-client-stop-complaining-inside-my-network/">ssh client: stopping key verification complaints inside your own private network</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2012/08/23/thunderbird-temporary-directory/">Thunderbird temporary directory</a>
       </li>
     
   </ul>

@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Category: ssh | Mostly Unixish]]></title>
-  <link href="http://mostlyunixish.franzoni.eu/mostlyunixish/blog/categories/ssh/atom.xml" rel="self"/>
-  <link href="http://mostlyunixish.franzoni.eu/mostlyunixish/"/>
-  <updated>2013-08-23T12:34:31+02:00</updated>
-  <id>http://mostlyunixish.franzoni.eu/mostlyunixish/</id>
+  <link href="http://mostlyunixish.franzoni.eu/blog/categories/ssh/atom.xml" rel="self"/>
+  <link href="http://mostlyunixish.franzoni.eu/"/>
+  <updated>2013-10-08T20:59:05+02:00</updated>
+  <id>http://mostlyunixish.franzoni.eu/</id>
   <author>
     <name><![CDATA[Alan Franzoni]]></name>
     
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[ssh-copy-id with nonstandard sshd port]]></title>
-    <link href="http://mostlyunixish.franzoni.eu/mostlyunixish/blog/2012/11/06/ssh-copy-id-with-nonstandard-sshd-port/"/>
+    <link href="http://mostlyunixish.franzoni.eu/blog/2012/11/06/ssh-copy-id-with-nonstandard-sshd-port/"/>
     <updated>2012-11-06T22:49:00+01:00</updated>
-    <id>http://mostlyunixish.franzoni.eu/mostlyunixish/blog/2012/11/06/ssh-copy-id-with-nonstandard-sshd-port</id>
+    <id>http://mostlyunixish.franzoni.eu/blog/2012/11/06/ssh-copy-id-with-nonstandard-sshd-port</id>
     <content type="html"><![CDATA[<p><a href="http://linux.die.net/man/1/ssh-copy-id">ssh-copy-id</a> is a cool script which is usually distributed along openssh client nowadays;
 it performs an automatic install of your local public SSH key to a remote server. Its syntax is simply:</p>
 
@@ -36,9 +36,9 @@ the way arguments are passed to the script (it&rsquo;s a simple bash file, take 
   
   <entry>
     <title type="html"><![CDATA[ssh client: stopping key verification complaints inside your own private network]]></title>
-    <link href="http://mostlyunixish.franzoni.eu/mostlyunixish/blog/2012/08/26/ssh-client-stop-complaining-inside-my-network/"/>
+    <link href="http://mostlyunixish.franzoni.eu/blog/2012/08/26/ssh-client-stop-complaining-inside-my-network/"/>
     <updated>2012-08-26T15:55:00+02:00</updated>
-    <id>http://mostlyunixish.franzoni.eu/mostlyunixish/blog/2012/08/26/ssh-client-stop-complaining-inside-my-network</id>
+    <id>http://mostlyunixish.franzoni.eu/blog/2012/08/26/ssh-client-stop-complaining-inside-my-network</id>
     <content type="html"><![CDATA[<p>If you develop enough software, most probably you&rsquo;ll have a test/development network at your service.</p>
 
 <p>In such networks, which are usually handled through a virtualization infrastructure, machines come and go very quickly.
@@ -105,9 +105,9 @@ root@192.168.0.208's password:
   
   <entry>
     <title type="html"><![CDATA[Disown is your friend]]></title>
-    <link href="http://mostlyunixish.franzoni.eu/mostlyunixish/blog/2012/08/22/disown-is-your-friend/"/>
+    <link href="http://mostlyunixish.franzoni.eu/blog/2012/08/22/disown-is-your-friend/"/>
     <updated>2012-08-22T19:22:00+02:00</updated>
-    <id>http://mostlyunixish.franzoni.eu/mostlyunixish/blog/2012/08/22/disown-is-your-friend</id>
+    <id>http://mostlyunixish.franzoni.eu/blog/2012/08/22/disown-is-your-friend</id>
     <content type="html"><![CDATA[<p>Bash builtin <em>disown</em> is a not-so-well known <a href="http://www.gnu.org/software/bash/manual/html_node/Job-Control-Builtins.html">job control command</a>, and yet
 it&rsquo;s an extremely useful one.</p>
 

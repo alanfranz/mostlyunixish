@@ -2,58 +2,60 @@
 <urlset xmlns='http://www.sitemaps.org/schemas/sitemap/0.9'>
     <url>
         <loc>
-            http://mostlyunixish.franzoni.eu/mostlyunixish/blog/2012/06/21/dropbox-and-mercurial-and-lived-happily-ever-after/
+            http://mostlyunixish.franzoni.eu/blog/2012/06/21/dropbox-and-mercurial-and-lived-happily-ever-after/
         </loc>
         <lastmod>2013-08-23T11:35:53+02:00</lastmod>
     </url>
     <url>
         <loc>
-            http://mostlyunixish.franzoni.eu/mostlyunixish/blog/2012/06/25/purging-outdated-kernels-on-systems-with-enabled-autoupdate/
+            http://mostlyunixish.franzoni.eu/blog/2012/06/25/purging-outdated-kernels-on-systems-with-enabled-autoupdate/
+        </loc>
+        <lastmod>2013-10-08T20:17:36+02:00</lastmod>
+    </url>
+    <url>
+        <loc>http://mostlyunixish.franzoni.eu/blog/2012/08/22/disown-is-your-friend/</loc>
+        <lastmod>2013-08-23T11:35:53+02:00</lastmod>
+    </url>
+    <url>
+        <loc>
+            http://mostlyunixish.franzoni.eu/blog/2012/08/23/thunderbird-temporary-directory/
         </loc>
         <lastmod>2013-08-23T11:35:53+02:00</lastmod>
     </url>
     <url>
         <loc>
-            http://mostlyunixish.franzoni.eu/mostlyunixish/blog/2012/08/22/disown-is-your-friend/
+            http://mostlyunixish.franzoni.eu/blog/2012/08/26/ssh-client-stop-complaining-inside-my-network/
         </loc>
         <lastmod>2013-08-23T11:35:53+02:00</lastmod>
     </url>
     <url>
         <loc>
-            http://mostlyunixish.franzoni.eu/mostlyunixish/blog/2012/08/23/thunderbird-temporary-directory/
+            http://mostlyunixish.franzoni.eu/blog/2012/11/06/ssh-copy-id-with-nonstandard-sshd-port/
         </loc>
         <lastmod>2013-08-23T11:35:53+02:00</lastmod>
     </url>
     <url>
         <loc>
-            http://mostlyunixish.franzoni.eu/mostlyunixish/blog/2012/08/26/ssh-client-stop-complaining-inside-my-network/
+            http://mostlyunixish.franzoni.eu/blog/2013/01/29/wmctrl-gather-and-focus-your-chosen-window-by-hotkey/
         </loc>
         <lastmod>2013-08-23T11:35:53+02:00</lastmod>
     </url>
     <url>
         <loc>
-            http://mostlyunixish.franzoni.eu/mostlyunixish/blog/2012/11/06/ssh-copy-id-with-nonstandard-sshd-port/
+            http://mostlyunixish.franzoni.eu/blog/2013/03/06/apt-get-update-fixing-package-index-files-are-corrupted/
         </loc>
         <lastmod>2013-08-23T11:35:53+02:00</lastmod>
     </url>
     <url>
-        <loc>
-            http://mostlyunixish.franzoni.eu/mostlyunixish/blog/2013/01/29/wmctrl-gather-and-focus-your-chosen-window-by-hotkey/
-        </loc>
-        <lastmod>2013-08-23T11:35:53+02:00</lastmod>
+        <loc>http://mostlyunixish.franzoni.eu/blog/2013/10/08/quick-log-for-bash-scripts/</loc>
+        <lastmod>2013-10-08T20:56:05+02:00</lastmod>
     </url>
     <url>
-        <loc>
-            http://mostlyunixish.franzoni.eu/mostlyunixish/blog/2013/03/06/apt-get-update-fixing-package-index-files-are-corrupted/
-        </loc>
-        <lastmod>2013-08-23T11:35:53+02:00</lastmod>
+        <loc>http://mostlyunixish.franzoni.eu/blog/archives/</loc>
+        <lastmod>2013-10-08T20:56:05+02:00</lastmod>
     </url>
     <url>
-        <loc>http://mostlyunixish.franzoni.eu/mostlyunixish/blog/archives/</loc>
-        <lastmod>2013-08-23T11:35:53+02:00</lastmod>
-    </url>
-    <url>
-        <loc>http://mostlyunixish.franzoni.eu/mostlyunixish/</loc>
-        <lastmod>2013-08-23T11:35:53+02:00</lastmod>
+        <loc>http://mostlyunixish.franzoni.eu/</loc>
+        <lastmod>2013-10-08T20:56:05+02:00</lastmod>
     </url>
 </urlset>

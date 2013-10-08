@@ -19,7 +19,7 @@ it&rsquo;s usually better that something breaks &hellip;">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://mostlyunixish.franzoni.eu/mostlyunixish/blog/2012/06/25/purging-outdated-kernels-on-systems-with-enabled-autoupdate/">
+  <link rel="canonical" href="http://mostlyunixish.franzoni.eu/blog/2012/06/25/purging-outdated-kernels-on-systems-with-enabled-autoupdate/">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <script src="/javascripts/modernizr-2.0.js"></script>
@@ -50,7 +50,7 @@ it&rsquo;s usually better that something breaks &hellip;">
   
 <form action="http://google.com/search" method="get">
   <fieldset role="search">
-    <input type="hidden" name="q" value="site:mostlyunixish.franzoni.eu/mostlyunixish" />
+    <input type="hidden" name="q" value="site:mostlyunixish.franzoni.eu" />
     <input class="search" type="text" name="q" results="0" placeholder="Search"/>
   </fieldset>
 </form>
@@ -147,6 +147,9 @@ it&rsquo;s usually better that something breaks because of a failed update rathe
 <span class='line-number'>44</span>
 <span class='line-number'>45</span>
 <span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
 </pre></td><td class='code'><pre><code class='python'><span class='line'><span class="c">#!/usr/bin/env python</span>
 </span><span class='line'>
 </span><span class='line'><span class="c"># print all installed kernel/headers/etc BUT the current and the latest;</span>
@@ -186,11 +189,14 @@ it&rsquo;s usually better that something breaks because of a failed update rathe
 </span><span class='line'><span class="n">kernels_to_remove</span> <span class="o">=</span> <span class="n">get_nonmatching_packages</span><span class="p">(</span><span class="n">all_kernels</span><span class="p">,</span> <span class="p">(</span><span class="n">current_version</span><span class="p">,</span>
 </span><span class='line'>    <span class="n">latest_version</span><span class="p">))</span>
 </span><span class='line'>
+</span><span class='line'><span class="n">impl_headers</span> <span class="o">=</span> <span class="n">get_providing_packages</span><span class="p">(</span><span class="s">&quot;linux-headers&quot;</span><span class="p">)</span>
 </span><span class='line'>
-</span><span class='line'><span class="n">all_headers</span> <span class="o">=</span> <span class="n">get_providing_packages</span><span class="p">(</span><span class="s">&quot;linux-headers&quot;</span><span class="p">)</span>
-</span><span class='line'>
-</span><span class='line'><span class="n">headers_to_remove</span> <span class="o">=</span> <span class="n">get_nonmatching_packages</span><span class="p">(</span><span class="n">all_headers</span><span class="p">,</span> <span class="p">(</span><span class="n">current_version</span><span class="p">,</span>
+</span><span class='line'><span class="n">headers_to_remove</span> <span class="o">=</span> <span class="n">get_nonmatching_packages</span><span class="p">(</span><span class="n">impl_headers</span><span class="p">,</span> <span class="p">(</span><span class="n">current_version</span><span class="p">,</span>
 </span><span class='line'>    <span class="n">latest_version</span><span class="p">))</span>
+</span><span class='line'>
+</span><span class='line'><span class="c"># This seems to be needed in Ubuntu &gt;= 13.04</span>
+</span><span class='line'><span class="c">#base_headers_to_remove = [header.replace(&quot;-generic&quot;, &quot;&quot;) for header in headers_to_remove]</span>
+</span><span class='line'><span class="c">#headers_to_remove += base_headers_to_remove</span>
 </span><span class='line'>
 </span><span class='line'><span class="k">print</span> <span class="s">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">kernels_to_remove</span> <span class="o">+</span> <span class="n">headers_to_remove</span><span class="p">)</span>
 </span></code></pre></td></tr></table></div></figure>
@@ -202,7 +208,7 @@ it&rsquo;s usually better that something breaks because of a failed update rathe
 </pre></td><td class='code'><pre><code class=''><span class='line'>apt-get remove --purge -y `ubuntu_get_obsolete_kernel_and_headers_pkgs.py`</span></code></pre></td></tr></table></div></figure>
 
 
-
+<p><strong>WARNING</strong>: recent changes to the way Ubuntu marks dependencies and provided names for kernel headers require that you uncomment a couple of lines in the script towards the end; just remove the # at the beginning of the lines 46 and 47.</p>
 </div>
 
 
@@ -239,7 +245,7 @@ it&rsquo;s usually better that something breaks because of a failed update rathe
     
       <div class="sharing">
   
-  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://mostlyunixish.franzoni.eu/mostlyunixish/blog/2012/06/25/purging-outdated-kernels-on-systems-with-enabled-autoupdate/" data-via="franzeur" data-counturl="http://mostlyunixish.franzoni.eu/mostlyunixish/blog/2012/06/25/purging-outdated-kernels-on-systems-with-enabled-autoupdate/" >Tweet</a>
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://mostlyunixish.franzoni.eu/blog/2012/06/25/purging-outdated-kernels-on-systems-with-enabled-autoupdate/" data-via="franzeur" data-counturl="http://mostlyunixish.franzoni.eu/blog/2012/06/25/purging-outdated-kernels-on-systems-with-enabled-autoupdate/" >Tweet</a>
   
   
   <div class="g-plusone" data-size="medium"></div>
@@ -276,6 +282,10 @@ it&rsquo;s usually better that something breaks because of a failed update rathe
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2013/10/08/quick-log-for-bash-scripts/">Quick log for bash scripts, with line limit</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2013/03/06/apt-get-update-fixing-package-index-files-are-corrupted/">apt-get update: fixing 'package index files are corrupted'</a>
       </li>
     
@@ -289,10 +299,6 @@ it&rsquo;s usually better that something breaks because of a failed update rathe
     
       <li class="post">
         <a href="/blog/2012/08/26/ssh-client-stop-complaining-inside-my-network/">ssh client: stopping key verification complaints inside your own private network</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2012/08/23/thunderbird-temporary-directory/">Thunderbird temporary directory</a>
       </li>
     
   </ul>
@@ -326,8 +332,8 @@ it&rsquo;s usually better that something breaks because of a failed update rathe
       
         
         // var disqus_developer = 1;
-        var disqus_identifier = 'http://mostlyunixish.franzoni.eu/mostlyunixish/blog/2012/06/25/purging-outdated-kernels-on-systems-with-enabled-autoupdate/';
-        var disqus_url = 'http://mostlyunixish.franzoni.eu/mostlyunixish/blog/2012/06/25/purging-outdated-kernels-on-systems-with-enabled-autoupdate/';
+        var disqus_identifier = 'http://mostlyunixish.franzoni.eu/blog/2012/06/25/purging-outdated-kernels-on-systems-with-enabled-autoupdate/';
+        var disqus_url = 'http://mostlyunixish.franzoni.eu/blog/2012/06/25/purging-outdated-kernels-on-systems-with-enabled-autoupdate/';
         var disqus_script = 'embed.js';
       
     (function () {

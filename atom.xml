@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Mostly Unixish]]></title>
-  <link href="http://mostlyunixish.franzoni.eu/mostlyunixish/atom.xml" rel="self"/>
-  <link href="http://mostlyunixish.franzoni.eu/mostlyunixish/"/>
-  <updated>2013-08-23T12:34:31+02:00</updated>
-  <id>http://mostlyunixish.franzoni.eu/mostlyunixish/</id>
+  <link href="http://mostlyunixish.franzoni.eu/atom.xml" rel="self"/>
+  <link href="http://mostlyunixish.franzoni.eu/"/>
+  <updated>2013-10-08T20:59:05+02:00</updated>
+  <id>http://mostlyunixish.franzoni.eu/</id>
   <author>
     <name><![CDATA[Alan Franzoni]]></name>
     
@@ -14,10 +14,103 @@
 
   
   <entry>
+    <title type="html"><![CDATA[Quick log for bash scripts, with line limit]]></title>
+    <link href="http://mostlyunixish.franzoni.eu/blog/2013/10/08/quick-log-for-bash-scripts/"/>
+    <updated>2013-10-08T21:18:00+02:00</updated>
+    <id>http://mostlyunixish.franzoni.eu/blog/2013/10/08/quick-log-for-bash-scripts</id>
+    <content type="html"><![CDATA[<p>Sometimes you need to write a quick shell script; many a time, you need to put it on a server,
+and launch it every now and then, or run it in a cron job. That script may end up doing something
+important and/or altering the state of the server machine.</p>
+
+<p>If that script starts being using often enough, you&rsquo;ll want logging as well, and that can be
+a complex beast to tame, for logs require rotation and deletion, otherwise the beast will eat up
+all your disk space.</p>
+
+<p>So what? Many a times logging will be neglected, and you&rsquo;ll lose the ability to track what happened
+and why.</p>
+
+<p>This is my quick recipe for a basic bash logging solution with line-based truncation: the logfile
+will never exceed <strong>RETAIN_NUM_LINES</strong> lines (actually, it will never exceed such size when the script
+is launched, so the number of lines when the script has run is RETAIN_NUM_LINES + number of lines logged by
+the script).</p>
+
+<p>Whenever you use the <em>log</em> function you&rsquo;ll get output on stdout as well, complete with a timestamp.</p>
+
+<figure class='code'><figcaption><span> (quicklog.sh)</span> <a href='http://mostlyunixish.franzoni.eu/downloads/code/quicklog.sh'>download</a></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="c">#!/bin/bash</span>
+</span><span class='line'><span class="nv">LOGFILE</span><span class="o">=</span>quicklog.sh.log
+</span><span class='line'><span class="nv">RETAIN_NUM_LINES</span><span class="o">=</span>10
+</span><span class='line'>
+</span><span class='line'><span class="k">function </span>logsetup <span class="o">{</span>
+</span><span class='line'>    <span class="nv">TMP</span><span class="o">=</span><span class="k">$(</span>tail -n <span class="nv">$RETAIN_NUM_LINES</span> <span class="nv">$LOGFILE</span> 2&gt;/dev/null<span class="k">)</span> <span class="o">&amp;&amp;</span> <span class="nb">echo</span> <span class="s2">&quot;${TMP}&quot;</span> &gt; <span class="nv">$LOGFILE</span>
+</span><span class='line'>    <span class="nb">exec</span> &gt; &gt;<span class="o">(</span>tee -a <span class="nv">$LOGFILE</span><span class="o">)</span>
+</span><span class='line'>    <span class="nb">exec </span>2&gt;&amp;1
+</span><span class='line'><span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">function </span>log <span class="o">{</span>
+</span><span class='line'>    <span class="nb">echo</span> <span class="s2">&quot;[$(date)]: $*&quot;</span>
+</span><span class='line'><span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>logsetup
+</span><span class='line'>
+</span><span class='line'>log hello this is a log
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Launch this a lot of times and you&rsquo;ll end up with this:</p>
+
+<figure class='code'><figcaption><span> (quicklog.sh.log)</span> <a href='http://mostlyunixish.franzoni.eu/downloads/code/quicklog.sh.log'>download</a></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='text'><span class='line'>[Tue Oct  8 20:57:49 CEST 2013]: hello this is a log
+</span><span class='line'>[Tue Oct  8 20:57:49 CEST 2013]: hello this is a log
+</span><span class='line'>[Tue Oct  8 20:57:50 CEST 2013]: hello this is a log
+</span><span class='line'>[Tue Oct  8 20:57:50 CEST 2013]: hello this is a log
+</span><span class='line'>[Tue Oct  8 20:57:50 CEST 2013]: hello this is a log
+</span><span class='line'>[Tue Oct  8 20:57:50 CEST 2013]: hello this is a log
+</span><span class='line'>[Tue Oct  8 20:57:51 CEST 2013]: hello this is a log
+</span><span class='line'>[Tue Oct  8 20:57:51 CEST 2013]: hello this is a log
+</span><span class='line'>[Tue Oct  8 20:57:51 CEST 2013]: hello this is a log
+</span><span class='line'>[Tue Oct  8 20:57:51 CEST 2013]: hello this is a log
+</span><span class='line'>[Tue Oct  8 20:57:52 CEST 2013]: hello this is a log
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Enjoy!</p>
+]]></content>
+  </entry>
+  
+  <entry>
     <title type="html"><![CDATA[apt-get update: fixing 'package index files are corrupted']]></title>
-    <link href="http://mostlyunixish.franzoni.eu/mostlyunixish/blog/2013/03/06/apt-get-update-fixing-package-index-files-are-corrupted/"/>
+    <link href="http://mostlyunixish.franzoni.eu/blog/2013/03/06/apt-get-update-fixing-package-index-files-are-corrupted/"/>
     <updated>2013-03-06T13:34:00+01:00</updated>
-    <id>http://mostlyunixish.franzoni.eu/mostlyunixish/blog/2013/03/06/apt-get-update-fixing-package-index-files-are-corrupted</id>
+    <id>http://mostlyunixish.franzoni.eu/blog/2013/03/06/apt-get-update-fixing-package-index-files-are-corrupted</id>
     <content type="html"><![CDATA[<p>Sometimes when performing your daily <code>apt-get update</code>, you&rsquo;ll experience messages like</p>
 
 <blockquote>
@@ -47,9 +140,9 @@ sudo -s -H bash -c 'apt-get clean && rm -f /var/lib/apt/lists/* ; rm -f /var/lib
   
   <entry>
     <title type="html"><![CDATA[Wmctrl: gather and focus your chosen window by hotkey]]></title>
-    <link href="http://mostlyunixish.franzoni.eu/mostlyunixish/blog/2013/01/29/wmctrl-gather-and-focus-your-chosen-window-by-hotkey/"/>
+    <link href="http://mostlyunixish.franzoni.eu/blog/2013/01/29/wmctrl-gather-and-focus-your-chosen-window-by-hotkey/"/>
     <updated>2013-01-29T18:35:00+01:00</updated>
-    <id>http://mostlyunixish.franzoni.eu/mostlyunixish/blog/2013/01/29/wmctrl-gather-and-focus-your-chosen-window-by-hotkey</id>
+    <id>http://mostlyunixish.franzoni.eu/blog/2013/01/29/wmctrl-gather-and-focus-your-chosen-window-by-hotkey</id>
     <content type="html"><![CDATA[<p>I find it extremely handy to be able to recall my windows by just using the keyboard.</p>
 
 <p>It&rsquo;s pretty easy to do in Linux, just use:</p>
@@ -75,9 +168,9 @@ for such global hotkeys.</p>
   
   <entry>
     <title type="html"><![CDATA[ssh-copy-id with nonstandard sshd port]]></title>
-    <link href="http://mostlyunixish.franzoni.eu/mostlyunixish/blog/2012/11/06/ssh-copy-id-with-nonstandard-sshd-port/"/>
+    <link href="http://mostlyunixish.franzoni.eu/blog/2012/11/06/ssh-copy-id-with-nonstandard-sshd-port/"/>
     <updated>2012-11-06T22:49:00+01:00</updated>
-    <id>http://mostlyunixish.franzoni.eu/mostlyunixish/blog/2012/11/06/ssh-copy-id-with-nonstandard-sshd-port</id>
+    <id>http://mostlyunixish.franzoni.eu/blog/2012/11/06/ssh-copy-id-with-nonstandard-sshd-port</id>
     <content type="html"><![CDATA[<p><a href="http://linux.die.net/man/1/ssh-copy-id">ssh-copy-id</a> is a cool script which is usually distributed along openssh client nowadays;
 it performs an automatic install of your local public SSH key to a remote server. Its syntax is simply:</p>
 
@@ -96,9 +189,9 @@ the way arguments are passed to the script (it&rsquo;s a simple bash file, take 
   
   <entry>
     <title type="html"><![CDATA[ssh client: stopping key verification complaints inside your own private network]]></title>
-    <link href="http://mostlyunixish.franzoni.eu/mostlyunixish/blog/2012/08/26/ssh-client-stop-complaining-inside-my-network/"/>
+    <link href="http://mostlyunixish.franzoni.eu/blog/2012/08/26/ssh-client-stop-complaining-inside-my-network/"/>
     <updated>2012-08-26T15:55:00+02:00</updated>
-    <id>http://mostlyunixish.franzoni.eu/mostlyunixish/blog/2012/08/26/ssh-client-stop-complaining-inside-my-network</id>
+    <id>http://mostlyunixish.franzoni.eu/blog/2012/08/26/ssh-client-stop-complaining-inside-my-network</id>
     <content type="html"><![CDATA[<p>If you develop enough software, most probably you&rsquo;ll have a test/development network at your service.</p>
 
 <p>In such networks, which are usually handled through a virtualization infrastructure, machines come and go very quickly.
@@ -165,9 +258,9 @@ root@192.168.0.208's password:
   
   <entry>
     <title type="html"><![CDATA[Thunderbird temporary directory]]></title>
-    <link href="http://mostlyunixish.franzoni.eu/mostlyunixish/blog/2012/08/23/thunderbird-temporary-directory/"/>
+    <link href="http://mostlyunixish.franzoni.eu/blog/2012/08/23/thunderbird-temporary-directory/"/>
     <updated>2012-08-23T20:18:00+02:00</updated>
-    <id>http://mostlyunixish.franzoni.eu/mostlyunixish/blog/2012/08/23/thunderbird-temporary-directory</id>
+    <id>http://mostlyunixish.franzoni.eu/blog/2012/08/23/thunderbird-temporary-directory</id>
     <content type="html"><![CDATA[<p>Whenever you use Thunderbird on Linux you may encounter one annoying behaviour.</p>
 
 <p>If you open a message which is got an attachment &ndash; you just need to open the message, not to save the attachment! &ndash; Thunderbird will place such attachment in your temporary directory, usually <em>/tmp</em>. You find the file there, and you think you used the <em>Save as</em> function to place it there, so you open it and you edit it.</p>
@@ -176,7 +269,7 @@ root@192.168.0.208's password:
 
 <p>The workaround is simple: just use a launcher that changes Thunderbird TMP directory and use that to start Thunderbird!</p>
 
-<figure class='code'><figcaption><span> (thunderbird)</span> <a href='http://mostlyunixish.franzoni.eu/mostlyunixish/downloads/code/thunderbird'>download</a></figcaption>
+<figure class='code'><figcaption><span> (thunderbird)</span> <a href='http://mostlyunixish.franzoni.eu/downloads/code/thunderbird'>download</a></figcaption>
  <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
@@ -192,9 +285,9 @@ root@192.168.0.208's password:
   
   <entry>
     <title type="html"><![CDATA[Disown is your friend]]></title>
-    <link href="http://mostlyunixish.franzoni.eu/mostlyunixish/blog/2012/08/22/disown-is-your-friend/"/>
+    <link href="http://mostlyunixish.franzoni.eu/blog/2012/08/22/disown-is-your-friend/"/>
     <updated>2012-08-22T19:22:00+02:00</updated>
-    <id>http://mostlyunixish.franzoni.eu/mostlyunixish/blog/2012/08/22/disown-is-your-friend</id>
+    <id>http://mostlyunixish.franzoni.eu/blog/2012/08/22/disown-is-your-friend</id>
     <content type="html"><![CDATA[<p>Bash builtin <em>disown</em> is a not-so-well known <a href="http://www.gnu.org/software/bash/manual/html_node/Job-Control-Builtins.html">job control command</a>, and yet
 it&rsquo;s an extremely useful one.</p>
 
@@ -211,9 +304,9 @@ of course you won&rsquo;t be able to read their output to the terminal.</p>
   
   <entry>
     <title type="html"><![CDATA[Purging outdated kernels on systems with unattended-upgrades]]></title>
-    <link href="http://mostlyunixish.franzoni.eu/mostlyunixish/blog/2012/06/25/purging-outdated-kernels-on-systems-with-enabled-autoupdate/"/>
+    <link href="http://mostlyunixish.franzoni.eu/blog/2012/06/25/purging-outdated-kernels-on-systems-with-enabled-autoupdate/"/>
     <updated>2012-06-25T07:33:00+02:00</updated>
-    <id>http://mostlyunixish.franzoni.eu/mostlyunixish/blog/2012/06/25/purging-outdated-kernels-on-systems-with-enabled-autoupdate</id>
+    <id>http://mostlyunixish.franzoni.eu/blog/2012/06/25/purging-outdated-kernels-on-systems-with-enabled-autoupdate</id>
     <content type="html"><![CDATA[<p>Whenever I install a production system/server I tend to enable full automatic updating, because
 it&rsquo;s usually better that something breaks because of a failed update rather than leaving a production machine unpatched; and if you pick a rather stable distribution (Centos or Ubuntu LTS are good examples) chances that you&rsquo;ll end up with a broken system are fairly low.</p>
 
@@ -221,7 +314,7 @@ it&rsquo;s usually better that something breaks because of a failed update rathe
 
 <p>That may sound trivial, but what happens if you&rsquo;re not careful (e.g. if you try deleting all kernels but the latest) is that you might try removing the currently running kernel &ndash; and it&rsquo;s pretty bad if that happens in an unattended cron job.</p>
 
-<figure class='code'><figcaption><span> (ubuntu_get_obsolete_kernel_and_headers_pkgs.py)</span> <a href='http://mostlyunixish.franzoni.eu/mostlyunixish/downloads/code/ubuntu_get_obsolete_kernel_and_headers_pkgs.py'>download</a></figcaption>
+<figure class='code'><figcaption><span> (ubuntu_get_obsolete_kernel_and_headers_pkgs.py)</span> <a href='http://mostlyunixish.franzoni.eu/downloads/code/ubuntu_get_obsolete_kernel_and_headers_pkgs.py'>download</a></figcaption>
  <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
@@ -268,6 +361,9 @@ it&rsquo;s usually better that something breaks because of a failed update rathe
 <span class='line-number'>44</span>
 <span class='line-number'>45</span>
 <span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
 </pre></td><td class='code'><pre><code class='python'><span class='line'><span class="c">#!/usr/bin/env python</span>
 </span><span class='line'>
 </span><span class='line'><span class="c"># print all installed kernel/headers/etc BUT the current and the latest;</span>
@@ -307,11 +403,14 @@ it&rsquo;s usually better that something breaks because of a failed update rathe
 </span><span class='line'><span class="n">kernels_to_remove</span> <span class="o">=</span> <span class="n">get_nonmatching_packages</span><span class="p">(</span><span class="n">all_kernels</span><span class="p">,</span> <span class="p">(</span><span class="n">current_version</span><span class="p">,</span>
 </span><span class='line'>    <span class="n">latest_version</span><span class="p">))</span>
 </span><span class='line'>
+</span><span class='line'><span class="n">impl_headers</span> <span class="o">=</span> <span class="n">get_providing_packages</span><span class="p">(</span><span class="s">&quot;linux-headers&quot;</span><span class="p">)</span>
 </span><span class='line'>
-</span><span class='line'><span class="n">all_headers</span> <span class="o">=</span> <span class="n">get_providing_packages</span><span class="p">(</span><span class="s">&quot;linux-headers&quot;</span><span class="p">)</span>
-</span><span class='line'>
-</span><span class='line'><span class="n">headers_to_remove</span> <span class="o">=</span> <span class="n">get_nonmatching_packages</span><span class="p">(</span><span class="n">all_headers</span><span class="p">,</span> <span class="p">(</span><span class="n">current_version</span><span class="p">,</span>
+</span><span class='line'><span class="n">headers_to_remove</span> <span class="o">=</span> <span class="n">get_nonmatching_packages</span><span class="p">(</span><span class="n">impl_headers</span><span class="p">,</span> <span class="p">(</span><span class="n">current_version</span><span class="p">,</span>
 </span><span class='line'>    <span class="n">latest_version</span><span class="p">))</span>
+</span><span class='line'>
+</span><span class='line'><span class="c"># This seems to be needed in Ubuntu &gt;= 13.04</span>
+</span><span class='line'><span class="c">#base_headers_to_remove = [header.replace(&quot;-generic&quot;, &quot;&quot;) for header in headers_to_remove]</span>
+</span><span class='line'><span class="c">#headers_to_remove += base_headers_to_remove</span>
 </span><span class='line'>
 </span><span class='line'><span class="k">print</span> <span class="s">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">kernels_to_remove</span> <span class="o">+</span> <span class="n">headers_to_remove</span><span class="p">)</span>
 </span></code></pre></td></tr></table></div></figure>
@@ -323,15 +422,15 @@ it&rsquo;s usually better that something breaks because of a failed update rathe
 </pre></td><td class='code'><pre><code class=''><span class='line'>apt-get remove --purge -y `ubuntu_get_obsolete_kernel_and_headers_pkgs.py`</span></code></pre></td></tr></table></div></figure>
 
 
-
+<p><strong>WARNING</strong>: recent changes to the way Ubuntu marks dependencies and provided names for kernel headers require that you uncomment a couple of lines in the script towards the end; just remove the # at the beginning of the lines 46 and 47.</p>
 ]]></content>
   </entry>
   
   <entry>
     <title type="html"><![CDATA[Dropbox and Mercurial: and lived happily ever after]]></title>
-    <link href="http://mostlyunixish.franzoni.eu/mostlyunixish/blog/2012/06/21/dropbox-and-mercurial-and-lived-happily-ever-after/"/>
+    <link href="http://mostlyunixish.franzoni.eu/blog/2012/06/21/dropbox-and-mercurial-and-lived-happily-ever-after/"/>
     <updated>2012-06-21T13:12:00+02:00</updated>
-    <id>http://mostlyunixish.franzoni.eu/mostlyunixish/blog/2012/06/21/dropbox-and-mercurial-and-lived-happily-ever-after</id>
+    <id>http://mostlyunixish.franzoni.eu/blog/2012/06/21/dropbox-and-mercurial-and-lived-happily-ever-after</id>
     <content type="html"><![CDATA[<p>Some days ago I ranted about an issue I had with Mercurial and Dropbox; basically, I did put a mercurial repo in a dropbox
 folder, and ended up with <a href="http://twitter.com/franzeur/statuses/214769401055035392/">this kind of mess</a></p>
 

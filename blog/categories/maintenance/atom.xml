@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Category: maintenance | Mostly Unixish]]></title>
-  <link href="http://mostlyunixish.franzoni.eu/mostlyunixish/blog/categories/maintenance/atom.xml" rel="self"/>
-  <link href="http://mostlyunixish.franzoni.eu/mostlyunixish/"/>
-  <updated>2013-08-23T12:34:31+02:00</updated>
-  <id>http://mostlyunixish.franzoni.eu/mostlyunixish/</id>
+  <link href="http://mostlyunixish.franzoni.eu/blog/categories/maintenance/atom.xml" rel="self"/>
+  <link href="http://mostlyunixish.franzoni.eu/"/>
+  <updated>2013-10-08T20:59:05+02:00</updated>
+  <id>http://mostlyunixish.franzoni.eu/</id>
   <author>
     <name><![CDATA[Alan Franzoni]]></name>
     
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[Purging outdated kernels on systems with unattended-upgrades]]></title>
-    <link href="http://mostlyunixish.franzoni.eu/mostlyunixish/blog/2012/06/25/purging-outdated-kernels-on-systems-with-enabled-autoupdate/"/>
+    <link href="http://mostlyunixish.franzoni.eu/blog/2012/06/25/purging-outdated-kernels-on-systems-with-enabled-autoupdate/"/>
     <updated>2012-06-25T07:33:00+02:00</updated>
-    <id>http://mostlyunixish.franzoni.eu/mostlyunixish/blog/2012/06/25/purging-outdated-kernels-on-systems-with-enabled-autoupdate</id>
+    <id>http://mostlyunixish.franzoni.eu/blog/2012/06/25/purging-outdated-kernels-on-systems-with-enabled-autoupdate</id>
     <content type="html"><![CDATA[<p>Whenever I install a production system/server I tend to enable full automatic updating, because
 it&rsquo;s usually better that something breaks because of a failed update rather than leaving a production machine unpatched; and if you pick a rather stable distribution (Centos or Ubuntu LTS are good examples) chances that you&rsquo;ll end up with a broken system are fairly low.</p>
 
@@ -72,6 +72,9 @@ it&rsquo;s usually better that something breaks because of a failed update rathe
 <span class='line-number'>44</span>
 <span class='line-number'>45</span>
 <span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
 </pre></td><td class='code'><pre><code class='python'><span class='line'><span class="c">#!/usr/bin/env python</span>
 </span><span class='line'>
 </span><span class='line'><span class="c"># print all installed kernel/headers/etc BUT the current and the latest;</span>
@@ -111,11 +114,14 @@ it&rsquo;s usually better that something breaks because of a failed update rathe
 </span><span class='line'><span class="n">kernels_to_remove</span> <span class="o">=</span> <span class="n">get_nonmatching_packages</span><span class="p">(</span><span class="n">all_kernels</span><span class="p">,</span> <span class="p">(</span><span class="n">current_version</span><span class="p">,</span>
 </span><span class='line'>    <span class="n">latest_version</span><span class="p">))</span>
 </span><span class='line'>
+</span><span class='line'><span class="n">impl_headers</span> <span class="o">=</span> <span class="n">get_providing_packages</span><span class="p">(</span><span class="s">&quot;linux-headers&quot;</span><span class="p">)</span>
 </span><span class='line'>
-</span><span class='line'><span class="n">all_headers</span> <span class="o">=</span> <span class="n">get_providing_packages</span><span class="p">(</span><span class="s">&quot;linux-headers&quot;</span><span class="p">)</span>
-</span><span class='line'>
-</span><span class='line'><span class="n">headers_to_remove</span> <span class="o">=</span> <span class="n">get_nonmatching_packages</span><span class="p">(</span><span class="n">all_headers</span><span class="p">,</span> <span class="p">(</span><span class="n">current_version</span><span class="p">,</span>
+</span><span class='line'><span class="n">headers_to_remove</span> <span class="o">=</span> <span class="n">get_nonmatching_packages</span><span class="p">(</span><span class="n">impl_headers</span><span class="p">,</span> <span class="p">(</span><span class="n">current_version</span><span class="p">,</span>
 </span><span class='line'>    <span class="n">latest_version</span><span class="p">))</span>
+</span><span class='line'>
+</span><span class='line'><span class="c"># This seems to be needed in Ubuntu &gt;= 13.04</span>
+</span><span class='line'><span class="c">#base_headers_to_remove = [header.replace(&quot;-generic&quot;, &quot;&quot;) for header in headers_to_remove]</span>
+</span><span class='line'><span class="c">#headers_to_remove += base_headers_to_remove</span>
 </span><span class='line'>
 </span><span class='line'><span class="k">print</span> <span class="s">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">kernels_to_remove</span> <span class="o">+</span> <span class="n">headers_to_remove</span><span class="p">)</span>
 </span></code></pre></td></tr></table></div></figure></notextile></div></p>
@@ -125,6 +131,8 @@ it&rsquo;s usually better that something breaks because of a failed update rathe
 <p><code>
 apt-get remove --purge -y `ubuntu_get_obsolete_kernel_and_headers_pkgs.py`
 </code></p>
+
+<p><strong>WARNING</strong>: recent changes to the way Ubuntu marks dependencies and provided names for kernel headers require that you uncomment a couple of lines in the script towards the end; just remove the # at the beginning of the lines 46 and 47.</p>
 ]]></content>
   </entry>
   
