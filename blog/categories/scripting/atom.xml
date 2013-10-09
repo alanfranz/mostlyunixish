@@ -4,7 +4,7 @@
   <title><![CDATA[Category: scripting | Mostly Unixish]]></title>
   <link href="http://mostlyunixish.franzoni.eu/blog/categories/scripting/atom.xml" rel="self"/>
   <link href="http://mostlyunixish.franzoni.eu/"/>
-  <updated>2013-10-09T08:58:38+02:00</updated>
+  <updated>2013-10-09T09:02:17+02:00</updated>
   <id>http://mostlyunixish.franzoni.eu/</id>
   <author>
     <name><![CDATA[Alan Franzoni]]></name>
@@ -55,7 +55,23 @@ the script).</p>
 <span class='line-number'>15</span>
 <span class='line-number'>16</span>
 <span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
 </pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="c">#!/bin/bash</span>
+</span><span class='line'>
+</span><span class='line'><span class="c"># set LOGFILE to the full path of your desired logfile; make sure</span>
+</span><span class='line'><span class="c"># you have write permissions there. set RETAIN_NUM_LINES to the</span>
+</span><span class='line'><span class="c"># maximum number of lines that should be retained at the beginning</span>
+</span><span class='line'><span class="c"># of your program execution.</span>
+</span><span class='line'><span class="c"># execute &#39;logsetup&#39; once at the beginning of your script, then </span>
+</span><span class='line'><span class="c"># use &#39;log&#39; how many times you like.</span>
+</span><span class='line'>
 </span><span class='line'><span class="nv">LOGFILE</span><span class="o">=</span>quicklog.sh.log
 </span><span class='line'><span class="nv">RETAIN_NUM_LINES</span><span class="o">=</span>10
 </span><span class='line'>
