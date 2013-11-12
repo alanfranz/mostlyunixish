@@ -9,8 +9,8 @@
   <meta name="author" content="Alan Franzoni">
 
   
-  <meta name="description" content="Sometimes you need to write a quick shell script; many a time, you need to put it on a server,
-and launch it every now and then, or run it in a cron &hellip;">
+  <meta name="description" content="Sometimes you would like to use an http URL as the source file for puppet; while it&rsquo;s being discussed
+since long, no implementation has been &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -79,6 +79,90 @@ and launch it every now and then, or run it in a cron &hellip;">
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2013/11/12/puppet-http-source-for-files/">Puppet Http Source for Files</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-11-12T13:59:00+01:00" pubdate data-updated="true">Nov 12<span>th</span>, 2013</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Sometimes you would like to use an http URL as the source file for <a href="http://puppetlabs.com/">puppet</a>; while it&rsquo;s being discussed
+<a href="http://projects.puppetlabs.com/issues/5783">since long</a>, no implementation has been created so far.</p>
+
+<p>Of course it would be better to periodically download the file from its http source to the puppet master,
+and then use puppet file server to send such file to our client; but that&rsquo;s impractical in some contexts, especially
+if you&rsquo;re using your puppet in headless mode, i.e. without a master. In such situations you may <strong>really</strong> want to
+source files from http, <strong>without</strong> redownloading them if they haven&rsquo;t changed.</p>
+
+<p>I found a good way to do it is to use the excellent <a href="http://www.gnu.org/software/wget/">wget</a> command line tool.</p>
+
+<p>This is an example of what I use to keep my installation of <a href="http://www.jenkins-ci.org">Jenkins</a> up to date:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>
+</span><span class='line'>class jenkins {
+</span><span class='line'>  exec { "/usr/bin/wget --timestamping http://mirrors.jenkins-ci.org/war-stable/latest/jenkins.war":
+</span><span class='line'>      alias =&gt; "jenkinslatest",
+</span><span class='line'>      cwd =&gt; "/tmp",
+</span><span class='line'>  }
+</span><span class='line'>
+</span><span class='line'>  file { "/opt/tomcat7/latest/webapps/jenkins.war":
+</span><span class='line'>      ensure =&gt; present,
+</span><span class='line'>      source =&gt; "/tmp/jenkins.war",
+</span><span class='line'>      alias =&gt; "jenkinswar",
+</span><span class='line'>      require =&gt; Exec["jenkinslatest"] }
+</span><span class='line'>
+</span><span class='line'>}
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The <em>timestamping</em> flag will let wget check the remote server for file modification time; if file hasn&rsquo;t changed,
+it won&rsquo;t be redownloaded.</p>
+
+<p>Just choose a proper directory for temporary downloads (tmp is volatile and gets sometimes cleaned up at runtime as well),
+make sure the server properly sets the Last-Modified header and remember to refresh your other resources when files change,
+and you&rsquo;re done.</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -276,61 +360,6 @@ sudo -s -H bash -c 'apt-get clean && rm -f /var/lib/apt/lists/* ; rm -f /var/lib
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2013/01/29/wmctrl-gather-and-focus-your-chosen-window-by-hotkey/">Wmctrl: Gather and Focus Your Chosen Window by Hotkey</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-01-29T18:35:00+01:00" pubdate data-updated="true">Jan 29<span>th</span>, 2013</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>I find it extremely handy to be able to recall my windows by just using the keyboard.</p>
-
-<p>It&rsquo;s pretty easy to do in Linux, just use:</p>
-
-<p><code>wmctrl -x -R &lt;WM_CLASS&gt;</code></p>
-
-<p>you can find the WM_CLASS of any window using this command:</p>
-
-<p><code>xprop | grep WM_CLASS</code></p>
-
-<p>then clicking on the desired Window. There may be more than one match, just choose one.</p>
-
-<p>Example:</p>
-
-<p><code>wmctrl -x -R "Gnome-terminal"</code></p>
-
-<p>When you execute such command, the windows matching such class will be gathered on the
-current workspace and focused; you can assign global hotkeys in Gnome with System &ndash;>
-Preferences &ndash;> Keyboard &ndash;> Shortcuts. The Windows key (Super) is usually a great candidate
-for such global hotkeys.</p>
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/blog/page/2/">&larr; Older</a>
@@ -346,6 +375,10 @@ for such global hotkeys.</p>
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2013/11/12/puppet-http-source-for-files/">Puppet Http Source for files</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2013/10/08/quick-log-for-bash-scripts/">Quick log for bash scripts, with line limit</a>
       </li>
     
@@ -359,10 +392,6 @@ for such global hotkeys.</p>
     
       <li class="post">
         <a href="/blog/2012/11/06/ssh-copy-id-with-nonstandard-sshd-port/">ssh-copy-id with nonstandard sshd port</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2012/08/26/ssh-client-stop-complaining-inside-my-network/">ssh client: stopping key verification complaints inside your own private network</a>
       </li>
     
   </ul>

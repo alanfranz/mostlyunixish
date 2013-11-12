@@ -5,11 +5,12 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Thunderbird temporary directory - Mostly Unixish</title>
+  <title>Puppet Http Source for files - Mostly Unixish</title>
   <meta name="author" content="Alan Franzoni">
 
   
-  <meta name="description" content="Whenever you use Thunderbird on Linux you may encounter one annoying behaviour. If you open a message which is got an attachment &ndash; you just &hellip;">
+  <meta name="description" content="Sometimes you would like to use an http URL as the source file for puppet; while it&rsquo;s being discussed
+since long, no implementation has been &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,7 +19,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://mostlyunixish.franzoni.eu/blog/2012/08/23/thunderbird-temporary-directory/">
+  <link rel="canonical" href="http://mostlyunixish.franzoni.eu/blog/2013/11/12/puppet-http-source-for-files/">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <script src="/javascripts/modernizr-2.0.js"></script>
@@ -81,7 +82,7 @@
   
   <header>
     
-      <h1 class="entry-title">Thunderbird Temporary Directory</h1>
+      <h1 class="entry-title">Puppet Http Source for Files</h1>
     
     
       <p class="meta">
@@ -97,32 +98,62 @@
   
 
 
-<time datetime="2012-08-23T20:18:00+02:00" pubdate data-updated="true">Aug 23<span>rd</span>, 2012</time>
+<time datetime="2013-11-12T13:59:00+01:00" pubdate data-updated="true">Nov 12<span>th</span>, 2013</time>
         
       </p>
     
   </header>
 
 
-<div class="entry-content"><p>Whenever you use Thunderbird on Linux you may encounter one annoying behaviour.</p>
+<div class="entry-content"><p>Sometimes you would like to use an http URL as the source file for <a href="http://puppetlabs.com/">puppet</a>; while it&rsquo;s being discussed
+<a href="http://projects.puppetlabs.com/issues/5783">since long</a>, no implementation has been created so far.</p>
 
-<p>If you open a message which is got an attachment &ndash; you just need to open the message, not to save the attachment! &ndash; Thunderbird will place such attachment in your temporary directory, usually <em>/tmp</em>. You find the file there, and you think you used the <em>Save as</em> function to place it there, so you open it and you edit it.</p>
+<p>Of course it would be better to periodically download the file from its http source to the puppet master,
+and then use puppet file server to send such file to our client; but that&rsquo;s impractical in some contexts, especially
+if you&rsquo;re using your puppet in headless mode, i.e. without a master. In such situations you may <strong>really</strong> want to
+source files from http, <strong>without</strong> redownloading them if they haven&rsquo;t changed.</p>
 
-<p>Then you close Thunderbird, and poof! It clears its temporary files and deletes your modified attachment, possibily containing a day&rsquo;s work.</p>
+<p>I found a good way to do it is to use the excellent <a href="http://www.gnu.org/software/wget/">wget</a> command line tool.</p>
 
-<p>The workaround is simple: just use a launcher that changes Thunderbird TMP directory and use that to start Thunderbird!</p>
+<p>This is an example of what I use to keep my installation of <a href="http://www.jenkins-ci.org">Jenkins</a> up to date:</p>
 
-<figure class='code'><figcaption><span> (thunderbird)</span> <a href='/downloads/code/thunderbird'>download</a></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="c">#!/bin/bash</span>
-</span><span class='line'>mkdir -p /tmp/thunderbird
-</span><span class='line'><span class="nv">TMP</span><span class="o">=</span>/tmp/thunderbird /usr/bin/thunderbird <span class="nv">$*</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>
+</span><span class='line'>class jenkins {
+</span><span class='line'>  exec { "/usr/bin/wget --timestamping http://mirrors.jenkins-ci.org/war-stable/latest/jenkins.war":
+</span><span class='line'>      alias =&gt; "jenkinslatest",
+</span><span class='line'>      cwd =&gt; "/tmp",
+</span><span class='line'>  }
+</span><span class='line'>
+</span><span class='line'>  file { "/opt/tomcat7/latest/webapps/jenkins.war":
+</span><span class='line'>      ensure =&gt; present,
+</span><span class='line'>      source =&gt; "/tmp/jenkins.war",
+</span><span class='line'>      alias =&gt; "jenkinswar",
+</span><span class='line'>      require =&gt; Exec["jenkinslatest"] }
+</span><span class='line'>
+</span><span class='line'>}
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>You may need to adjust the original binary path, then you can put such script in your path before your /usr/bin directory and you&rsquo;re done.</p>
+<p>The <em>timestamping</em> flag will let wget check the remote server for file modification time; if file hasn&rsquo;t changed,
+it won&rsquo;t be redownloaded.</p>
+
+<p>Just choose a proper directory for temporary downloads (tmp is volatile and gets sometimes cleaned up at runtime as well),
+make sure the server properly sets the Last-Modified header and remember to refresh your other resources when files change,
+and you&rsquo;re done.</p>
 </div>
 
 
@@ -145,12 +176,12 @@
   
 
 
-<time datetime="2012-08-23T20:18:00+02:00" pubdate data-updated="true">Aug 23<span>rd</span>, 2012</time>
+<time datetime="2013-11-12T13:59:00+01:00" pubdate data-updated="true">Nov 12<span>th</span>, 2013</time>
       
 
 <span class="categories">
   
-    <a class='category' href='/blog/categories/linux/'>linux</a>, <a class='category' href='/blog/categories/temporary/'>temporary</a>, <a class='category' href='/blog/categories/thunderbird/'>thunderbird</a>
+    <a class='category' href='/blog/categories/configuration-management/'>configuration management</a>, <a class='category' href='/blog/categories/http/'>http</a>, <a class='category' href='/blog/categories/puppet/'>puppet</a>
   
 </span>
 
@@ -159,7 +190,7 @@
     
       <div class="sharing">
   
-  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://mostlyunixish.franzoni.eu/blog/2012/08/23/thunderbird-temporary-directory/" data-via="franzeur" data-counturl="http://mostlyunixish.franzoni.eu/blog/2012/08/23/thunderbird-temporary-directory/" >Tweet</a>
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://mostlyunixish.franzoni.eu/blog/2013/11/12/puppet-http-source-for-files/" data-via="franzeur" data-counturl="http://mostlyunixish.franzoni.eu/blog/2013/11/12/puppet-http-source-for-files/" >Tweet</a>
   
   
   <div class="g-plusone" data-size="medium"></div>
@@ -172,10 +203,8 @@
     
     <p class="meta">
       
-        <a class="basic-alignment left" href="/blog/2012/08/22/disown-is-your-friend/" title="Previous Post: Disown is your friend">&laquo; Disown is your friend</a>
+        <a class="basic-alignment left" href="/blog/2013/10/08/quick-log-for-bash-scripts/" title="Previous Post: Quick log for bash scripts, with line limit">&laquo; Quick log for bash scripts, with line limit</a>
       
-      
-        <a class="basic-alignment right" href="/blog/2012/08/26/ssh-client-stop-complaining-inside-my-network/" title="Next Post: ssh client: stopping key verification complaints inside your own private network">ssh client: stopping key verification complaints inside your own private network &raquo;</a>
       
     </p>
   </footer>
@@ -246,8 +275,8 @@
       
         
         // var disqus_developer = 1;
-        var disqus_identifier = 'http://mostlyunixish.franzoni.eu/blog/2012/08/23/thunderbird-temporary-directory/';
-        var disqus_url = 'http://mostlyunixish.franzoni.eu/blog/2012/08/23/thunderbird-temporary-directory/';
+        var disqus_identifier = 'http://mostlyunixish.franzoni.eu/blog/2013/11/12/puppet-http-source-for-files/';
+        var disqus_url = 'http://mostlyunixish.franzoni.eu/blog/2013/11/12/puppet-http-source-for-files/';
         var disqus_script = 'embed.js';
       
     (function () {
