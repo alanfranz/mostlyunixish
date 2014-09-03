@@ -5,11 +5,11 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>apt-get update: fixing 'package index files are corrupted' - Mostly Unixish</title>
+  <title>Category: configuration - Mostly Unixish</title>
   <meta name="author" content="Alan Franzoni">
 
   
-  <meta name="description" content="Sometimes when performing your daily apt-get update, you&rsquo;ll experience messages like E: The package lists or status file could not be parsed or &hellip;">
+  <meta name="description" content="Category: configuration">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,7 +18,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://mostlyunixish.franzoni.eu/blog/2013/03/06/apt-get-update-fixing-package-index-files-are-corrupted/">
+  <link rel="canonical" href="http://mostlyunixish.franzoni.eublog/categories/configuration/">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <script src="/javascripts/modernizr-2.0.js"></script>
@@ -77,120 +77,36 @@
   <div id="main">
     <div id="content">
       <div>
-<article class="hentry" role="article">
+<article role="article">
   
   <header>
-    
-      <h1 class="entry-title">Apt-get Update: Fixing 'Package Index Files Are Corrupted'</h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-03-06T13:34:00+01:00" pubdate data-updated="true">Mar 6<span>th</span>, 2013</time>
-        
-      </p>
+    <h1 class="entry-title">Category: Configuration</h1>
     
   </header>
-
-
-<div class="entry-content"><p>Sometimes when performing your daily <code>apt-get update</code>, you&rsquo;ll experience messages like</p>
-
-<blockquote>
-E: The package lists or status file could not be parsed or opened.
-</blockquote>
-
-
-<p>or</p>
-
-<blockquote>
-The package index files are corrupted
-</blockquote>
-
-
-<p>Such messages usually don&rsquo;t go away for quite a long time, and may prevent legitimate updates from installing.</p>
-
-<p>This usually happens even more frequently if using a proxy to access apt archives.</p>
-
-<p>While I don&rsquo;t know what&rsquo;s the root problem, I&rsquo;ve got a quick workaround that seems to fix the immediate error:</p>
-
-<pre>
-sudo -s -H bash -c 'apt-get clean && rm -f /var/lib/apt/lists/* ; rm -f /var/lib/apt/lists/partial/* && apt-get clean && apt-get update'
-</pre>
-
-</div>
-
-
-  <footer>
-    <p class="meta">
-      
   
-
-<span class="byline author vcard">Posted by <span class="fn">Alan Franzoni</span></span>
-
-      
-
-
-
-
-
+  <div id="blog-archives" class="category">
 
 
 
   
+  <h2>2014</h2>
+
+<article>
+  
+<h1><a href="/blog/2014/09/03/keep-your-tomcat-instance-up-to-date-and-separate-configuration/">Keep your tomcat instance up-to-date, and keep apps and configuration tidy.</a></h1>
+<time datetime="2014-09-03T19:52:00+02:00" pubdate><span class='month'>Sep</span> <span class='day'>03</span> <span class='year'>2014</span></time>
+
+<footer>
+  <span class="categories">posted in <a class='category' href='/blog/categories/configuration/'>configuration</a>, <a class='category' href='/blog/categories/puppet/'>puppet</a>, <a class='category' href='/blog/categories/tomcat/'>tomcat</a></span>
+</footer>
 
 
-<time datetime="2013-03-06T13:34:00+01:00" pubdate data-updated="true">Mar 6<span>th</span>, 2013</time>
-      
-
-<span class="categories">
-  
-    <a class='category' href='/blog/categories/apt/'>apt</a>, <a class='category' href='/blog/categories/deb/'>deb</a>, <a class='category' href='/blog/categories/debian/'>debian</a>, <a class='category' href='/blog/categories/linux/'>linux</a>, <a class='category' href='/blog/categories/ubuntu/'>ubuntu</a>
-  
-</span>
-
-
-    </p>
-    
-      <div class="sharing">
-  
-  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://mostlyunixish.franzoni.eu/blog/2013/03/06/apt-get-update-fixing-package-index-files-are-corrupted/" data-via="franzeur" data-counturl="http://mostlyunixish.franzoni.eu/blog/2013/03/06/apt-get-update-fixing-package-index-files-are-corrupted/" >Tweet</a>
-  
-  
-  <div class="g-plusone" data-size="medium"></div>
-  
-  
-    <div class="fb-like" data-send="true" data-width="450" data-show-faces="false"></div>
-  
-</div>
-
-    
-    <p class="meta">
-      
-        <a class="basic-alignment left" href="/blog/2013/01/29/wmctrl-gather-and-focus-your-chosen-window-by-hotkey/" title="Previous Post: Wmctrl: gather and focus your chosen window by hotkey">&laquo; Wmctrl: gather and focus your chosen window by hotkey</a>
-      
-      
-        <a class="basic-alignment right" href="/blog/2013/10/08/quick-log-for-bash-scripts/" title="Next Post: Quick log for bash scripts, with line limit">Quick log for bash scripts, with line limit &raquo;</a>
-      
-    </p>
-  </footer>
 </article>
 
-  <section>
-    <h1>Comments</h1>
-    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
 </div>
-  </section>
+
+  
+</article>
 
 </div>
 
@@ -250,10 +166,7 @@ sudo -s -H bash -c 'apt-get clean && rm -f /var/lib/apt/lists/* ; rm -f /var/lib
       var disqus_shortname = 'mostlyunixish';
       
         
-        // var disqus_developer = 1;
-        var disqus_identifier = 'http://mostlyunixish.franzoni.eu/blog/2013/03/06/apt-get-update-fixing-package-index-files-are-corrupted/';
-        var disqus_url = 'http://mostlyunixish.franzoni.eu/blog/2013/03/06/apt-get-update-fixing-package-index-files-are-corrupted/';
-        var disqus_script = 'embed.js';
+        var disqus_script = 'count.js';
       
     (function () {
       var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;

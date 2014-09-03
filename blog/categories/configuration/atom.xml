@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Category: puppet | Mostly Unixish]]></title>
-  <link href="http://mostlyunixish.franzoni.eu/blog/categories/puppet/atom.xml" rel="self"/>
+  <title><![CDATA[Category: configuration | Mostly Unixish]]></title>
+  <link href="http://mostlyunixish.franzoni.eu/blog/categories/configuration/atom.xml" rel="self"/>
   <link href="http://mostlyunixish.franzoni.eu/"/>
   <updated>2014-09-03T17:55:28+02:00</updated>
   <id>http://mostlyunixish.franzoni.eu/</id>
@@ -233,52 +233,6 @@ description &ldquo;tomcat7&rdquo;</p>
 may work differently.</p>
 
 <p>I hope that&rsquo;s useful to somebody.</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Puppet Http Source for files]]></title>
-    <link href="http://mostlyunixish.franzoni.eu/blog/2013/11/12/puppet-http-source-for-files/"/>
-    <updated>2013-11-12T13:59:00+01:00</updated>
-    <id>http://mostlyunixish.franzoni.eu/blog/2013/11/12/puppet-http-source-for-files</id>
-    <content type="html"><![CDATA[<p>Sometimes you would like to use an http URL as the source file for <a href="http://puppetlabs.com/">puppet</a>; while it&rsquo;s being discussed
-<a href="http://projects.puppetlabs.com/issues/5783">since long</a>, no implementation has been created so far.</p>
-
-<p>Of course it would be better to periodically download the file from its http source to the puppet master,
-and then use puppet file server to send such file to our client; but that&rsquo;s impractical in some contexts, especially
-if you&rsquo;re using your puppet in headless mode, i.e. without a master. In such situations you may <strong>really</strong> want to
-source files from http, <strong>without</strong> redownloading them if they haven&rsquo;t changed.</p>
-
-<p>I found a good way to do it is to use the excellent <a href="http://www.gnu.org/software/wget/">wget</a> command line tool.</p>
-
-<p>This is an example of what I use to keep my installation of <a href="http://www.jenkins-ci.org">Jenkins</a> up to date:</p>
-
-<p>```</p>
-
-<p>class jenkins {</p>
-
-<pre><code>exec { "/usr/bin/wget --timestamping http://mirrors.jenkins-ci.org/war-stable/latest/jenkins.war":
-    alias =&gt; "jenkinslatest",
-    cwd =&gt; "/tmp",
-}
-
-file { "/opt/tomcat7/latest/webapps/jenkins.war":
-    ensure =&gt; present,
-    source =&gt; "/tmp/jenkins.war",
-    alias =&gt; "jenkinswar",
-    require =&gt; Exec["jenkinslatest"] }
-</code></pre>
-
-<p>}</p>
-
-<p>```</p>
-
-<p>The <em>timestamping</em> flag will let wget check the remote server for file modification time; if file hasn&rsquo;t changed,
-it won&rsquo;t be redownloaded.</p>
-
-<p>Just choose a proper directory for temporary downloads (tmp is volatile and gets sometimes cleaned up at runtime as well),
-make sure the server properly sets the Last-Modified header and remember to refresh your other resources when files change,
-and you&rsquo;re done.</p>
 ]]></content>
   </entry>
   

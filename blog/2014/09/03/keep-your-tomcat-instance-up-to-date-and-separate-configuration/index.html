@@ -5,7 +5,7 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Mostly Unixish</title>
+  <title>Keep your tomcat instance up-to-date, and keep apps and configuration tidy. - Mostly Unixish</title>
   <meta name="author" content="Alan Franzoni">
 
   
@@ -19,7 +19,7 @@ my tomcat installation up to date on my servers? Of course I& &hellip;">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://mostlyunixish.franzoni.eu/">
+  <link rel="canonical" href="http://mostlyunixish.franzoni.eu/blog/2014/09/03/keep-your-tomcat-instance-up-to-date-and-separate-configuration/">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <script src="/javascripts/modernizr-2.0.js"></script>
@@ -77,15 +77,12 @@ my tomcat installation up to date on my servers? Of course I& &hellip;">
 </nav>
   <div id="main">
     <div id="content">
-      <div class="blog-index">
+      <div>
+<article class="hentry" role="article">
   
-  
-  
-    <article>
-      
   <header>
     
-      <h1 class="entry-title"><a href="/blog/2014/09/03/keep-your-tomcat-instance-up-to-date-and-separate-configuration/">Keep Your Tomcat Instance Up-to-date, and Keep Apps and Configuration Tidy.</a></h1>
+      <h1 class="entry-title">Keep Your Tomcat Instance Up-to-date, and Keep Apps and Configuration Tidy.</h1>
     
     
       <p class="meta">
@@ -108,7 +105,7 @@ my tomcat installation up to date on my servers? Of course I& &hellip;">
   </header>
 
 
-  <div class="entry-content"><p>Today I&rsquo;m gonna share something that I figured out some times ago: how do I keep
+<div class="entry-content"><p>Today I&rsquo;m gonna share something that I figured out some times ago: how do I keep
 my <a href="http://tomcat.apache.org">tomcat</a> installation up to date on my servers?</p>
 
 <p>Of course I&rsquo;m not willing to automatically switch majors, but I&rsquo;d like to pull bugfix
@@ -453,106 +450,16 @@ may work differently.</p>
 
 <p>I hope that&rsquo;s useful to somebody.</p>
 </div>
-  
-  
 
 
-    </article>
-  
-  
-    <article>
+  <footer>
+    <p class="meta">
       
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2013/11/12/puppet-http-source-for-files/">Puppet Http Source for Files</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
   
 
+<span class="byline author vcard">Posted by <span class="fn">Alan Franzoni</span></span>
 
-<time datetime="2013-11-12T13:59:00+01:00" pubdate data-updated="true">Nov 12<span>th</span>, 2013</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>Sometimes you would like to use an http URL as the source file for <a href="http://puppetlabs.com/">puppet</a>; while it&rsquo;s being discussed
-<a href="http://projects.puppetlabs.com/issues/5783">since long</a>, no implementation has been created so far.</p>
-
-<p>Of course it would be better to periodically download the file from its http source to the puppet master,
-and then use puppet file server to send such file to our client; but that&rsquo;s impractical in some contexts, especially
-if you&rsquo;re using your puppet in headless mode, i.e. without a master. In such situations you may <strong>really</strong> want to
-source files from http, <strong>without</strong> redownloading them if they haven&rsquo;t changed.</p>
-
-<p>I found a good way to do it is to use the excellent <a href="http://www.gnu.org/software/wget/">wget</a> command line tool.</p>
-
-<p>This is an example of what I use to keep my installation of <a href="http://www.jenkins-ci.org">Jenkins</a> up to date:</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>
-</span><span class='line'>class jenkins {
-</span><span class='line'>  exec { "/usr/bin/wget --timestamping http://mirrors.jenkins-ci.org/war-stable/latest/jenkins.war":
-</span><span class='line'>      alias =&gt; "jenkinslatest",
-</span><span class='line'>      cwd =&gt; "/tmp",
-</span><span class='line'>  }
-</span><span class='line'>
-</span><span class='line'>  file { "/opt/tomcat7/latest/webapps/jenkins.war":
-</span><span class='line'>      ensure =&gt; present,
-</span><span class='line'>      source =&gt; "/tmp/jenkins.war",
-</span><span class='line'>      alias =&gt; "jenkinswar",
-</span><span class='line'>      require =&gt; Exec["jenkinslatest"] }
-</span><span class='line'>
-</span><span class='line'>}
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>The <em>timestamping</em> flag will let wget check the remote server for file modification time; if file hasn&rsquo;t changed,
-it won&rsquo;t be redownloaded.</p>
-
-<p>Just choose a proper directory for temporary downloads (tmp is volatile and gets sometimes cleaned up at runtime as well),
-make sure the server properly sets the Last-Modified header and remember to refresh your other resources when files change,
-and you&rsquo;re done.</p>
-</div>
-  
-  
-
-
-    </article>
-  
-  
-    <article>
       
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2013/10/08/quick-log-for-bash-scripts/">Quick Log for Bash Scripts, With Line Limit</a></h1>
-    
-    
-      <p class="meta">
-        
 
 
 
@@ -564,130 +471,48 @@ and you&rsquo;re done.</p>
   
 
 
-<time datetime="2013-10-08T21:18:00+02:00" pubdate data-updated="true">Oct 8<span>th</span>, 2013</time>
-        
-      </p>
+<time datetime="2014-09-03T19:52:00+02:00" pubdate data-updated="true">Sep 3<span>rd</span>, 2014</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/configuration/'>configuration</a>, <a class='category' href='/blog/categories/puppet/'>puppet</a>, <a class='category' href='/blog/categories/tomcat/'>tomcat</a>
+  
+</span>
+
+
+    </p>
     
-  </header>
-
-
-  <div class="entry-content"><p>Sometimes you need to write a quick shell script; many a time, you need to put it on a server,
-and launch it every now and then, or run it in a cron job. That script may end up doing something
-important and/or altering the state of the server machine.</p>
-
-<p>If that script starts being using often enough, you&rsquo;ll want logging as well, and that can be
-a complex beast to tame, for logs require rotation and deletion, otherwise the beast will eat up
-all your disk space. Setting up <a href="http://linuxcommand.org/man_pages/logrotate8.html">logrotate</a> for a
-single shell script looks like an overkill to me most of the times.</p>
-
-<p>So what? Many a times logging will be neglected, and you&rsquo;ll lose the ability to track what happened
-and why.</p>
-
-<p>This is my quick recipe for a basic bash logging solution with line-based truncation: the logfile
-will never exceed <strong>RETAIN_NUM_LINES</strong> lines (actually, it will never exceed such size when the script
-is launched, so the number of lines when the script has run is RETAIN_NUM_LINES + number of lines logged by
-the script).</p>
-
-<p>Whenever you use the <em>log</em> function you&rsquo;ll get output on stdout as well, complete with a timestamp.</p>
-
-<figure class='code'><figcaption><span> (quicklog.sh)</span> <a href='/downloads/code/quicklog.sh'>download</a></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="c">#!/bin/bash</span>
-</span><span class='line'>
-</span><span class='line'><span class="c"># set LOGFILE to the full path of your desired logfile; make sure</span>
-</span><span class='line'><span class="c"># you have write permissions there. set RETAIN_NUM_LINES to the</span>
-</span><span class='line'><span class="c"># maximum number of lines that should be retained at the beginning</span>
-</span><span class='line'><span class="c"># of your program execution.</span>
-</span><span class='line'><span class="c"># execute &#39;logsetup&#39; once at the beginning of your script, then </span>
-</span><span class='line'><span class="c"># use &#39;log&#39; how many times you like.</span>
-</span><span class='line'>
-</span><span class='line'><span class="nv">LOGFILE</span><span class="o">=</span>quicklog.sh.log
-</span><span class='line'><span class="nv">RETAIN_NUM_LINES</span><span class="o">=</span>10
-</span><span class='line'>
-</span><span class='line'><span class="k">function </span>logsetup <span class="o">{</span>
-</span><span class='line'>    <span class="nv">TMP</span><span class="o">=</span><span class="k">$(</span>tail -n <span class="nv">$RETAIN_NUM_LINES</span> <span class="nv">$LOGFILE</span> 2&gt;/dev/null<span class="k">)</span> <span class="o">&amp;&amp;</span> <span class="nb">echo</span> <span class="s2">&quot;${TMP}&quot;</span> &gt; <span class="nv">$LOGFILE</span>
-</span><span class='line'>    <span class="nb">exec</span> &gt; &gt;<span class="o">(</span>tee -a <span class="nv">$LOGFILE</span><span class="o">)</span>
-</span><span class='line'>    <span class="nb">exec </span>2&gt;&amp;1
-</span><span class='line'><span class="o">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">function </span>log <span class="o">{</span>
-</span><span class='line'>    <span class="nb">echo</span> <span class="s2">&quot;[$(date)]: $*&quot;</span>
-</span><span class='line'><span class="o">}</span>
-</span><span class='line'>
-</span><span class='line'>logsetup
-</span><span class='line'>
-</span><span class='line'>log hello this is a log
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Launch this a lot of times and you&rsquo;ll end up with this:</p>
-
-<figure class='code'><figcaption><span> (quicklog.sh.log)</span> <a href='/downloads/code/quicklog.sh.log'>download</a></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-</pre></td><td class='code'><pre><code class='text'><span class='line'>[Tue Oct  8 20:57:49 CEST 2013]: hello this is a log
-</span><span class='line'>[Tue Oct  8 20:57:49 CEST 2013]: hello this is a log
-</span><span class='line'>[Tue Oct  8 20:57:50 CEST 2013]: hello this is a log
-</span><span class='line'>[Tue Oct  8 20:57:50 CEST 2013]: hello this is a log
-</span><span class='line'>[Tue Oct  8 20:57:50 CEST 2013]: hello this is a log
-</span><span class='line'>[Tue Oct  8 20:57:50 CEST 2013]: hello this is a log
-</span><span class='line'>[Tue Oct  8 20:57:51 CEST 2013]: hello this is a log
-</span><span class='line'>[Tue Oct  8 20:57:51 CEST 2013]: hello this is a log
-</span><span class='line'>[Tue Oct  8 20:57:51 CEST 2013]: hello this is a log
-</span><span class='line'>[Tue Oct  8 20:57:51 CEST 2013]: hello this is a log
-</span><span class='line'>[Tue Oct  8 20:57:52 CEST 2013]: hello this is a log
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Enjoy!</p>
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://mostlyunixish.franzoni.eu/blog/2014/09/03/keep-your-tomcat-instance-up-to-date-and-separate-configuration/" data-via="franzeur" data-counturl="http://mostlyunixish.franzoni.eu/blog/2014/09/03/keep-your-tomcat-instance-up-to-date-and-separate-configuration/" >Tweet</a>
+  
+  
+  <div class="g-plusone" data-size="medium"></div>
+  
+  
+    <div class="fb-like" data-send="true" data-width="450" data-show-faces="false"></div>
+  
 </div>
-  
-  
 
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2013/11/12/puppet-http-source-for-files/" title="Previous Post: Puppet Http Source for files">&laquo; Puppet Http Source for files</a>
+      
+      
+    </p>
+  </footer>
+</article>
 
-    </article>
-  
-  <div class="pagination">
-    
-      <a class="prev" href="/blog/page/2/">&larr; Older</a>
-    
-    <a href="/blog/archives">Blog Archives</a>
-    
-  </div>
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
 </div>
+  </section>
+
+</div>
+
 <aside class="sidebar">
   
     <section>
@@ -707,7 +532,7 @@ the script).</p>
       </li>
     
       <li class="post">
-        <a href="/blog/2013/03/06/apt-get-update-fixing-package-index-files-are-corrupted/">apt-get update: fixing &#8216;package index files are corrupted&#8217;</a>
+        <a href="/blog/2013/03/06/apt-get-update-fixing-package-index-files-are-corrupted/">apt-get update: fixing 'package index files are corrupted'</a>
       </li>
     
       <li class="post">
@@ -729,6 +554,7 @@ the script).</p>
   
 </aside>
 
+
     </div>
   </div>
   <footer role="contentinfo"><p>
@@ -743,7 +569,10 @@ the script).</p>
       var disqus_shortname = 'mostlyunixish';
       
         
-        var disqus_script = 'count.js';
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://mostlyunixish.franzoni.eu/blog/2014/09/03/keep-your-tomcat-instance-up-to-date-and-separate-configuration/';
+        var disqus_url = 'http://mostlyunixish.franzoni.eu/blog/2014/09/03/keep-your-tomcat-instance-up-to-date-and-separate-configuration/';
+        var disqus_script = 'embed.js';
       
     (function () {
       var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
