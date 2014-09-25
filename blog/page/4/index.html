@@ -9,8 +9,8 @@
   <meta name="author" content="Alan Franzoni">
 
   
-  <meta name="description" content="Whenever I install a production system/server I tend to enable full automatic updating, because
-it&rsquo;s usually better that something breaks &hellip;">
+  <meta name="description" content="Bash builtin disown is a not-so-well known job control command, and yet
+it&rsquo;s an extremely useful one. So what? You&rsquo;ve started a remote &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -79,6 +79,52 @@ it&rsquo;s usually better that something breaks &hellip;">
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2012/08/22/disown-is-your-friend/">Disown Is Your Friend</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-08-22T19:22:00+02:00" pubdate data-updated="true">Aug 22<span>nd</span>, 2012</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Bash builtin <em>disown</em> is a not-so-well known <a href="http://www.gnu.org/software/bash/manual/html_node/Job-Control-Builtins.html">job control command</a>, and yet
+it&rsquo;s an extremely useful one.</p>
+
+<p>So what? You&rsquo;ve started a remote ssh session, launched some command which is taking very, very long to complete, and you just want to go home, or maybe you
+feel your connectivity may drop, and so on&hellip; and you forgot to launch <a href="http://www.gnu.org/software/screen">screen</a> (possibly with <a href="https://launchpad.net/byobu">byobu</a>)
+or <a href="http://tmux.sourceforge.net">tmux</a> before starting your work!</p>
+
+<p>Now you&rsquo;re desperate and you&rsquo;d just like to go home, but you fear your longstanding jobs will quit if you close your terminal.</p>
+
+<p>Just background your job, launch <em>disown</em> and all the jobs in background will receive no notification whatsoever of your saying goodbye to them;
+of course you won&rsquo;t be able to read their output to the terminal.</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -316,6 +362,10 @@ folder, and ended up with <a href="http://twitter.com/franzeur/statuses/21476940
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2014/09/25/ubuntu-faster-release-upgrade/">Ubuntu: faster release upgrade</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2014/09/03/keep-your-tomcat-instance-up-to-date-and-separate-configuration/">Keep your tomcat instance up-to-date, and keep apps and configuration tidy.</a>
       </li>
     
@@ -329,10 +379,6 @@ folder, and ended up with <a href="http://twitter.com/franzeur/statuses/21476940
     
       <li class="post">
         <a href="/blog/2013/03/06/apt-get-update-fixing-package-index-files-are-corrupted/">apt-get update: fixing &#8216;package index files are corrupted&#8217;</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2013/01/29/wmctrl-gather-and-focus-your-chosen-window-by-hotkey/">Wmctrl: gather and focus your chosen window by hotkey</a>
       </li>
     
   </ul>

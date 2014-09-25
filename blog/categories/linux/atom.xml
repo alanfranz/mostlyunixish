@@ -4,7 +4,7 @@
   <title><![CDATA[Category: linux | Mostly Unixish]]></title>
   <link href="http://mostlyunixish.franzoni.eu/blog/categories/linux/atom.xml" rel="self"/>
   <link href="http://mostlyunixish.franzoni.eu/"/>
-  <updated>2014-09-03T17:55:28+02:00</updated>
+  <updated>2014-09-25T15:05:09+02:00</updated>
   <id>http://mostlyunixish.franzoni.eu/</id>
   <author>
     <name><![CDATA[Alan Franzoni]]></name>
@@ -12,6 +12,60 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Ubuntu: faster release upgrade]]></title>
+    <link href="http://mostlyunixish.franzoni.eu/blog/2014/09/25/ubuntu-faster-release-upgrade/"/>
+    <updated>2014-09-25T13:34:00+02:00</updated>
+    <id>http://mostlyunixish.franzoni.eu/blog/2014/09/25/ubuntu-faster-release-upgrade</id>
+    <content type="html"><![CDATA[<p>It might be high time to update to the latest <a href="https://wiki.ubuntu.com/TrustyTahr/ReleaseNotes">Ubuntu 14.04</a>.</p>
+
+<p>I think that the upgrade process that is provided by Canonical is slightly underoptimal: if you&rsquo;re using a
+local mirror which can provide a very fast download of all packages, they&rsquo;ll usually be disabled during the
+upgrade process, and an official mirror (possibile one very far away) will be employed.</p>
+
+<p>This can lead to a very slow and painful upgrade process.</p>
+
+<p>The solution is easy.</p>
+
+<p>The following instructions regard moving from 12.04 (precise) to 14.04 (trusty)</p>
+
+<h2>Switch your sources</h2>
+
+<p>Assuming that your official ubuntu sources are configured from <code>/etc/apt/sources.list</code> just do something like:</p>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>sudo sed -i.old -e &rsquo;s/precise/trusty/g' /etc/apt/sources.list</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<p>I&rsquo;m not considering other sources in <code>/etc/apt/sources.list.d</code>, since they&rsquo;ll be disabled whatsoever; but if you happen
+to have ubuntu sources there as well, you should repeat the SEDding process for each file.</p>
+
+<h2>Update your index</h2>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>sudo apt-get update</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<h2>Download updated packages without installing</h2>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>sudo apt-get dist-upgrade &mdash;download-only</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<h2>Revert to old sources</h2>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>sudo mv -f /etc/apt/sources.list.old /etc/apt/sources.list</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<h2>Update index again</h2>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>sudo apt-get update</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<h2>Rejoice!</h2>
+
+<p>Now you can just follow the <a href="https://wiki.ubuntu.com/TrustyTahr/ReleaseNotes#Upgrading_from_Ubuntu_12.04_LTS_or_Ubuntu_13.10">upgrade instructions</a> and
+almost nothing will be downloaded during the upgrade, because everything is already on your hard drive.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[apt-get update: fixing 'package index files are corrupted']]></title>
@@ -156,129 +210,6 @@ or <a href="http://tmux.sourceforge.net">tmux</a> before starting your work!</p>
 
 <p>Just background your job, launch <em>disown</em> and all the jobs in background will receive no notification whatsoever of your saying goodbye to them;
 of course you won&rsquo;t be able to read their output to the terminal.</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Purging outdated kernels on systems with unattended-upgrades]]></title>
-    <link href="http://mostlyunixish.franzoni.eu/blog/2012/06/25/purging-outdated-kernels-on-systems-with-enabled-autoupdate/"/>
-    <updated>2012-06-25T07:33:00+02:00</updated>
-    <id>http://mostlyunixish.franzoni.eu/blog/2012/06/25/purging-outdated-kernels-on-systems-with-enabled-autoupdate</id>
-    <content type="html"><![CDATA[<p>Whenever I install a production system/server I tend to enable full automatic updating, because
-it&rsquo;s usually better that something breaks because of a failed update rather than leaving a production machine unpatched; and if you pick a rather stable distribution (Centos or Ubuntu LTS are good examples) chances that you&rsquo;ll end up with a broken system are fairly low.</p>
-
-<p>Btw let&rsquo;s get back to the point: in such cases you may end up with a disk which was filled up with obsolete kernels. The following snippets allows you to get all outdated kernels which are not in use, so you can automagically pipe its output to an <code>apt-get remove -y</code> in a cron job.</p>
-
-<p>That may sound trivial, but what happens if you&rsquo;re not careful (e.g. if you try deleting all kernels but the latest) is that you might try removing the currently running kernel &ndash; and it&rsquo;s pretty bad if that happens in an unattended cron job.</p>
-
-<p><div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span> (ubuntu_get_obsolete_kernel_and_headers_pkgs.py)</span> <a href='/downloads/code/ubuntu_get_obsolete_kernel_and_headers_pkgs.py'>download</a></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-<span class='line-number'>40</span>
-<span class='line-number'>41</span>
-<span class='line-number'>42</span>
-<span class='line-number'>43</span>
-<span class='line-number'>44</span>
-<span class='line-number'>45</span>
-<span class='line-number'>46</span>
-<span class='line-number'>47</span>
-<span class='line-number'>48</span>
-<span class='line-number'>49</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="c">#!/usr/bin/env python</span>
-</span><span class='line'>
-</span><span class='line'><span class="c"># print all installed kernel/headers/etc BUT the current and the latest;</span>
-</span><span class='line'><span class="c"># suitable to be used with apt-get remove.</span>
-</span><span class='line'><span class="c"># requires aptitude to be installed. Works on Ubuntu and probably Debian</span>
-</span><span class='line'>
-</span><span class='line'><span class="kn">from</span> <span class="nn">subprocess</span> <span class="kn">import</span> <span class="n">check_output</span>
-</span><span class='line'><span class="kn">import</span> <span class="nn">re</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">def</span> <span class="nf">runcmd</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
-</span><span class='line'>    <span class="k">return</span> <span class="n">check_output</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">split</span><span class="p">())</span>
-</span><span class='line'>
-</span><span class='line'><span class="c"># should work for anything until kernel 3.100</span>
-</span><span class='line'><span class="n">kernel_version_pattern</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s">&quot;[23]\.\d{1,2}\.\d{1,2}-\d{1,3}&quot;</span><span class="p">)</span>
-</span><span class='line'><span class="k">def</span> <span class="nf">get_kernel_version</span><span class="p">(</span><span class="n">kernelstring</span><span class="p">):</span>
-</span><span class='line'>    <span class="k">return</span> <span class="n">kernel_version_pattern</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">kernelstring</span><span class="p">)</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">def</span> <span class="nf">get_providing_packages</span><span class="p">(</span><span class="n">pkg</span><span class="p">):</span>
-</span><span class='line'>    <span class="k">return</span> <span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span> <span class="o">!=</span> <span class="s">&quot;&quot;</span><span class="p">,</span>
-</span><span class='line'>        <span class="nb">map</span><span class="p">(</span><span class="nb">str</span><span class="o">.</span><span class="n">strip</span><span class="p">,</span>
-</span><span class='line'>            <span class="n">runcmd</span><span class="p">(</span><span class="s">&#39;aptitude search ~i~P</span><span class="si">%s</span><span class="s"> -F</span><span class="si">%%</span><span class="s">p&#39;</span> <span class="o">%</span> <span class="n">pkg</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">)</span>
-</span><span class='line'>            <span class="p">)</span>
-</span><span class='line'>        <span class="p">)</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">def</span> <span class="nf">get_nonmatching_packages</span><span class="p">(</span><span class="n">package_list</span><span class="p">,</span> <span class="n">excluding</span><span class="p">):</span>
-</span><span class='line'>    <span class="k">return</span> <span class="p">[</span><span class="n">k</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">package_list</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">get_kernel_version</span><span class="p">(</span><span class="n">k</span><span class="p">)</span> <span class="ow">in</span>
-</span><span class='line'>        <span class="n">excluding</span><span class="p">]</span>
-</span><span class='line'>
-</span><span class='line'>
-</span><span class='line'><span class="n">all_kernels</span> <span class="o">=</span> <span class="n">get_providing_packages</span><span class="p">(</span><span class="s">&quot;linux-image&quot;</span><span class="p">)</span>
-</span><span class='line'><span class="n">all_kernels</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span> <span class="c"># lexicographical</span>
-</span><span class='line'>
-</span><span class='line'><span class="n">kernel_versions</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="n">get_kernel_version</span><span class="p">,</span> <span class="n">all_kernels</span><span class="p">)</span>
-</span><span class='line'><span class="n">latest_version</span> <span class="o">=</span> <span class="n">kernel_versions</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-</span><span class='line'><span class="n">current_version</span> <span class="o">=</span> <span class="n">get_kernel_version</span><span class="p">(</span><span class="n">runcmd</span><span class="p">(</span><span class="s">&quot;uname -r&quot;</span><span class="p">))</span>
-</span><span class='line'>
-</span><span class='line'><span class="n">kernels_to_remove</span> <span class="o">=</span> <span class="n">get_nonmatching_packages</span><span class="p">(</span><span class="n">all_kernels</span><span class="p">,</span> <span class="p">(</span><span class="n">current_version</span><span class="p">,</span>
-</span><span class='line'>    <span class="n">latest_version</span><span class="p">))</span>
-</span><span class='line'>
-</span><span class='line'><span class="n">impl_headers</span> <span class="o">=</span> <span class="n">get_providing_packages</span><span class="p">(</span><span class="s">&quot;linux-headers&quot;</span><span class="p">)</span>
-</span><span class='line'>
-</span><span class='line'><span class="n">headers_to_remove</span> <span class="o">=</span> <span class="n">get_nonmatching_packages</span><span class="p">(</span><span class="n">impl_headers</span><span class="p">,</span> <span class="p">(</span><span class="n">current_version</span><span class="p">,</span>
-</span><span class='line'>    <span class="n">latest_version</span><span class="p">))</span>
-</span><span class='line'>
-</span><span class='line'><span class="c"># This seems to be needed in Ubuntu &gt;= 13.04</span>
-</span><span class='line'><span class="c">#base_headers_to_remove = [header.replace(&quot;-generic&quot;, &quot;&quot;) for header in headers_to_remove]</span>
-</span><span class='line'><span class="c">#headers_to_remove += base_headers_to_remove</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">print</span> <span class="s">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">kernels_to_remove</span> <span class="o">+</span> <span class="n">headers_to_remove</span><span class="p">)</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div></p>
-
-<p>Suggested use in a cron job, of course, is just:</p>
-
-<p><code>
-apt-get remove --purge -y `ubuntu_get_obsolete_kernel_and_headers_pkgs.py`
-</code></p>
-
-<p><strong>WARNING</strong>: recent changes to the way Ubuntu marks dependencies and provided names for kernel headers require that you uncomment a couple of lines in the script towards the end; just remove the # at the beginning of the lines 46 and 47.</p>
 ]]></content>
   </entry>
   
