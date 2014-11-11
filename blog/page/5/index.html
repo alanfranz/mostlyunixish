@@ -5,11 +5,12 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Category: temporary - Mostly Unixish</title>
+  <title>Mostly Unixish</title>
   <meta name="author" content="Alan Franzoni">
 
   
-  <meta name="description" content="Category: temporary">
+  <meta name="description" content="Some days ago I ranted about an issue I had with Mercurial and Dropbox; basically, I did put a mercurial repo in a dropbox
+folder, and ended up with &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,7 +19,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://mostlyunixish.franzoni.eublog/categories/temporary/">
+  <link rel="canonical" href="http://mostlyunixish.franzoni.eu/blog/page/5/">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <script src="/javascripts/modernizr-2.0.js"></script>
@@ -76,40 +77,87 @@
 </nav>
   <div id="main">
     <div id="content">
-      <div>
-<article role="article">
+      <div class="blog-index">
   
+  
+  
+    <article>
+      
   <header>
-    <h1 class="entry-title">Category: Temporary</h1>
+    
+      <h1 class="entry-title"><a href="/blog/2012/06/21/dropbox-and-mercurial-and-lived-happily-ever-after/">Dropbox and Mercurial: And Lived Happily Ever After</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-06-21T13:12:00+02:00" pubdate data-updated="true">Jun 21<span>st</span>, 2012</time>
+        
+      </p>
     
   </header>
-  
-  <div id="blog-archives" class="category">
 
 
+  <div class="entry-content"><p>Some days ago I ranted about an issue I had with Mercurial and Dropbox; basically, I did put a mercurial repo in a dropbox
+folder, and ended up with <a href="http://twitter.com/franzeur/statuses/214769401055035392/">this kind of mess</a></p>
 
-  
-  <h2>2012</h2>
+<p>Mercurial repos inside Dropbox are not a great idea after all. But I had one problem: I sometimes forget to push changes to some files, and Dropbox comes to the rescue; at the same time I need history for such files, and I don&rsquo;t want problems to arise.</p>
 
-<article>
-  
-<h1><a href="/blog/2012/08/23/thunderbird-temporary-directory/">Thunderbird temporary directory</a></h1>
-<time datetime="2012-08-23T20:18:00+02:00" pubdate><span class='month'>Aug</span> <span class='day'>23</span> <span class='year'>2012</span></time>
+<p>I found quite an easy solution:</p>
 
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/linux/'>linux</a>, <a class='category' href='/blog/categories/temporary/'>temporary</a>, <a class='category' href='/blog/categories/thunderbird/'>thunderbird</a></span>
-</footer>
+<ul>
+<li>Create your dropbox-aware folder, e.g. &ldquo;somefolder&rdquo;</li>
+<li>create a .hg folder inside it, e.g. &ldquo;somefolder/.hg&rdquo;</li>
+<li>now use your dropbox client, be it the CLI or the GUI, enable <a href="https://www.dropbox.com/help/175/en">Selective Sync</a> and remove such .hg folder from being synced on your current machine. You must take this step on all machines that you want to use with such technique.</li>
+<li>disabling sync for .hg should remove it from the somefolder directory.</li>
+</ul>
 
 
-</article>
+<p>Now you can use <code>hg init</code> inside &ldquo;somefolder&rdquo;, and you&rsquo;ll obtain a non-synced hg repository.</p>
 
+<p>What for? Whatever! I just create a repo on bitbucket and push/pull changes to/from here.</p>
+
+<p>On other machines, after making sure you&rsquo;ve excluded .hg from syncing, you can just use</p>
+
+<p><code>hg clone -U YOUR_REPO_URL</code></p>
+
+<p>to obtain such .hg directory.</p>
+
+<p>This way:</p>
+
+<ul>
+<li>it&rsquo;s impossible to get errors or conflicts like the one I previously mentioned</li>
+<li>you get full storicization</li>
+<li>Dropbox syncs the actual working copy, letting you have the latest version always 100% synced without manual intervention.</li>
+</ul>
+
+
+<p>Enjoy!</p>
 </div>
-
   
-</article>
+  
 
+
+    </article>
+  
+  <div class="pagination">
+    
+    <a href="/blog/archives">Blog Archives</a>
+    
+    <a class="next" href="/blog/page/4/">Newer &rarr;</a>
+    
+  </div>
 </div>
-
 <aside class="sidebar">
   
     <section>
@@ -150,7 +198,6 @@
 
   
 </aside>
-
 
     </div>
   </div>

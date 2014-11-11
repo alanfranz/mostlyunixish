@@ -5,11 +5,11 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Category: temporary - Mostly Unixish</title>
+  <title>I wish sudo would ask for my password less often - Mostly Unixish</title>
   <meta name="author" content="Alan Franzoni">
 
   
-  <meta name="description" content="Category: temporary">
+  <meta name="description" content="This is a very old trick, but I find many people doesn&rsquo;t know about it yet. If you&rsquo;re using sudo and you definitely should, one minor &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,7 +18,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://mostlyunixish.franzoni.eublog/categories/temporary/">
+  <link rel="canonical" href="http://mostlyunixish.franzoni.eu/blog/2014/11/11/how-often-sudo-asks-for-your-password/">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <script src="/javascripts/modernizr-2.0.js"></script>
@@ -77,36 +77,117 @@
   <div id="main">
     <div id="content">
       <div>
-<article role="article">
+<article class="hentry" role="article">
   
   <header>
-    <h1 class="entry-title">Category: Temporary</h1>
+    
+      <h1 class="entry-title">I Wish Sudo Would Ask for My Password Less Often</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-11-11T13:28:00+01:00" pubdate data-updated="true">Nov 11<span>th</span>, 2014</time>
+        
+      </p>
     
   </header>
-  
-  <div id="blog-archives" class="category">
 
 
+<div class="entry-content"><p>This is a <strong>very</strong> old trick, but I find many people doesn&rsquo;t know about it yet.</p>
 
-  
-  <h2>2012</h2>
+<p>If you&rsquo;re using sudo <a href="https://help.ubuntu.com/community/RootSudo">and you definitely should</a>, one minor complaint is that you need to re-enter your password quite often.</p>
 
-<article>
-  
-<h1><a href="/blog/2012/08/23/thunderbird-temporary-directory/">Thunderbird temporary directory</a></h1>
-<time datetime="2012-08-23T20:18:00+02:00" pubdate><span class='month'>Aug</span> <span class='day'>23</span> <span class='year'>2012</span></time>
+<p>One common pseudo-solution is to completely disable the password for executing sudo with such user; while it may be a good idea sometimes, it does decrease the overall security &ndash; if you happen to forget an open shell or screen/tmux lingering somewhere, you give total power to whoever gets in touch with it.</p>
 
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/linux/'>linux</a>, <a class='category' href='/blog/categories/temporary/'>temporary</a>, <a class='category' href='/blog/categories/thunderbird/'>thunderbird</a></span>
-</footer>
+<p>If you happen to let people into your sudo-enabled account with your ssh key, anybody that can get hold of your ssh key will get <strong>root access</strong> to your servers. It&rsquo;s not the best possible scenario.</p>
+
+<p>There&rsquo;s a very simply workaround: just edit your sudoers file!</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>sudo visudo</span></code></pre></td></tr></table></div></figure>
 
 
-</article>
+<p>and add a line like that (or modify it if it&rsquo;s already there)</p>
 
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>Defaults    timestamp_timeout=120</span></code></pre></td></tr></table></div></figure>
+
+
+<p>This means that sudo will ask for a password every two hours instead of the default (15 minutes on most installations). You can use -1 in order to never let it expire (I don&rsquo;t suggest that &ndash; 8-10 hours should be enough for everybody.)</p>
+
+<p>The only drawback is that such timeout is per shell, not system-wide &ndash; i.e. if you open multiple terminals, you&rsquo;ll have to enter the password again for each new terminal instance.</p>
 </div>
 
+
+  <footer>
+    <p class="meta">
+      
   
+
+<span class="byline author vcard">Posted by <span class="fn">Alan Franzoni</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-11-11T13:28:00+01:00" pubdate data-updated="true">Nov 11<span>th</span>, 2014</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/linux/'>linux</a>, <a class='category' href='/blog/categories/sudo/'>sudo</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://mostlyunixish.franzoni.eu/blog/2014/11/11/how-often-sudo-asks-for-your-password/" data-via="franzeur" data-counturl="http://mostlyunixish.franzoni.eu/blog/2014/11/11/how-often-sudo-asks-for-your-password/" >Tweet</a>
+  
+  
+  <div class="g-plusone" data-size="medium"></div>
+  
+  
+    <div class="fb-like" data-send="true" data-width="450" data-show-faces="false"></div>
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2014/09/25/ubuntu-faster-release-upgrade/" title="Previous Post: Ubuntu: faster release upgrade">&laquo; Ubuntu: faster release upgrade</a>
+      
+      
+    </p>
+  </footer>
 </article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
 
 </div>
 
@@ -166,7 +247,10 @@
       var disqus_shortname = 'mostlyunixish';
       
         
-        var disqus_script = 'count.js';
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://mostlyunixish.franzoni.eu/blog/2014/11/11/how-often-sudo-asks-for-your-password/';
+        var disqus_url = 'http://mostlyunixish.franzoni.eu/blog/2014/11/11/how-often-sudo-asks-for-your-password/';
+        var disqus_script = 'embed.js';
       
     (function () {
       var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;

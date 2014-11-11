@@ -9,8 +9,7 @@
   <meta name="author" content="Alan Franzoni">
 
   
-  <meta name="description" content="ssh-copy-id is a cool script which is usually distributed along openssh client nowadays;
-it performs an automatic install of your local public SSH &hellip;">
+  <meta name="description" content="I find it extremely handy to be able to recall my windows by just using the keyboard. It&rsquo;s pretty easy to do in Linux, just use: wmctrl -x -R & &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -79,6 +78,61 @@ it performs an automatic install of your local public SSH &hellip;">
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2013/01/29/wmctrl-gather-and-focus-your-chosen-window-by-hotkey/">Wmctrl: Gather and Focus Your Chosen Window by Hotkey</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-01-29T18:35:00+01:00" pubdate data-updated="true">Jan 29<span>th</span>, 2013</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>I find it extremely handy to be able to recall my windows by just using the keyboard.</p>
+
+<p>It&rsquo;s pretty easy to do in Linux, just use:</p>
+
+<p><code>wmctrl -x -R &lt;WM_CLASS&gt;</code></p>
+
+<p>you can find the WM_CLASS of any window using this command:</p>
+
+<p><code>xprop | grep WM_CLASS</code></p>
+
+<p>then clicking on the desired Window. There may be more than one match, just choose one.</p>
+
+<p>Example:</p>
+
+<p><code>wmctrl -x -R "Gnome-terminal"</code></p>
+
+<p>When you execute such command, the windows matching such class will be gathered on the
+current workspace and focused; you can assign global hotkeys in Gnome with System &ndash;>
+Preferences &ndash;> Keyboard &ndash;> Shortcuts. The Windows key (Super) is usually a great candidate
+for such global hotkeys.</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -224,60 +278,6 @@ root@192.168.0.208's password:
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2012/08/23/thunderbird-temporary-directory/">Thunderbird Temporary Directory</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-08-23T20:18:00+02:00" pubdate data-updated="true">Aug 23<span>rd</span>, 2012</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>Whenever you use Thunderbird on Linux you may encounter one annoying behaviour.</p>
-
-<p>If you open a message which is got an attachment &ndash; you just need to open the message, not to save the attachment! &ndash; Thunderbird will place such attachment in your temporary directory, usually <em>/tmp</em>. You find the file there, and you think you used the <em>Save as</em> function to place it there, so you open it and you edit it.</p>
-
-<p>Then you close Thunderbird, and poof! It clears its temporary files and deletes your modified attachment, possibily containing a day&rsquo;s work.</p>
-
-<p>The workaround is simple: just use a launcher that changes Thunderbird TMP directory and use that to start Thunderbird!</p>
-
-<figure class='code'><figcaption><span> (thunderbird)</span> <a href='/downloads/code/thunderbird'>download</a></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="c">#!/bin/bash</span>
-</span><span class='line'>mkdir -p /tmp/thunderbird
-</span><span class='line'><span class="nv">TMP</span><span class="o">=</span>/tmp/thunderbird /usr/bin/thunderbird <span class="nv">$*</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>You may need to adjust the original binary path, then you can put such script in your path before your /usr/bin directory and you&rsquo;re done.</p>
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/blog/page/4/">&larr; Older</a>
@@ -295,6 +295,10 @@ root@192.168.0.208's password:
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2014/11/11/how-often-sudo-asks-for-your-password/">I wish sudo would ask for my password less often</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2014/09/25/ubuntu-faster-release-upgrade/">Ubuntu: faster release upgrade</a>
       </li>
     
@@ -308,10 +312,6 @@ root@192.168.0.208's password:
     
       <li class="post">
         <a href="/blog/2013/10/08/quick-log-for-bash-scripts/">Quick log for bash scripts, with line limit</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2013/03/06/apt-get-update-fixing-package-index-files-are-corrupted/">apt-get update: fixing &#8216;package index files are corrupted&#8217;</a>
       </li>
     
   </ul>
