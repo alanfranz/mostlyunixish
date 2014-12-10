@@ -9,7 +9,8 @@
   <meta name="author" content="Alan Franzoni">
 
   
-  <meta name="description" content="This is a very old trick, but I find many people doesn&rsquo;t know about it yet. If you&rsquo;re using sudo (and you definitely should), one minor &hellip;">
+  <meta name="description" content="This is another old trick, but I like to tell the world about such amenities. I often find people writing command lines such as: 1
+ssh arcane-system- &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -78,6 +79,86 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/12/10/ssh-hostname-shortcuts/">SSH Hostnames Configuration and Shortcuts</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-12-10T13:20:00+01:00" pubdate data-updated="true">Dec 10<span>th</span>, 2014</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>This is another old trick, but I like to tell the world about such amenities.</p>
+
+<p>I often find people writing command lines such as:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>ssh arcane-system-user@someextremelylong.andimpossibiletotype.anderrorprone.hostname.com</span></code></pre></td></tr></table></div></figure>
+
+
+<p>or, worse</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>ssh idliketorememberwhichuser@10.20.30.40</span></code></pre></td></tr></table></div></figure>
+
+
+<p>or maybe it was</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>ssh someuserimashamedof@1.2.3.4</span></code></pre></td></tr></table></div></figure>
+
+
+<p>yes, sometimes ssh is simply tedious.</p>
+
+<p>But you can do better. In fact, you can do <strong>much</strong> better.</p>
+
+<p>your <em>~/.ssh/config</em> or <em>/etc/ssh/ssh_config</em> can contain <strong>Host</strong> configuration sections; I have already blogged about such directives when I told the world about stopping <a href="blog/2012/08/26/ssh-client-stop-complaining-inside-my-network/">key verification compliants</a> &ndash; they&rsquo;re very flexible, indeed.</p>
+
+<p>Consider adding <strong>Host</strong> directives in your configuration for your most used services:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>Host myniceserver
+</span><span class='line'>    Hostname myniceserver.mylove.com
+</span><span class='line'>    Port 12345
+</span><span class='line'>    User teddybear</span></code></pre></td></tr></table></div></figure>
+
+
+<p>And then you can just</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>ssh myniceserver</span></code></pre></td></tr></table></div></figure>
+
+
+<p>You can override most options on a per-server basis and/or select a certain private key for connections.</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -223,385 +304,6 @@ almost nothing will be downloaded during the upgrade, because everything is alre
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2014/09/03/keep-your-tomcat-instance-up-to-date-and-separate-configuration/">Keep Your Tomcat Instance Up-to-date, and Keep Apps and Configuration Tidy.</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2014-09-03T19:52:00+02:00" pubdate data-updated="true">Sep 3<span>rd</span>, 2014</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>Today I&rsquo;m gonna share something that I figured out some times ago: how do I keep
-my <a href="http://tomcat.apache.org">tomcat</a> installation up to date on my servers?</p>
-
-<p>Of course I&rsquo;m not willing to automatically switch majors, but I&rsquo;d like to pull bugfix
-releases in as soon as possible; most of my servers should work unattended, and I prefer
-to handle it if something crashes rather than being hacked because of some public exploit.</p>
-
-<p>Apache Tomcat makes it incredibly hard to do so for different reasons: first, there&rsquo;s no <em>latest</em>
-link for the latest release, you must first check the homepage to see what&rsquo;s the latest version;
-second, the archive you can download mingles the application itself with the configuration, log
-and webapp dir.</p>
-
-<p>What should we do, then?</p>
-
-<p>Tomcat allows us to configure almost everything. Let&rsquo;s use its power!</p>
-
-<p>For this setup, I use Tomcat7 and I chose to employ <em>/etc/tomcat7/conf</em> as a configuration directory, <em>/opt/tomcat7/latest</em> as tomcat7 own directory, <em>/opt/tomcat7/webapps</em> for our webapps, <em>/opt/tomcat7/logs</em>,
-<em>/opt/tomcat7/temp</em>, <em>/opt/tomcat7/work</em> as logging, temp and work directory, respectively.</p>
-
-<p>To begin with, create a user (maybe a service user, I&rsquo;ll leave the details to you) <em>tomcat</em> with a main group <em>tomcat</em> as well, which we&rsquo;ll use to run the servlet container.</p>
-
-<p>Now make sure your <a href="http://puppetlabs.com/">Puppet</a> manifest includes the tomcat7 class. In order to do so, you&rsquo;ll need this custom fact that helps the system determine the very latest tomcat7 version,
-place it in your custom facts directory:</p>
-
-<figure class='code'><figcaption><span>find_apache_tomcat7_latest.py </span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="c">#!/usr/bin/env python</span>
-</span><span class='line'><span class="c"># add as fact, drop this into /etc/facter/facts.d/</span>
-</span><span class='line'><span class="c"># requires python with lxml installed,(usually a python-lxml package is available in most distributions)</span>
-</span><span class='line'><span class="kn">from</span> <span class="nn">lxml.etree</span> <span class="kn">import</span> <span class="n">HTML</span>
-</span><span class='line'><span class="kn">import</span> <span class="nn">re</span>
-</span><span class='line'><span class="kn">import</span> <span class="nn">sys</span>
-</span><span class='line'><span class="kn">import</span> <span class="nn">urllib</span>
-</span><span class='line'>
-</span><span class='line'><span class="n">pattern</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s">&quot;^7\.0\.\d\d\d?$&quot;</span><span class="p">)</span>
-</span><span class='line'>
-</span><span class='line'><span class="n">root</span> <span class="o">=</span> <span class="n">HTML</span><span class="p">(</span><span class="n">urllib</span><span class="o">.</span><span class="n">urlopen</span><span class="p">(</span><span class="s">&quot;http://tomcat.apache.org/download-70.cgi&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">root</span><span class="o">.</span><span class="n">iterdescendants</span><span class="p">():</span>
-</span><span class='line'>  <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">text</span><span class="p">,</span> <span class="nb">basestring</span><span class="p">)</span> <span class="ow">and</span> <span class="n">pattern</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">strip</span><span class="p">()):</span>
-</span><span class='line'>      <span class="k">print</span> <span class="s">&quot;tomcat7_latest_version={0}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
-</span><span class='line'>      <span class="k">break</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>and the tomcat7 class, of course:</p>
-
-<figure class='code'><figcaption><span>tomcat7.pp</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-<span class='line-number'>40</span>
-<span class='line-number'>41</span>
-<span class='line-number'>42</span>
-<span class='line-number'>43</span>
-<span class='line-number'>44</span>
-<span class='line-number'>45</span>
-<span class='line-number'>46</span>
-<span class='line-number'>47</span>
-<span class='line-number'>48</span>
-<span class='line-number'>49</span>
-<span class='line-number'>50</span>
-<span class='line-number'>51</span>
-<span class='line-number'>52</span>
-<span class='line-number'>53</span>
-<span class='line-number'>54</span>
-<span class='line-number'>55</span>
-<span class='line-number'>56</span>
-<span class='line-number'>57</span>
-<span class='line-number'>58</span>
-<span class='line-number'>59</span>
-<span class='line-number'>60</span>
-<span class='line-number'>61</span>
-<span class='line-number'>62</span>
-<span class='line-number'>63</span>
-<span class='line-number'>64</span>
-<span class='line-number'>65</span>
-<span class='line-number'>66</span>
-<span class='line-number'>67</span>
-<span class='line-number'>68</span>
-<span class='line-number'>69</span>
-<span class='line-number'>70</span>
-<span class='line-number'>71</span>
-<span class='line-number'>72</span>
-<span class='line-number'>73</span>
-<span class='line-number'>74</span>
-<span class='line-number'>75</span>
-<span class='line-number'>76</span>
-<span class='line-number'>77</span>
-<span class='line-number'>78</span>
-<span class='line-number'>79</span>
-<span class='line-number'>80</span>
-<span class='line-number'>81</span>
-<span class='line-number'>82</span>
-<span class='line-number'>83</span>
-</pre></td><td class='code'><pre><code class='puppet'><span class='line'><span class="c-Singleline"># this will install latest tomcat7 from apache website, and yet retain your</span>
-</span><span class='line'><span class="c-Singleline"># config from /etc/tomcat7/conf</span>
-</span><span class='line'><span class="c-Singleline"># tested with puppet 3.6</span>
-</span><span class='line'>
-</span><span class='line'><span class="kd">class</span> <span class="nc">tomcat7</span> <span class="p">{</span>
-</span><span class='line'>  <span class="nv">$tomcat_full_version</span> <span class="o">=</span> <span class="nv">$tomcat7_latest_version</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="nc">exec</span> <span class="p">{</span> <span class="s2">&quot;/bin/tar xvf apache-tomcat-archive.tar.gz&quot;</span><span class="p">:</span>
-</span><span class='line'>      <span class="nt">creates</span> <span class="p">=&gt;</span><span class="s2">&quot;/opt/tomcat7/apache-tomcat7-</span><span class="si">${tomcat_full_version}</span><span class="s2">&quot;</span><span class="p">,</span>
-</span><span class='line'>      <span class="nt">cwd</span> <span class="p">=&gt;</span> <span class="s2">&quot;/opt/tomcat7&quot;</span><span class="p">,</span>
-</span><span class='line'>      <span class="nt">refreshonly</span> <span class="p">=&gt;</span> <span class="ss">true</span><span class="p">,</span>
-</span><span class='line'>      <span class="nt">alias</span> <span class="p">=&gt;</span> <span class="s2">&quot;tomcat7_unpack&quot;</span><span class="p">,</span>
-</span><span class='line'>      <span class="nt">require</span> <span class="p">=&gt;</span> <span class="nc">File</span><span class="p">[</span><span class="s2">&quot;/opt/tomcat&quot;</span><span class="p">]</span>
-</span><span class='line'>  <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="nc">file</span> <span class="p">{</span> <span class="s2">&quot;/opt/tomcat&quot;</span><span class="p">:</span>
-</span><span class='line'>      <span class="nt">ensure</span> <span class="p">=&gt;</span> <span class="s2">&quot;directory&quot;</span><span class="p">,</span>
-</span><span class='line'>      <span class="nt">mode</span> <span class="p">=&gt;</span> <span class="m">0755</span><span class="p">,</span>
-</span><span class='line'>      <span class="nt">owner</span> <span class="p">=&gt;</span> <span class="s2">&quot;root&quot;</span><span class="p">,</span>
-</span><span class='line'>      <span class="nt">group</span> <span class="p">=&gt;</span> <span class="s2">&quot;root&quot;</span>
-</span><span class='line'>  <span class="p">}</span>
-</span><span class='line'>      
-</span><span class='line'>
-</span><span class='line'>  <span class="nc">file</span> <span class="p">{</span> <span class="s2">&quot;/opt/tomcat7/apache-tomcat-archive.tar.gz&quot;</span><span class="p">:</span>
-</span><span class='line'>      <span class="nt">ensure</span> <span class="p">=&gt;</span> <span class="s2">&quot;present&quot;</span><span class="p">,</span>
-</span><span class='line'>      <span class="nt">source</span> <span class="p">=&gt;</span> <span class="s2">&quot;/tmp/apache-tomcat-</span><span class="si">${tomcat_full_version}</span><span class="s2">.tar.gz&quot;</span><span class="p">,</span>
-</span><span class='line'>      <span class="nt">require</span> <span class="p">=&gt;</span> <span class="nc">Exec</span><span class="p">[</span><span class="s2">&quot;tomcat7_download_latest&quot;</span><span class="p">],</span>
-</span><span class='line'>      <span class="nt">notify</span> <span class="p">=&gt;</span> <span class="nc">Exec</span><span class="p">[</span><span class="s2">&quot;tomcat7_unpack&quot;</span><span class="p">]</span>
-</span><span class='line'>      <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="nc">exec</span> <span class="p">{</span> <span class="s2">&quot;/usr/bin/wget --timestamping http://www.eu.apache.org/dist/tomcat/tomcat-7/v</span><span class="si">${tomcat_full_version}</span><span class="s2">/bin/apache-tomcat-</span><span class="si">${tomcat_full_version}</span><span class="s2">.tar.gz&quot;</span><span class="p">:</span>
-</span><span class='line'>      <span class="nt">alias</span> <span class="p">=&gt;</span> <span class="s2">&quot;tomcat7_download_latest&quot;</span><span class="p">,</span>
-</span><span class='line'>      <span class="nt">cwd</span> <span class="p">=&gt;</span> <span class="s2">&quot;/tmp&quot;</span>
-</span><span class='line'>  <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="nc">exec</span> <span class="p">{</span> <span class="s2">&quot;/bin/ln -sf --no-target-directory apache-tomcat-</span><span class="si">${tomcat_full_version}</span><span class="s2"> latest&quot;</span><span class="p">:</span>
-</span><span class='line'>      <span class="nt">refreshonly</span> <span class="p">=&gt;</span> <span class="ss">true</span><span class="p">,</span>
-</span><span class='line'>      <span class="nt">subscribe</span> <span class="p">=&gt;</span> <span class="nc">Exec</span><span class="p">[</span><span class="s2">&quot;tomcat7_unpack&quot;</span><span class="p">],</span>
-</span><span class='line'>      <span class="nt">cwd</span> <span class="p">=&gt;</span> <span class="s2">&quot;/opt/tomcat7&quot;</span><span class="p">,</span>
-</span><span class='line'>      <span class="nt">alias</span> <span class="p">=&gt;</span> <span class="s2">&quot;tomcat7_symlink&quot;</span>
-</span><span class='line'>  <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>
-</span><span class='line'>
-</span><span class='line'>  <span class="nc">exec</span> <span class="p">{</span> <span class="s2">&quot;/bin/rm -rf conf.orig &amp;&amp; /bin/mv -f conf conf.orig &amp;&amp; /bin/ln -sf --no-target-directory /etc/tomcat7/conf conf&quot;</span><span class="p">:</span>
-</span><span class='line'>      <span class="nt">refreshonly</span> <span class="p">=&gt;</span> <span class="ss">true</span><span class="p">,</span>
-</span><span class='line'>      <span class="nt">cwd</span> <span class="p">=&gt;</span> <span class="s2">&quot;/opt/tomcat7/latest&quot;</span><span class="p">,</span>
-</span><span class='line'>      <span class="nt">subscribe</span> <span class="p">=&gt;</span> <span class="nc">Exec</span><span class="p">[</span><span class="s2">&quot;tomcat7_symlink&quot;</span><span class="p">],</span>
-</span><span class='line'>      <span class="c-Singleline"># notify =&gt; Service[&quot;tomcat7&quot;],</span>
-</span><span class='line'>      <span class="nt">alias</span> <span class="p">=&gt;</span> <span class="s2">&quot;tomcat7_config_move&quot;</span>
-</span><span class='line'>  <span class="p">}</span><span class="c-Singleline"></span>
-</span><span class='line'>
-</span><span class='line'><span class="c-Singleline">   # first-time only executions. I might like to abstract some logic if I were a bit less lazy than I am.</span>
-</span><span class='line'><span class="c-Singleline">   # in order to stay on the safe side, we never let the normal user to access our files; this may be relaxed,</span>
-</span><span class='line'><span class="c-Singleline">   # depending on your context.</span>
-</span><span class='line'>
-</span><span class='line'><span class="c-Singleline">   # this contains our config. our servlet container should be able to read it, but never write it.</span>
-</span><span class='line'>  <span class="nc">exec</span> <span class="p">{</span> <span class="s2">&quot;/bin/mkdir -p /etc/tomcat7 &amp;&amp; /bin/cp -r /opt/tomcat7/latest/conf.orig /etc/tomcat7/conf &amp;&amp; /bin/chmod 0750 /etc/tomcat7/conf &amp;&amp; /bin/chown root:tomcat /etc/tomcat7/conf &quot;</span><span class="p">:</span>
-</span><span class='line'>      <span class="nt">creates</span> <span class="p">=&gt;</span> <span class="s2">&quot;/etc/tomcat7/conf&quot;</span><span class="p">,</span>
-</span><span class='line'>      <span class="nt">subscribe</span> <span class="p">=&gt;</span> <span class="nc">Exec</span><span class="p">[</span><span class="s2">&quot;tomcat7_config_move&quot;</span><span class="p">]</span>
-</span><span class='line'>  <span class="p">}</span><span class="c-Singleline"></span>
-</span><span class='line'><span class="c-Singleline">   </span>
-</span><span class='line'><span class="c-Singleline">   # this will contain the actual code of our webapps. Again, the container must be able to read them, </span>
-</span><span class='line'><span class="c-Singleline">   # never write to them.</span>
-</span><span class='line'>  <span class="nc">exec</span> <span class="p">{</span> <span class="s2">&quot;/bin/mkdir -p -m 0750 /opt/tomcat7/webapps &amp;&amp; /bin/chown root:tomcat /opt/tomcat7/webapps&quot;</span><span class="p">:</span>
-</span><span class='line'>      <span class="nt">creates</span> <span class="p">=&gt;</span> <span class="s2">&quot;/etc/tomcat7/webapps&quot;</span><span class="p">,</span>
-</span><span class='line'>  <span class="p">}</span><span class="c-Singleline"></span>
-</span><span class='line'>
-</span><span class='line'><span class="c-Singleline">   # those are working directories where the container must be able to write.</span>
-</span><span class='line'>  <span class="nc">exec</span> <span class="p">{</span> <span class="s2">&quot;/bin/mkdir -p -m 0770 /opt/tomcat7/work &amp;&amp; /bin/chown root:tomcat /opt/tomcat7/work&quot;</span><span class="p">:</span>
-</span><span class='line'>      <span class="nt">creates</span> <span class="p">=&gt;</span> <span class="s2">&quot;/etc/tomcat7/work&quot;</span><span class="p">,</span>
-</span><span class='line'>  <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="nc">exec</span> <span class="p">{</span> <span class="s2">&quot;/bin/mkdir -p -m 0770 /opt/tomcat7/temp &amp;&amp; /bin/chown root:tomcat /opt/tomcat7/temp&quot;</span><span class="p">:</span>
-</span><span class='line'>      <span class="nt">creates</span> <span class="p">=&gt;</span> <span class="s2">&quot;/etc/tomcat7/temp&quot;</span><span class="p">,</span>
-</span><span class='line'>  <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="nc">exec</span> <span class="p">{</span> <span class="s2">&quot;/bin/mkdir -p -m 0770 /opt/tomcat7/logs &amp;&amp; /bin/chown root:tomcat /opt/tomcat7/logs&quot;</span><span class="p">:</span>
-</span><span class='line'>      <span class="nt">creates</span> <span class="p">=&gt;</span> <span class="s2">&quot;/etc/tomcat7/logs&quot;</span><span class="p">,</span>
-</span><span class='line'>  <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>
-</span><span class='line'>}
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>The tomcat7 service is trivial and omitted, fill it in by yourself (or delete it).</p>
-
-<p>Once this is done, you&rsquo;ll find a base configuration in <em>/etc/tomcat7/conf</em>. We must now edit <em>server.xml</em> there and tell Tomcat where we&rsquo;d like to have our webapps, logs and work directories:</p>
-
-<figure class='code'><figcaption><span>server.xml</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="c">&lt;!-- this should go inside &lt;Server&gt;&lt;Service&gt;&lt;Engine&gt; --&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="nt">&lt;Host</span> <span class="na">name=</span><span class="s">&quot;localhost&quot;</span>  <span class="na">appBase=</span><span class="s">&quot;/opt/tomcat7/webapps&quot;</span>
-</span><span class='line'>            <span class="na">unpackWARs=</span><span class="s">&quot;false&quot;</span> <span class="na">autoDeploy=</span><span class="s">&quot;true&quot;</span> <span class="na">workDir=</span><span class="s">&quot;/opt/tomcat7/work&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="c">&lt;!-- SingleSignOn valve, share authentication between web applications</span>
-</span><span class='line'><span class="c">             Documentation at: /docs/config/valve.html --&gt;</span>
-</span><span class='line'>        <span class="c">&lt;!--</span>
-</span><span class='line'><span class="c">        &lt;Valve className=&quot;org.apache.catalina.authenticator.SingleSignOn&quot; /&gt;</span>
-</span><span class='line'><span class="c">        --&gt;</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="c">&lt;!-- Access log processes all example.</span>
-</span><span class='line'><span class="c">             Documentation at: /docs/config/valve.html</span>
-</span><span class='line'><span class="c">             Note: The pattern used is equivalent to using pattern=&quot;common&quot; --&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;Valve</span> <span class="na">className=</span><span class="s">&quot;org.apache.catalina.valves.AccessLogValve&quot;</span> <span class="na">directory=</span><span class="s">&quot;/opt/tomcat7/logs&quot;</span>
-</span><span class='line'>               <span class="na">prefix=</span><span class="s">&quot;localhost_access_log.&quot;</span> <span class="na">suffix=</span><span class="s">&quot;.txt&quot;</span>
-</span><span class='line'>               <span class="na">pattern=</span><span class="s">&quot;%h %l %u %t &amp;quot;%r&amp;quot; %s %b&quot;</span> <span class="nt">/&gt;</span>
-</span><span class='line'>
-</span><span class='line'>      <span class="nt">&lt;/Host&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Last but not least, we should tell tomcat what is <em>CATALINA_HOME</em> and <em>CATALINA_TMPDIR</em>. This is an example script that can be used with upstart on Ubuntu 12.04, change it according to your OS:</p>
-
-<figure class='code'><figcaption><span>tomcat7.conf</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-</pre></td><td class='code'><pre><code class='text'><span class='line'>description &quot;tomcat7&quot;
-</span><span class='line'>
-</span><span class='line'>  start on runlevel [2345]
-</span><span class='line'>  stop on runlevel [!2345]
-</span><span class='line'>  respawn
-</span><span class='line'>  respawn limit 10 5
-</span><span class='line'>
-</span><span class='line'>  # run as non privileged user
-</span><span class='line'>  # add user with this command:
-</span><span class='line'>  ## adduser --system --ingroup www-data --home /opt/apache-tomcat apache-tomcat
-</span><span class='line'>  # Ubuntu 12.04: (use &#39;exec sudo -u apache-tomcat&#39; when using 10.04)
-</span><span class='line'>  setuid tomcat
-</span><span class='line'>  setgid tomcat
-</span><span class='line'>
-</span><span class='line'>  # adapt paths:
-</span><span class='line'>  env JAVA_HOME=/usr/lib/jvm/java-7-oracle
-</span><span class='line'>  env CATALINA_HOME=/opt/tomcat7/latest
-</span><span class='line'>  env CATALINA_TMPDIR=/opt/tomcat7/temp
-</span><span class='line'>  env HOME=/home/tomcat
-</span><span class='line'>
-</span><span class='line'>  # adapt java options to suit your needs:
-</span><span class='line'>  env JAVA_OPTS=&quot;-Djava.awt.headless=true&quot;
-</span><span class='line'>  env CATALINA_OPTS=&quot;-Xmx1536M -server&quot;
-</span><span class='line'>
-</span><span class='line'>  exec $CATALINA_HOME/bin/catalina.sh run
-</span><span class='line'>
-</span><span class='line'>  # cleanup temp directory after stop
-</span><span class='line'>  post-stop script
-</span><span class='line'>    rm -rf /opt/tomcat7/temp/*
-</span><span class='line'>  end script
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>In this situation I had a &ldquo;normal home&rdquo; for tomcat because I needed it, but your requirements
-may work differently.</p>
-
-<p>I hope that&rsquo;s useful to somebody.</p>
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/blog/page/2/">&larr; Older</a>
@@ -617,6 +319,10 @@ may work differently.</p>
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2014/12/10/ssh-hostname-shortcuts/">SSH Hostnames configuration and shortcuts</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2014/11/11/how-often-sudo-asks-for-your-password/">I wish sudo would ask for my password less often</a>
       </li>
     
@@ -630,10 +336,6 @@ may work differently.</p>
     
       <li class="post">
         <a href="/blog/2013/11/12/puppet-http-source-for-files/">Puppet Http Source for files</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2013/10/08/quick-log-for-bash-scripts/">Quick log for bash scripts, with line limit</a>
       </li>
     
   </ul>

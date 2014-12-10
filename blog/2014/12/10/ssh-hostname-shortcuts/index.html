@@ -5,11 +5,12 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Ubuntu: faster release upgrade - Mostly Unixish</title>
+  <title>SSH Hostnames configuration and shortcuts - Mostly Unixish</title>
   <meta name="author" content="Alan Franzoni">
 
   
-  <meta name="description" content="It might be high time to update to the latest Ubuntu 14.04. I think that the upgrade process that is provided by Canonical is slightly underoptimal: &hellip;">
+  <meta name="description" content="This is another old trick, but I like to tell the world about such amenities. I often find people writing command lines such as: 1
+ssh arcane-system- &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,7 +19,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://mostlyunixish.franzoni.eu/blog/2014/09/25/ubuntu-faster-release-upgrade/">
+  <link rel="canonical" href="http://mostlyunixish.franzoni.eu/blog/2014/12/10/ssh-hostname-shortcuts/">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <script src="/javascripts/modernizr-2.0.js"></script>
@@ -81,7 +82,7 @@
   
   <header>
     
-      <h1 class="entry-title">Ubuntu: Faster Release Upgrade</h1>
+      <h1 class="entry-title">SSH Hostnames Configuration and Shortcuts</h1>
     
     
       <p class="meta">
@@ -97,64 +98,58 @@
   
 
 
-<time datetime="2014-09-25T13:34:00+02:00" pubdate data-updated="true">Sep 25<span>th</span>, 2014</time>
+<time datetime="2014-12-10T13:20:00+01:00" pubdate data-updated="true">Dec 10<span>th</span>, 2014</time>
         
       </p>
     
   </header>
 
 
-<div class="entry-content"><p>It might be high time to update to the latest <a href="https://wiki.ubuntu.com/TrustyTahr/ReleaseNotes">Ubuntu 14.04</a>.</p>
+<div class="entry-content"><p>This is another old trick, but I like to tell the world about such amenities.</p>
 
-<p>I think that the upgrade process that is provided by Canonical is slightly underoptimal: if you&rsquo;re using a
-local mirror which can provide a very fast download of all packages, they&rsquo;ll usually be disabled during the
-upgrade process, and an official mirror (possibile one very far away) will be employed.</p>
-
-<p>This can lead to a very slow and painful upgrade process.</p>
-
-<p>The solution is easy.</p>
-
-<p>The following instructions regard moving from 12.04 (precise) to 14.04 (trusty)</p>
-
-<h2>Switch your sources</h2>
-
-<p>Assuming that your official ubuntu sources are configured from <code>/etc/apt/sources.list</code> just do something like:</p>
+<p>I often find people writing command lines such as:</p>
 
 <figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>sudo sed -i.old -e 's/precise/trusty/g' /etc/apt/sources.list</span></code></pre></td></tr></table></div></figure>
+</pre></td><td class='code'><pre><code class=''><span class='line'>ssh arcane-system-user@someextremelylong.andimpossibiletotype.anderrorprone.hostname.com</span></code></pre></td></tr></table></div></figure>
 
 
-<p>I&rsquo;m not considering other sources in <code>/etc/apt/sources.list.d</code>, since they&rsquo;ll be disabled whatsoever; but if you happen
-to have ubuntu sources there as well, you should repeat the SEDding process for each file.</p>
-
-<h2>Update your index</h2>
+<p>or, worse</p>
 
 <figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>sudo apt-get update</span></code></pre></td></tr></table></div></figure>
+</pre></td><td class='code'><pre><code class=''><span class='line'>ssh idliketorememberwhichuser@10.20.30.40</span></code></pre></td></tr></table></div></figure>
 
 
-<h2>Download updated packages without installing</h2>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>sudo apt-get dist-upgrade --download-only</span></code></pre></td></tr></table></div></figure>
-
-
-<h2>Revert to old sources</h2>
+<p>or maybe it was</p>
 
 <figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>sudo mv -f /etc/apt/sources.list.old /etc/apt/sources.list</span></code></pre></td></tr></table></div></figure>
+</pre></td><td class='code'><pre><code class=''><span class='line'>ssh someuserimashamedof@1.2.3.4</span></code></pre></td></tr></table></div></figure>
 
 
-<h2>Update index again</h2>
+<p>yes, sometimes ssh is simply tedious.</p>
+
+<p>But you can do better. In fact, you can do <strong>much</strong> better.</p>
+
+<p>your <em>~/.ssh/config</em> or <em>/etc/ssh/ssh_config</em> can contain <strong>Host</strong> configuration sections; I have already blogged about such directives when I told the world about stopping <a href="blog/2012/08/26/ssh-client-stop-complaining-inside-my-network/">key verification compliants</a> &ndash; they&rsquo;re very flexible, indeed.</p>
+
+<p>Consider adding <strong>Host</strong> directives in your configuration for your most used services:</p>
 
 <figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>sudo apt-get update</span></code></pre></td></tr></table></div></figure>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>Host myniceserver
+</span><span class='line'>    Hostname myniceserver.mylove.com
+</span><span class='line'>    Port 12345
+</span><span class='line'>    User teddybear</span></code></pre></td></tr></table></div></figure>
 
 
-<h2>Rejoice!</h2>
+<p>And then you can just</p>
 
-<p>Now you can just follow the <a href="https://wiki.ubuntu.com/TrustyTahr/ReleaseNotes#Upgrading_from_Ubuntu_12.04_LTS_or_Ubuntu_13.10">upgrade instructions</a> and
-almost nothing will be downloaded during the upgrade, because everything is already on your hard drive.</p>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>ssh myniceserver</span></code></pre></td></tr></table></div></figure>
+
+
+<p>You can override most options on a per-server basis and/or select a certain private key for connections.</p>
 </div>
 
 
@@ -177,12 +172,12 @@ almost nothing will be downloaded during the upgrade, because everything is alre
   
 
 
-<time datetime="2014-09-25T13:34:00+02:00" pubdate data-updated="true">Sep 25<span>th</span>, 2014</time>
+<time datetime="2014-12-10T13:20:00+01:00" pubdate data-updated="true">Dec 10<span>th</span>, 2014</time>
       
 
 <span class="categories">
   
-    <a class='category' href='/blog/categories/linux/'>linux</a>, <a class='category' href='/blog/categories/ubuntu/'>ubuntu</a>, <a class='category' href='/blog/categories/upgrade/'>upgrade</a>
+    <a class='category' href='/blog/categories/ancientwisdom/'>ancientwisdom</a>, <a class='category' href='/blog/categories/linux/'>linux</a>, <a class='category' href='/blog/categories/ssh/'>ssh</a>
   
 </span>
 
@@ -191,7 +186,7 @@ almost nothing will be downloaded during the upgrade, because everything is alre
     
       <div class="sharing">
   
-  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://mostlyunixish.franzoni.eu/blog/2014/09/25/ubuntu-faster-release-upgrade/" data-via="franzeur" data-counturl="http://mostlyunixish.franzoni.eu/blog/2014/09/25/ubuntu-faster-release-upgrade/" >Tweet</a>
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://mostlyunixish.franzoni.eu/blog/2014/12/10/ssh-hostname-shortcuts/" data-via="franzeur" data-counturl="http://mostlyunixish.franzoni.eu/blog/2014/12/10/ssh-hostname-shortcuts/" >Tweet</a>
   
   
   <div class="g-plusone" data-size="medium"></div>
@@ -204,10 +199,8 @@ almost nothing will be downloaded during the upgrade, because everything is alre
     
     <p class="meta">
       
-        <a class="basic-alignment left" href="/blog/2014/09/03/keep-your-tomcat-instance-up-to-date-and-separate-configuration/" title="Previous Post: Keep your tomcat instance up-to-date, and keep apps and configuration tidy.">&laquo; Keep your tomcat instance up-to-date, and keep apps and configuration tidy.</a>
+        <a class="basic-alignment left" href="/blog/2014/11/11/how-often-sudo-asks-for-your-password/" title="Previous Post: I wish sudo would ask for my password less often">&laquo; I wish sudo would ask for my password less often</a>
       
-      
-        <a class="basic-alignment right" href="/blog/2014/11/11/how-often-sudo-asks-for-your-password/" title="Next Post: I wish sudo would ask for my password less often">I wish sudo would ask for my password less often &raquo;</a>
       
     </p>
   </footer>
@@ -278,8 +271,8 @@ almost nothing will be downloaded during the upgrade, because everything is alre
       
         
         // var disqus_developer = 1;
-        var disqus_identifier = 'http://mostlyunixish.franzoni.eu/blog/2014/09/25/ubuntu-faster-release-upgrade/';
-        var disqus_url = 'http://mostlyunixish.franzoni.eu/blog/2014/09/25/ubuntu-faster-release-upgrade/';
+        var disqus_identifier = 'http://mostlyunixish.franzoni.eu/blog/2014/12/10/ssh-hostname-shortcuts/';
+        var disqus_url = 'http://mostlyunixish.franzoni.eu/blog/2014/12/10/ssh-hostname-shortcuts/';
         var disqus_script = 'embed.js';
       
     (function () {

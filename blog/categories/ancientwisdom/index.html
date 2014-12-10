@@ -5,11 +5,11 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Ubuntu: faster release upgrade - Mostly Unixish</title>
+  <title>Category: ancientwisdom - Mostly Unixish</title>
   <meta name="author" content="Alan Franzoni">
 
   
-  <meta name="description" content="It might be high time to update to the latest Ubuntu 14.04. I think that the upgrade process that is provided by Canonical is slightly underoptimal: &hellip;">
+  <meta name="description" content="Category: ancientwisdom">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,7 +18,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://mostlyunixish.franzoni.eu/blog/2014/09/25/ubuntu-faster-release-upgrade/">
+  <link rel="canonical" href="http://mostlyunixish.franzoni.eublog/categories/ancientwisdom/">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <script src="/javascripts/modernizr-2.0.js"></script>
@@ -77,147 +77,36 @@
   <div id="main">
     <div id="content">
       <div>
-<article class="hentry" role="article">
+<article role="article">
   
   <header>
-    
-      <h1 class="entry-title">Ubuntu: Faster Release Upgrade</h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2014-09-25T13:34:00+02:00" pubdate data-updated="true">Sep 25<span>th</span>, 2014</time>
-        
-      </p>
+    <h1 class="entry-title">Category: Ancientwisdom</h1>
     
   </header>
-
-
-<div class="entry-content"><p>It might be high time to update to the latest <a href="https://wiki.ubuntu.com/TrustyTahr/ReleaseNotes">Ubuntu 14.04</a>.</p>
-
-<p>I think that the upgrade process that is provided by Canonical is slightly underoptimal: if you&rsquo;re using a
-local mirror which can provide a very fast download of all packages, they&rsquo;ll usually be disabled during the
-upgrade process, and an official mirror (possibile one very far away) will be employed.</p>
-
-<p>This can lead to a very slow and painful upgrade process.</p>
-
-<p>The solution is easy.</p>
-
-<p>The following instructions regard moving from 12.04 (precise) to 14.04 (trusty)</p>
-
-<h2>Switch your sources</h2>
-
-<p>Assuming that your official ubuntu sources are configured from <code>/etc/apt/sources.list</code> just do something like:</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>sudo sed -i.old -e 's/precise/trusty/g' /etc/apt/sources.list</span></code></pre></td></tr></table></div></figure>
-
-
-<p>I&rsquo;m not considering other sources in <code>/etc/apt/sources.list.d</code>, since they&rsquo;ll be disabled whatsoever; but if you happen
-to have ubuntu sources there as well, you should repeat the SEDding process for each file.</p>
-
-<h2>Update your index</h2>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>sudo apt-get update</span></code></pre></td></tr></table></div></figure>
-
-
-<h2>Download updated packages without installing</h2>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>sudo apt-get dist-upgrade --download-only</span></code></pre></td></tr></table></div></figure>
-
-
-<h2>Revert to old sources</h2>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>sudo mv -f /etc/apt/sources.list.old /etc/apt/sources.list</span></code></pre></td></tr></table></div></figure>
-
-
-<h2>Update index again</h2>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>sudo apt-get update</span></code></pre></td></tr></table></div></figure>
-
-
-<h2>Rejoice!</h2>
-
-<p>Now you can just follow the <a href="https://wiki.ubuntu.com/TrustyTahr/ReleaseNotes#Upgrading_from_Ubuntu_12.04_LTS_or_Ubuntu_13.10">upgrade instructions</a> and
-almost nothing will be downloaded during the upgrade, because everything is already on your hard drive.</p>
-</div>
-
-
-  <footer>
-    <p class="meta">
-      
   
-
-<span class="byline author vcard">Posted by <span class="fn">Alan Franzoni</span></span>
-
-      
-
-
-
-
-
+  <div id="blog-archives" class="category">
 
 
 
   
+  <h2>2014</h2>
+
+<article>
+  
+<h1><a href="/blog/2014/12/10/ssh-hostname-shortcuts/">SSH Hostnames configuration and shortcuts</a></h1>
+<time datetime="2014-12-10T13:20:00+01:00" pubdate><span class='month'>Dec</span> <span class='day'>10</span> <span class='year'>2014</span></time>
+
+<footer>
+  <span class="categories">posted in <a class='category' href='/blog/categories/ancientwisdom/'>ancientwisdom</a>, <a class='category' href='/blog/categories/linux/'>linux</a>, <a class='category' href='/blog/categories/ssh/'>ssh</a></span>
+</footer>
 
 
-<time datetime="2014-09-25T13:34:00+02:00" pubdate data-updated="true">Sep 25<span>th</span>, 2014</time>
-      
-
-<span class="categories">
-  
-    <a class='category' href='/blog/categories/linux/'>linux</a>, <a class='category' href='/blog/categories/ubuntu/'>ubuntu</a>, <a class='category' href='/blog/categories/upgrade/'>upgrade</a>
-  
-</span>
-
-
-    </p>
-    
-      <div class="sharing">
-  
-  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://mostlyunixish.franzoni.eu/blog/2014/09/25/ubuntu-faster-release-upgrade/" data-via="franzeur" data-counturl="http://mostlyunixish.franzoni.eu/blog/2014/09/25/ubuntu-faster-release-upgrade/" >Tweet</a>
-  
-  
-  <div class="g-plusone" data-size="medium"></div>
-  
-  
-    <div class="fb-like" data-send="true" data-width="450" data-show-faces="false"></div>
-  
-</div>
-
-    
-    <p class="meta">
-      
-        <a class="basic-alignment left" href="/blog/2014/09/03/keep-your-tomcat-instance-up-to-date-and-separate-configuration/" title="Previous Post: Keep your tomcat instance up-to-date, and keep apps and configuration tidy.">&laquo; Keep your tomcat instance up-to-date, and keep apps and configuration tidy.</a>
-      
-      
-        <a class="basic-alignment right" href="/blog/2014/11/11/how-often-sudo-asks-for-your-password/" title="Next Post: I wish sudo would ask for my password less often">I wish sudo would ask for my password less often &raquo;</a>
-      
-    </p>
-  </footer>
 </article>
 
-  <section>
-    <h1>Comments</h1>
-    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
 </div>
-  </section>
+
+  
+</article>
 
 </div>
 
@@ -277,10 +166,7 @@ almost nothing will be downloaded during the upgrade, because everything is alre
       var disqus_shortname = 'mostlyunixish';
       
         
-        // var disqus_developer = 1;
-        var disqus_identifier = 'http://mostlyunixish.franzoni.eu/blog/2014/09/25/ubuntu-faster-release-upgrade/';
-        var disqus_url = 'http://mostlyunixish.franzoni.eu/blog/2014/09/25/ubuntu-faster-release-upgrade/';
-        var disqus_script = 'embed.js';
+        var disqus_script = 'count.js';
       
     (function () {
       var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;

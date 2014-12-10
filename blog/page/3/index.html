@@ -9,7 +9,7 @@
   <meta name="author" content="Alan Franzoni">
 
   
-  <meta name="description" content="I find it extremely handy to be able to recall my windows by just using the keyboard. It&rsquo;s pretty easy to do in Linux, just use: wmctrl -x -R & &hellip;">
+  <meta name="description" content="Sometimes when performing your daily apt-get update, you&rsquo;ll experience messages like E: The package lists or status file could not be parsed or &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -78,6 +78,65 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2013/03/06/apt-get-update-fixing-package-index-files-are-corrupted/">Apt-get Update: Fixing &#8216;Package Index Files Are Corrupted&#8217;</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-03-06T13:34:00+01:00" pubdate data-updated="true">Mar 6<span>th</span>, 2013</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Sometimes when performing your daily <code>apt-get update</code>, you&rsquo;ll experience messages like</p>
+
+<blockquote>
+E: The package lists or status file could not be parsed or opened.
+</blockquote>
+
+
+<p>or</p>
+
+<blockquote>
+The package index files are corrupted
+</blockquote>
+
+
+<p>Such messages usually don&rsquo;t go away for quite a long time, and may prevent legitimate updates from installing.</p>
+
+<p>This usually happens even more frequently if using a proxy to access apt archives.</p>
+
+<p>While I don&rsquo;t know what&rsquo;s the root problem, I&rsquo;ve got a quick workaround that seems to fix the immediate error:</p>
+
+<pre>
+sudo -s -H bash -c 'apt-get clean && rm -f /var/lib/apt/lists/* ; rm -f /var/lib/apt/lists/partial/* && apt-get clean && apt-get update'
+</pre>
+
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -182,102 +241,6 @@ the way arguments are passed to the script (it&rsquo;s a simple bash file, take 
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2012/08/26/ssh-client-stop-complaining-inside-my-network/">Ssh Client: Stopping Key Verification Complaints Inside Your Own Private Network</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-08-26T15:55:00+02:00" pubdate data-updated="true">Aug 26<span>th</span>, 2012</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>If you develop enough software, most probably you&rsquo;ll have a test/development network at your service.</p>
-
-<p>In such networks, which are usually handled through a virtualization infrastructure, machines come and go very quickly.
-But ssh clients are usually unhappy about that:</p>
-
-<pre><code>alan@melquiades:/etc/ssh$ ssh root@192.168.0.208
-The authenticity of host '192.168.0.208 (192.168.0.208)' can't be established.
-RSA key fingerprint is 31:4d:8b:97:c8:57:04:85:6a:1b:72:54:46:ab:04:bc.
-Are you sure you want to continue connecting (yes/no)? yes
-Warning: Permanently added '192.168.0.208' (RSA) to the list of known hosts.
-root@192.168.0.208's password: 
-</code></pre>
-
-<p>The first time you connect, you&rsquo;re asked if the fingerprint is correct. The second time you&rsquo;ll just be allowed to connect:</p>
-
-<pre><code>alan@melquiades:/etc/ssh$ ssh root@192.168.0.208
-root@192.168.0.208's password: 
-</code></pre>
-
-<p>What then if the machine at such ip address changes, because it&rsquo;s rebuilt or modified and the ssh host key is not retained?</p>
-
-<pre><code>alan@melquiades:/etc/ssh$ ssh root@192.168.0.208
-@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-@    WARNING: REMOTE HOST IDENTIFICATION HAS CHANGED!     @
-@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-IT IS POSSIBLE THAT SOMEONE IS DOING SOMETHING NASTY!
-Someone could be eavesdropping on you right now (man-in-the-middle attack)!
-It is also possible that a host key has just been changed.
-The fingerprint for the RSA key sent by the remote host is
-7b:42:03:5f:5c:8d:5a:2b:6a:a4:1e:d6:0d:05:de:38.
-Please contact your system administrator.
-Add correct host key in /Users/alan/.ssh/known_hosts to get rid of this message.
-Offending RSA key in /Users/alan/.ssh/known_hosts:111
-  remove with: ssh-keygen -f "/Users/alan/.ssh/known_hosts" -R 192.168.0.208
-RSA host key for 192.168.0.208 has changed and you have requested strict checking.
-Host key verification failed.
-</code></pre>
-
-<p>From the point of view of openssh this may be a serious security breach, and you should fear such message if it happens in the wild if you haven&rsquo;t touched a server &ndash;
-a MitM attack is probably going on!</p>
-
-<p>What about your local network? <code>ssh-keygen -R 192.168.0.208</code> will solve that, but you probably didn&rsquo;t need host key authentication since the beginning.</p>
-
-<p>So, just add this:</p>
-
-<pre><code>Host 192.168.0.*
-    CheckHostIP no
-    UserKnownHostsFile /dev/null
-    StrictHostKeyChecking no
-</code></pre>
-
-<p>at the beginning of your <code>/etc/ssh/ssh_config</code> file, and feel good.</p>
-
-<p>Now, anytime you try connecting inside your network you&rsquo;ll be greeted by this:</p>
-
-<pre><code>alan@melquiades:/etc/ssh$ ssh root@192.168.0.208
-Warning: Permanently added '192.168.0.208' (RSA) to the list of known hosts.
-root@192.168.0.208's password: 
-</code></pre>
-
-<p>No confirmations whatsoever.</p>
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/blog/page/4/">&larr; Older</a>
@@ -295,6 +258,10 @@ root@192.168.0.208's password:
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2014/12/10/ssh-hostname-shortcuts/">SSH Hostnames configuration and shortcuts</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2014/11/11/how-often-sudo-asks-for-your-password/">I wish sudo would ask for my password less often</a>
       </li>
     
@@ -308,10 +275,6 @@ root@192.168.0.208's password:
     
       <li class="post">
         <a href="/blog/2013/11/12/puppet-http-source-for-files/">Puppet Http Source for files</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2013/10/08/quick-log-for-bash-scripts/">Quick log for bash scripts, with line limit</a>
       </li>
     
   </ul>
