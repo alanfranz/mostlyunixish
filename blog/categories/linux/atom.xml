@@ -4,7 +4,7 @@
   <title><![CDATA[Category: linux | Mostly Unixish]]></title>
   <link href="http://mostlyunixish.franzoni.eu/blog/categories/linux/atom.xml" rel="self"/>
   <link href="http://mostlyunixish.franzoni.eu/"/>
-  <updated>2014-12-10T09:40:18+01:00</updated>
+  <updated>2014-12-11T12:40:08+01:00</updated>
   <id>http://mostlyunixish.franzoni.eu/</id>
   <author>
     <name><![CDATA[Alan Franzoni]]></name>
@@ -12,6 +12,35 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Don't give a shell to system users - use su]]></title>
+    <link href="http://mostlyunixish.franzoni.eu/blog/2014/12/11/su-with-chosen-shell/"/>
+    <updated>2014-12-11T13:17:00+01:00</updated>
+    <id>http://mostlyunixish.franzoni.eu/blog/2014/12/11/su-with-chosen-shell</id>
+    <content type="html"><![CDATA[<p>I seem very ancientwisdom-oriented these days.</p>
+
+<p>Sometimes you&rsquo;ve got a system user on your linux server that&rsquo;s used to run a specific service; it&rsquo;s a good practice to employ those users to achieve <a href="http://en.wikipedia.org/wiki/Privilege_separation">privilege separation</a>, since it limits the impact of many security breaches. It&rsquo;s security 101, really.</p>
+
+<p>If you&rsquo;ve got a system user, most probably its shell would be <code>/bin/false</code> or <code>/bin/nologin</code>. Again, this is a good practice, since it would be harder for an attacker to gain shell access to your machine through that user.</p>
+
+<p>But I find that many people just <strong>change</strong> such shell, because sometimes they need to customize the environment for a user, and if you try doing something like</p>
+
+<p><code>
+su - systemuser
+</code></p>
+
+<p>you&rsquo;ll find yourself just back to your original shell, because <strong>su</strong> tries to invoke the shell which is set for the target user, and <code>sudo</code> doesn&rsquo;t generally help here, because its <code>--shell</code> option doesn&rsquo;t start a proper login shell for that user (most of the environment is that of the calling user).</p>
+
+<p>Very well, gentlemen: <strong>this is a wrongdoing and a potential security hole</strong>. You should <strong>never</strong> enable a shell for your system users. Instead, you should leverage an option of <strong>su</strong>:</p>
+
+<p><code>
+su - systemuser --shell /bin/bash
+</code></p>
+
+<p>That lets you choose your favourite shell on a per-launch basis.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[SSH Hostnames configuration and shortcuts]]></title>
@@ -180,75 +209,6 @@ The package index files are corrupted
 sudo -s -H bash -c 'apt-get clean && rm -f /var/lib/apt/lists/* ; rm -f /var/lib/apt/lists/partial/* && apt-get clean && apt-get update'
 </pre>
 
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[ssh client: stopping key verification complaints inside your own private network]]></title>
-    <link href="http://mostlyunixish.franzoni.eu/blog/2012/08/26/ssh-client-stop-complaining-inside-my-network/"/>
-    <updated>2012-08-26T15:55:00+02:00</updated>
-    <id>http://mostlyunixish.franzoni.eu/blog/2012/08/26/ssh-client-stop-complaining-inside-my-network</id>
-    <content type="html"><![CDATA[<p>If you develop enough software, most probably you&rsquo;ll have a test/development network at your service.</p>
-
-<p>In such networks, which are usually handled through a virtualization infrastructure, machines come and go very quickly.
-But ssh clients are usually unhappy about that:</p>
-
-<pre><code>alan@melquiades:/etc/ssh$ ssh root@192.168.0.208
-The authenticity of host '192.168.0.208 (192.168.0.208)' can't be established.
-RSA key fingerprint is 31:4d:8b:97:c8:57:04:85:6a:1b:72:54:46:ab:04:bc.
-Are you sure you want to continue connecting (yes/no)? yes
-Warning: Permanently added '192.168.0.208' (RSA) to the list of known hosts.
-root@192.168.0.208's password: 
-</code></pre>
-
-<p>The first time you connect, you&rsquo;re asked if the fingerprint is correct. The second time you&rsquo;ll just be allowed to connect:</p>
-
-<pre><code>alan@melquiades:/etc/ssh$ ssh root@192.168.0.208
-root@192.168.0.208's password: 
-</code></pre>
-
-<p>What then if the machine at such ip address changes, because it&rsquo;s rebuilt or modified and the ssh host key is not retained?</p>
-
-<pre><code>alan@melquiades:/etc/ssh$ ssh root@192.168.0.208
-@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-@    WARNING: REMOTE HOST IDENTIFICATION HAS CHANGED!     @
-@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-IT IS POSSIBLE THAT SOMEONE IS DOING SOMETHING NASTY!
-Someone could be eavesdropping on you right now (man-in-the-middle attack)!
-It is also possible that a host key has just been changed.
-The fingerprint for the RSA key sent by the remote host is
-7b:42:03:5f:5c:8d:5a:2b:6a:a4:1e:d6:0d:05:de:38.
-Please contact your system administrator.
-Add correct host key in /Users/alan/.ssh/known_hosts to get rid of this message.
-Offending RSA key in /Users/alan/.ssh/known_hosts:111
-  remove with: ssh-keygen -f "/Users/alan/.ssh/known_hosts" -R 192.168.0.208
-RSA host key for 192.168.0.208 has changed and you have requested strict checking.
-Host key verification failed.
-</code></pre>
-
-<p>From the point of view of openssh this may be a serious security breach, and you should fear such message if it happens in the wild if you haven&rsquo;t touched a server &ndash;
-a MitM attack is probably going on!</p>
-
-<p>What about your local network? <code>ssh-keygen -R 192.168.0.208</code> will solve that, but you probably didn&rsquo;t need host key authentication since the beginning.</p>
-
-<p>So, just add this:</p>
-
-<pre><code>Host 192.168.0.*
-    CheckHostIP no
-    UserKnownHostsFile /dev/null
-    StrictHostKeyChecking no
-</code></pre>
-
-<p>at the beginning of your <code>/etc/ssh/ssh_config</code> file, and feel good.</p>
-
-<p>Now, anytime you try connecting inside your network you&rsquo;ll be greeted by this:</p>
-
-<pre><code>alan@melquiades:/etc/ssh$ ssh root@192.168.0.208
-Warning: Permanently added '192.168.0.208' (RSA) to the list of known hosts.
-root@192.168.0.208's password: 
-</code></pre>
-
-<p>No confirmations whatsoever.</p>
 ]]></content>
   </entry>
   

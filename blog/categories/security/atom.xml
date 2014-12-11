@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Category: ancientwisdom | Mostly Unixish]]></title>
-  <link href="http://mostlyunixish.franzoni.eu/blog/categories/ancientwisdom/atom.xml" rel="self"/>
+  <title><![CDATA[Category: security | Mostly Unixish]]></title>
+  <link href="http://mostlyunixish.franzoni.eu/blog/categories/security/atom.xml" rel="self"/>
   <link href="http://mostlyunixish.franzoni.eu/"/>
   <updated>2014-12-11T12:40:08+01:00</updated>
   <id>http://mostlyunixish.franzoni.eu/</id>
@@ -39,59 +39,6 @@ su - systemuser --shell /bin/bash
 </code></p>
 
 <p>That lets you choose your favourite shell on a per-launch basis.</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[SSH Hostnames configuration and shortcuts]]></title>
-    <link href="http://mostlyunixish.franzoni.eu/blog/2014/12/10/ssh-hostname-shortcuts/"/>
-    <updated>2014-12-10T13:20:00+01:00</updated>
-    <id>http://mostlyunixish.franzoni.eu/blog/2014/12/10/ssh-hostname-shortcuts</id>
-    <content type="html"><![CDATA[<p>This is another old trick, but I like to tell the world about such amenities.</p>
-
-<p>I often find people writing command lines such as:</p>
-
-<p><code>
-ssh arcane-system-user@someextremelylong.andimpossibiletotype.anderrorprone.hostname.com
-</code></p>
-
-<p>or, worse</p>
-
-<p><code>
-ssh idliketorememberwhichuser@10.20.30.40
-</code></p>
-
-<p>or maybe it was</p>
-
-<p><code>
-ssh someuserimashamedof@1.2.3.4
-</code></p>
-
-<p>yes, sometimes ssh is simply tedious.</p>
-
-<p>But you can do better. In fact, you can do <strong>much</strong> better.</p>
-
-<p>your <em>~/.ssh/config</em> or <em>/etc/ssh/ssh_config</em> can contain <strong>Host</strong> configuration sections; I have already blogged about such directives when I told the world about stopping <a href="blog/2012/08/26/ssh-client-stop-complaining-inside-my-network/">key verification compliants</a> &ndash; they&rsquo;re very flexible, indeed.</p>
-
-<p>Consider adding <strong>Host</strong> directives in your configuration for your most used services:</p>
-
-<p>```
-Host myniceserver</p>
-
-<pre><code>Hostname myniceserver.mylove.com
-Port 12345
-User teddybear
-</code></pre>
-
-<p>```</p>
-
-<p>And then you can just</p>
-
-<p><code>
-ssh myniceserver
-</code></p>
-
-<p>You can override most options on a per-server basis and/or select a certain private key for connections.</p>
 ]]></content>
   </entry>
   
