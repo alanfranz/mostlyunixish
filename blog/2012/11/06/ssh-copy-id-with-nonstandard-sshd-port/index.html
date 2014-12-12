@@ -9,8 +9,7 @@
   <meta name="author" content="Alan Franzoni">
 
   
-  <meta name="description" content="ssh-copy-id is a cool script which is usually distributed along openssh client nowadays;
-it performs an automatic install of your local public SSH &hellip;">
+  <meta name="description" content="UPDATE: modern ssh-copy-id often support a -p parameter for the port. So this trick is unnecessary and won&rsquo;t probably work. * ssh-copy-id is a &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -105,7 +104,12 @@ it performs an automatic install of your local public SSH &hellip;">
   </header>
 
 
-<div class="entry-content"><p><a href="http://linux.die.net/man/1/ssh-copy-id">ssh-copy-id</a> is a cool script which is usually distributed along openssh client nowadays;
+<div class="entry-content"><ul>
+<li><strong>UPDATE:</strong> modern ssh-copy-id often support a -p parameter for the port. So this trick is unnecessary and won&rsquo;t probably work. *</li>
+</ul>
+
+
+<p><a href="http://linux.die.net/man/1/ssh-copy-id">ssh-copy-id</a> is a cool script which is usually distributed along openssh client nowadays;
 it performs an automatic install of your local public SSH key to a remote server. Its syntax is simply:</p>
 
 <p><code>ssh-copy-id [-i [identity_file]] [user@]machine</code></p>
@@ -191,6 +195,10 @@ the way arguments are passed to the script (it&rsquo;s a simple bash file, take 
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2014/12/12/unfreeze-window-manager/">Unfreezing your desktop: when Compiz goes wrong</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2014/12/11/su-with-chosen-shell/">Don't give a shell to system users - use su</a>
       </li>
     
@@ -204,10 +212,6 @@ the way arguments are passed to the script (it&rsquo;s a simple bash file, take 
     
       <li class="post">
         <a href="/blog/2014/09/25/ubuntu-faster-release-upgrade/">Ubuntu: faster release upgrade</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2014/09/03/keep-your-tomcat-instance-up-to-date-and-separate-configuration/">Keep your tomcat instance up-to-date, and keep apps and configuration tidy.</a>
       </li>
     
   </ul>

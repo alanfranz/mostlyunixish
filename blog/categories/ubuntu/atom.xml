@@ -4,7 +4,7 @@
   <title><![CDATA[Category: ubuntu | Mostly Unixish]]></title>
   <link href="http://mostlyunixish.franzoni.eu/blog/categories/ubuntu/atom.xml" rel="self"/>
   <link href="http://mostlyunixish.franzoni.eu/"/>
-  <updated>2014-12-11T12:40:08+01:00</updated>
+  <updated>2014-12-12T08:54:36+01:00</updated>
   <id>http://mostlyunixish.franzoni.eu/</id>
   <author>
     <name><![CDATA[Alan Franzoni]]></name>
@@ -12,6 +12,67 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Unfreezing your desktop: when Compiz goes wrong]]></title>
+    <link href="http://mostlyunixish.franzoni.eu/blog/2014/12/12/unfreeze-window-manager/"/>
+    <updated>2014-12-12T08:50:00+01:00</updated>
+    <id>http://mostlyunixish.franzoni.eu/blog/2014/12/12/unfreeze-window-manager</id>
+    <content type="html"><![CDATA[<p>A desktop freeze is something that&rsquo;s not so rare nowadays &ndash; that&rsquo;s not good, but we shouldn&rsquo;t get desperate about that.</p>
+
+<p>I like <a href="www.compiz.org">Compiz</a> with <a href="https://unity.ubuntu.com/">Unity Desktop</a> on my <a href="https://wiki.ubuntu.com/TrustyTahr/ReleaseNotes">Ubuntu Trusty</a> very much; <strong>I feel it&rsquo;s a step forward compared to traditional desktops</strong>. The only major nuisance I had on the previous versions was the inability to disable the global menu (which I like by itself, but I don&rsquo;t like the global menu disappearing when the mouse is not over it), but you can now disable it and have the menu on the window &ndash; even though you can&rsquo;t still enable an always-visible behaviour.</p>
+
+<p>The problem is: compiz sometimes gets buggy. Running a different window manager, like <a href="https://help.ubuntu.com/community/Metacity">metacity</a> and/or <a href="http://cgit.freedesktop.org/xorg/app/xcompmgr/">xcompmgr</a> just doesn&rsquo;t seem good, you can experience other issues and you&rsquo;re using the stack in a way it wasn&rsquo;t designed for. I don&rsquo;t like that approach.</p>
+
+<p>So, what can you do when your desktop freezes? The symptoms are usually very clear: you can move your mouse, but you can&rsquo;t click nor type anything.</p>
+
+<p><strong>You don&rsquo;t need to reboot nor to restart X.</strong> You can fix this without losing your work.</p>
+
+<h2>Get a raw tty</h2>
+
+<p>Press <em>Ctrl+Alt+F1</em> and get to a raw linux console, and access with your credentials.</p>
+
+<h2>Find and kill your stuck process</h2>
+
+<p><code>
+pgrep compiz
+</code></p>
+
+<p>This will print the PID of our stuck window manager.</p>
+
+<p>Let&rsquo;s kill it</p>
+
+<p><code>
+kill compiz
+</code></p>
+
+<p>This <strong>won&rsquo;t usually be enough</strong> because the process is really stuck: if you repeat the <em>pgrep</em> command above, you&rsquo;ll find it still running &ndash; i.e. pgrep will return the very same PID as above.</p>
+
+<p>So let&rsquo;s kill it, really this time!</p>
+
+<p><code>
+kill -9 compiz
+</code></p>
+
+<p>Wait some 15-20 seconds.</p>
+
+<p>Now, if you repeat the <code>pgrep</code> , you&rsquo;ll either see a) no result or b) a different PID.</p>
+
+<p>If you see a different PID, it&rsquo;s Ubuntu that noticed the crashed process and relaunched it; press <em>Ctrl+Alt+F7</em>, and you should just get back a working desktop!</p>
+
+<h2>Relaunching</h2>
+
+<p>If you see nothing with pgrep, you&rsquo;ll need to relaunch Compiz manually.</p>
+
+<p>You cannot simply relaunch compiz on the console, because it must connect to X: the proper way to do it is:</p>
+
+<p><code>
+DISPLAY=:0 compiz
+</code></p>
+
+<p>Now switch back to your X instance with <em>Ctrl+Alt+F7</em> and enjoy!</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Ubuntu: faster release upgrade]]></title>

@@ -9,7 +9,7 @@
   <meta name="author" content="Alan Franzoni">
 
   
-  <meta name="description" content="I seem very ancientwisdom-oriented these days. Sometimes you&rsquo;ve got a system user on your linux server that&rsquo;s used to run a specific &hellip;">
+  <meta name="description" content="A desktop freeze is something that&rsquo;s not so rare nowadays &ndash; that&rsquo;s not good, but we shouldn&rsquo;t get desperate about that. I &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -78,6 +78,94 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/12/12/unfreeze-window-manager/">Unfreezing Your Desktop: When Compiz Goes Wrong</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-12-12T08:50:00+01:00" pubdate data-updated="true">Dec 12<span>th</span>, 2014</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>A desktop freeze is something that&rsquo;s not so rare nowadays &ndash; that&rsquo;s not good, but we shouldn&rsquo;t get desperate about that.</p>
+
+<p>I like <a href="www.compiz.org">Compiz</a> with <a href="https://unity.ubuntu.com/">Unity Desktop</a> on my <a href="https://wiki.ubuntu.com/TrustyTahr/ReleaseNotes">Ubuntu Trusty</a> very much; <strong>I feel it&rsquo;s a step forward compared to traditional desktops</strong>. The only major nuisance I had on the previous versions was the inability to disable the global menu (which I like by itself, but I don&rsquo;t like the global menu disappearing when the mouse is not over it), but you can now disable it and have the menu on the window &ndash; even though you can&rsquo;t still enable an always-visible behaviour.</p>
+
+<p>The problem is: compiz sometimes gets buggy. Running a different window manager, like <a href="https://help.ubuntu.com/community/Metacity">metacity</a> and/or <a href="http://cgit.freedesktop.org/xorg/app/xcompmgr/">xcompmgr</a> just doesn&rsquo;t seem good, you can experience other issues and you&rsquo;re using the stack in a way it wasn&rsquo;t designed for. I don&rsquo;t like that approach.</p>
+
+<p>So, what can you do when your desktop freezes? The symptoms are usually very clear: you can move your mouse, but you can&rsquo;t click nor type anything.</p>
+
+<p><strong>You don&rsquo;t need to reboot nor to restart X.</strong> You can fix this without losing your work.</p>
+
+<h2>Get a raw tty</h2>
+
+<p>Press <em>Ctrl+Alt+F1</em> and get to a raw linux console, and access with your credentials.</p>
+
+<h2>Find and kill your stuck process</h2>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>pgrep compiz</span></code></pre></td></tr></table></div></figure>
+
+
+<p>This will print the PID of our stuck window manager.</p>
+
+<p>Let&rsquo;s kill it</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>kill compiz</span></code></pre></td></tr></table></div></figure>
+
+
+<p>This <strong>won&rsquo;t usually be enough</strong> because the process is really stuck: if you repeat the <em>pgrep</em> command above, you&rsquo;ll find it still running &ndash; i.e. pgrep will return the very same PID as above.</p>
+
+<p>So let&rsquo;s kill it, really this time!</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>kill -9 compiz</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Wait some 15-20 seconds.</p>
+
+<p>Now, if you repeat the <code>pgrep</code> , you&rsquo;ll either see a) no result or b) a different PID.</p>
+
+<p>If you see a different PID, it&rsquo;s Ubuntu that noticed the crashed process and relaunched it; press <em>Ctrl+Alt+F7</em>, and you should just get back a working desktop!</p>
+
+<h2>Relaunching</h2>
+
+<p>If you see nothing with pgrep, you&rsquo;ll need to relaunch Compiz manually.</p>
+
+<p>You cannot simply relaunch compiz on the console, because it must connect to X: the proper way to do it is:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>DISPLAY=:0 compiz</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Now switch back to your X instance with <em>Ctrl+Alt+F7</em> and enjoy!</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -215,64 +303,6 @@
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2014/11/11/how-often-sudo-asks-for-your-password/">I Wish Sudo Would Ask for My Password Less Often</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2014-11-11T13:28:00+01:00" pubdate data-updated="true">Nov 11<span>th</span>, 2014</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>This is a <strong>very</strong> old trick, but I find many people doesn&rsquo;t know about it yet.</p>
-
-<p>If you&rsquo;re using sudo <a href="https://help.ubuntu.com/community/RootSudo">(and you definitely should)</a>, one minor complaint is that you need to re-enter your password quite often.</p>
-
-<p>One common pseudo-solution is to completely disable the password for executing sudo with such user; while it may be a good idea sometimes, it does decrease the overall security &ndash; if you happen to forget an open shell or screen/tmux lingering somewhere, you give total power to whoever gets in touch with it.</p>
-
-<p>If you happen to let people into your sudo-enabled account with your ssh key, anybody that can get hold of your ssh key will get <strong>root access</strong> to your servers. It&rsquo;s not the best possible scenario.</p>
-
-<p>There&rsquo;s a very simply workaround: just edit your sudoers file!</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>sudo visudo</span></code></pre></td></tr></table></div></figure>
-
-
-<p>and add a line like that (or modify it if it&rsquo;s already there)</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>Defaults    timestamp_timeout=120</span></code></pre></td></tr></table></div></figure>
-
-
-<p>This means that sudo will ask for a password every two hours instead of the default (15 minutes on most installations). You can use -1 in order to never let it expire (I don&rsquo;t suggest that &ndash; 8-10 hours should be enough for everybody.)</p>
-
-<p>The only drawback is that such timeout is per shell, not system-wide &ndash; i.e. if you open multiple terminals, you&rsquo;ll have to enter the password again for each new terminal instance.</p>
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/blog/page/2/">&larr; Older</a>
@@ -288,6 +318,10 @@
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2014/12/12/unfreeze-window-manager/">Unfreezing your desktop: when Compiz goes wrong</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2014/12/11/su-with-chosen-shell/">Don&#8217;t give a shell to system users - use su</a>
       </li>
     
@@ -301,10 +335,6 @@
     
       <li class="post">
         <a href="/blog/2014/09/25/ubuntu-faster-release-upgrade/">Ubuntu: faster release upgrade</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2014/09/03/keep-your-tomcat-instance-up-to-date-and-separate-configuration/">Keep your tomcat instance up-to-date, and keep apps and configuration tidy.</a>
       </li>
     
   </ul>

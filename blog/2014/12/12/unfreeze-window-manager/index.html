@@ -5,12 +5,11 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Disown is your friend - Mostly Unixish</title>
+  <title>Unfreezing your desktop: when Compiz goes wrong - Mostly Unixish</title>
   <meta name="author" content="Alan Franzoni">
 
   
-  <meta name="description" content="Bash builtin disown is a not-so-well known job control command, and yet
-it&rsquo;s an extremely useful one. So what? You&rsquo;ve started a remote &hellip;">
+  <meta name="description" content="A desktop freeze is something that&rsquo;s not so rare nowadays &ndash; that&rsquo;s not good, but we shouldn&rsquo;t get desperate about that. I &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -19,7 +18,7 @@ it&rsquo;s an extremely useful one. So what? You&rsquo;ve started a remote &hell
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://mostlyunixish.franzoni.eu/blog/2012/08/22/disown-is-your-friend/">
+  <link rel="canonical" href="http://mostlyunixish.franzoni.eu/blog/2014/12/12/unfreeze-window-manager/">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <script src="/javascripts/modernizr-2.0.js"></script>
@@ -82,7 +81,7 @@ it&rsquo;s an extremely useful one. So what? You&rsquo;ve started a remote &hell
   
   <header>
     
-      <h1 class="entry-title">Disown Is Your Friend</h1>
+      <h1 class="entry-title">Unfreezing Your Desktop: When Compiz Goes Wrong</h1>
     
     
       <p class="meta">
@@ -98,24 +97,66 @@ it&rsquo;s an extremely useful one. So what? You&rsquo;ve started a remote &hell
   
 
 
-<time datetime="2012-08-22T19:22:00+02:00" pubdate data-updated="true">Aug 22<span>nd</span>, 2012</time>
+<time datetime="2014-12-12T08:50:00+01:00" pubdate data-updated="true">Dec 12<span>th</span>, 2014</time>
         
       </p>
     
   </header>
 
 
-<div class="entry-content"><p>Bash builtin <em>disown</em> is a not-so-well known <a href="http://www.gnu.org/software/bash/manual/html_node/Job-Control-Builtins.html">job control command</a>, and yet
-it&rsquo;s an extremely useful one.</p>
+<div class="entry-content"><p>A desktop freeze is something that&rsquo;s not so rare nowadays &ndash; that&rsquo;s not good, but we shouldn&rsquo;t get desperate about that.</p>
 
-<p>So what? You&rsquo;ve started a remote ssh session, launched some command which is taking very, very long to complete, and you just want to go home, or maybe you
-feel your connectivity may drop, and so on&hellip; and you forgot to launch <a href="http://www.gnu.org/software/screen">screen</a> (possibly with <a href="https://launchpad.net/byobu">byobu</a>)
-or <a href="http://tmux.sourceforge.net">tmux</a> before starting your work!</p>
+<p>I like <a href="www.compiz.org">Compiz</a> with <a href="https://unity.ubuntu.com/">Unity Desktop</a> on my <a href="https://wiki.ubuntu.com/TrustyTahr/ReleaseNotes">Ubuntu Trusty</a> very much; <strong>I feel it&rsquo;s a step forward compared to traditional desktops</strong>. The only major nuisance I had on the previous versions was the inability to disable the global menu (which I like by itself, but I don&rsquo;t like the global menu disappearing when the mouse is not over it), but you can now disable it and have the menu on the window &ndash; even though you can&rsquo;t still enable an always-visible behaviour.</p>
 
-<p>Now you&rsquo;re desperate and you&rsquo;d just like to go home, but you fear your longstanding jobs will quit if you close your terminal.</p>
+<p>The problem is: compiz sometimes gets buggy. Running a different window manager, like <a href="https://help.ubuntu.com/community/Metacity">metacity</a> and/or <a href="http://cgit.freedesktop.org/xorg/app/xcompmgr/">xcompmgr</a> just doesn&rsquo;t seem good, you can experience other issues and you&rsquo;re using the stack in a way it wasn&rsquo;t designed for. I don&rsquo;t like that approach.</p>
 
-<p>Just background your job, launch <em>disown</em> and all the jobs in background will receive no notification whatsoever of your saying goodbye to them;
-of course you won&rsquo;t be able to read their output to the terminal.</p>
+<p>So, what can you do when your desktop freezes? The symptoms are usually very clear: you can move your mouse, but you can&rsquo;t click nor type anything.</p>
+
+<p><strong>You don&rsquo;t need to reboot nor to restart X.</strong> You can fix this without losing your work.</p>
+
+<h2>Get a raw tty</h2>
+
+<p>Press <em>Ctrl+Alt+F1</em> and get to a raw linux console, and access with your credentials.</p>
+
+<h2>Find and kill your stuck process</h2>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>pgrep compiz</span></code></pre></td></tr></table></div></figure>
+
+
+<p>This will print the PID of our stuck window manager.</p>
+
+<p>Let&rsquo;s kill it</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>kill compiz</span></code></pre></td></tr></table></div></figure>
+
+
+<p>This <strong>won&rsquo;t usually be enough</strong> because the process is really stuck: if you repeat the <em>pgrep</em> command above, you&rsquo;ll find it still running &ndash; i.e. pgrep will return the very same PID as above.</p>
+
+<p>So let&rsquo;s kill it, really this time!</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>kill -9 compiz</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Wait some 15-20 seconds.</p>
+
+<p>Now, if you repeat the <code>pgrep</code> , you&rsquo;ll either see a) no result or b) a different PID.</p>
+
+<p>If you see a different PID, it&rsquo;s Ubuntu that noticed the crashed process and relaunched it; press <em>Ctrl+Alt+F7</em>, and you should just get back a working desktop!</p>
+
+<h2>Relaunching</h2>
+
+<p>If you see nothing with pgrep, you&rsquo;ll need to relaunch Compiz manually.</p>
+
+<p>You cannot simply relaunch compiz on the console, because it must connect to X: the proper way to do it is:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>DISPLAY=:0 compiz</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Now switch back to your X instance with <em>Ctrl+Alt+F7</em> and enjoy!</p>
 </div>
 
 
@@ -138,12 +179,12 @@ of course you won&rsquo;t be able to read their output to the terminal.</p>
   
 
 
-<time datetime="2012-08-22T19:22:00+02:00" pubdate data-updated="true">Aug 22<span>nd</span>, 2012</time>
+<time datetime="2014-12-12T08:50:00+01:00" pubdate data-updated="true">Dec 12<span>th</span>, 2014</time>
       
 
 <span class="categories">
   
-    <a class='category' href='/blog/categories/bash/'>bash</a>, <a class='category' href='/blog/categories/linux/'>linux</a>, <a class='category' href='/blog/categories/ssh/'>ssh</a>
+    <a class='category' href='/blog/categories/ancientwisdom/'>ancientwisdom</a>, <a class='category' href='/blog/categories/compiz/'>compiz</a>, <a class='category' href='/blog/categories/linux/'>linux</a>, <a class='category' href='/blog/categories/ubuntu/'>ubuntu</a>, <a class='category' href='/blog/categories/unity/'>unity</a>
   
 </span>
 
@@ -152,7 +193,7 @@ of course you won&rsquo;t be able to read their output to the terminal.</p>
     
       <div class="sharing">
   
-  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://mostlyunixish.franzoni.eu/blog/2012/08/22/disown-is-your-friend/" data-via="franzeur" data-counturl="http://mostlyunixish.franzoni.eu/blog/2012/08/22/disown-is-your-friend/" >Tweet</a>
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://mostlyunixish.franzoni.eu/blog/2014/12/12/unfreeze-window-manager/" data-via="franzeur" data-counturl="http://mostlyunixish.franzoni.eu/blog/2014/12/12/unfreeze-window-manager/" >Tweet</a>
   
   
   <div class="g-plusone" data-size="medium"></div>
@@ -165,10 +206,8 @@ of course you won&rsquo;t be able to read their output to the terminal.</p>
     
     <p class="meta">
       
-        <a class="basic-alignment left" href="/blog/2012/06/25/purging-outdated-kernels-on-systems-with-enabled-autoupdate/" title="Previous Post: Purging outdated kernels on systems with unattended-upgrades">&laquo; Purging outdated kernels on systems with unattended-upgrades</a>
+        <a class="basic-alignment left" href="/blog/2014/12/11/su-with-chosen-shell/" title="Previous Post: Don't give a shell to system users - use su">&laquo; Don't give a shell to system users - use su</a>
       
-      
-        <a class="basic-alignment right" href="/blog/2012/08/23/thunderbird-temporary-directory/" title="Next Post: Thunderbird temporary directory">Thunderbird temporary directory &raquo;</a>
       
     </p>
   </footer>
@@ -239,8 +278,8 @@ of course you won&rsquo;t be able to read their output to the terminal.</p>
       
         
         // var disqus_developer = 1;
-        var disqus_identifier = 'http://mostlyunixish.franzoni.eu/blog/2012/08/22/disown-is-your-friend/';
-        var disqus_url = 'http://mostlyunixish.franzoni.eu/blog/2012/08/22/disown-is-your-friend/';
+        var disqus_identifier = 'http://mostlyunixish.franzoni.eu/blog/2014/12/12/unfreeze-window-manager/';
+        var disqus_url = 'http://mostlyunixish.franzoni.eu/blog/2014/12/12/unfreeze-window-manager/';
         var disqus_script = 'embed.js';
       
     (function () {
