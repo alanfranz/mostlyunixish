@@ -4,7 +4,7 @@
   <title><![CDATA[Category: linux | Mostly Unixish]]></title>
   <link href="http://mostlyunixish.franzoni.eu/blog/categories/linux/atom.xml" rel="self"/>
   <link href="http://mostlyunixish.franzoni.eu/"/>
-  <updated>2014-12-12T08:54:36+01:00</updated>
+  <updated>2014-12-12T09:07:39+01:00</updated>
   <id>http://mostlyunixish.franzoni.eu/</id>
   <author>
     <name><![CDATA[Alan Franzoni]]></name>
@@ -54,9 +54,9 @@ kill compiz
 kill -9 compiz
 </code></p>
 
-<p>Wait some 15-20 seconds.</p>
+<p>Then wait some 15-20 seconds.</p>
 
-<p>Now, if you repeat the <code>pgrep</code> , you&rsquo;ll either see a) no result or b) a different PID.</p>
+<p>Now, if you repeat the <em>pgrep</em> , you&rsquo;ll either see a) no result or b) a different PID.</p>
 
 <p>If you see a different PID, it&rsquo;s Ubuntu that noticed the crashed process and relaunched it; press <em>Ctrl+Alt+F7</em>, and you should just get back a working desktop!</p>
 
