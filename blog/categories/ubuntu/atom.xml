@@ -4,7 +4,7 @@
   <title><![CDATA[Category: ubuntu | Mostly Unixish]]></title>
   <link href="http://mostlyunixish.franzoni.eu/blog/categories/ubuntu/atom.xml" rel="self"/>
   <link href="http://mostlyunixish.franzoni.eu/"/>
-  <updated>2014-12-16T12:16:29+01:00</updated>
+  <updated>2014-12-16T12:19:53+01:00</updated>
   <id>http://mostlyunixish.franzoni.eu/</id>
   <author>
     <name><![CDATA[Alan Franzoni]]></name>
@@ -43,7 +43,7 @@ pgrep compiz
 <p>Let&rsquo;s kill it</p>
 
 <p><code>
-kill compiz
+pkill compiz
 </code></p>
 
 <p>This <strong>won&rsquo;t usually be enough</strong> because the process is really stuck: if you repeat the <em>pgrep</em> command above, you&rsquo;ll find it still running &ndash; i.e. pgrep will return the very same PID as above.</p>
@@ -51,7 +51,7 @@ kill compiz
 <p>So let&rsquo;s kill it, really this time!</p>
 
 <p><code>
-kill -9 compiz
+pkill -9 compiz
 </code></p>
 
 <p>Then wait some 15-20 seconds.</p>

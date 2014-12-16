@@ -129,7 +129,7 @@
 <p>Let&rsquo;s kill it</p>
 
 <figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>kill compiz</span></code></pre></td></tr></table></div></figure>
+</pre></td><td class='code'><pre><code class=''><span class='line'>pkill compiz</span></code></pre></td></tr></table></div></figure>
 
 
 <p>This <strong>won&rsquo;t usually be enough</strong> because the process is really stuck: if you repeat the <em>pgrep</em> command above, you&rsquo;ll find it still running &ndash; i.e. pgrep will return the very same PID as above.</p>
@@ -137,7 +137,7 @@
 <p>So let&rsquo;s kill it, really this time!</p>
 
 <figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>kill -9 compiz</span></code></pre></td></tr></table></div></figure>
+</pre></td><td class='code'><pre><code class=''><span class='line'>pkill -9 compiz</span></code></pre></td></tr></table></div></figure>
 
 
 <p>Then wait some 15-20 seconds.</p>
