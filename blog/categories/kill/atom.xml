@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: kill | Mostly Unixish]]></title>
+  <link href="http://mostlyunixish.franzoni.eu/blog/categories/kill/atom.xml" rel="self"/>
+  <link href="http://mostlyunixish.franzoni.eu/"/>
+  <updated>2014-12-16T18:56:59+01:00</updated>
+  <id>http://mostlyunixish.franzoni.eu/</id>
+  <author>
+    <name><![CDATA[Alan Franzoni]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Kill Me Softly: killing a process the right way]]></title>
+    <link href="http://mostlyunixish.franzoni.eu/blog/2014/12/16/kill-me-softly/"/>
+    <updated>2014-12-16T20:10:00+01:00</updated>
+    <id>http://mostlyunixish.franzoni.eu/blog/2014/12/16/kill-me-softly</id>
+    <content type="html"><![CDATA[<p>I was tired of repeating the same old pattern. Send a kill signal. Check with pgrep. Did the process exit? Send a kill -9.</p>
+
+<p>Now all my knowledge has been permanently dumped here:</p>
+
+<p><a href="https://github.com/alanfranz/killmesoftly">Kill Me Softly on GitHub</a></p>
+
+<p>If you want to kill a process by letting it to exit gracefully, and yet kill it without mercy if it&rsquo;s too slow to exit, that&rsquo;s your new favourite shell script.</p>
+]]></content>
+  </entry>
+  
+</feed>

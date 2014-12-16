@@ -4,7 +4,7 @@
   <title><![CDATA[Category: linux | Mostly Unixish]]></title>
   <link href="http://mostlyunixish.franzoni.eu/blog/categories/linux/atom.xml" rel="self"/>
   <link href="http://mostlyunixish.franzoni.eu/"/>
-  <updated>2014-12-16T12:21:37+01:00</updated>
+  <updated>2014-12-16T18:56:59+01:00</updated>
   <id>http://mostlyunixish.franzoni.eu/</id>
   <author>
     <name><![CDATA[Alan Franzoni]]></name>
@@ -12,6 +12,21 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Kill Me Softly: killing a process the right way]]></title>
+    <link href="http://mostlyunixish.franzoni.eu/blog/2014/12/16/kill-me-softly/"/>
+    <updated>2014-12-16T20:10:00+01:00</updated>
+    <id>http://mostlyunixish.franzoni.eu/blog/2014/12/16/kill-me-softly</id>
+    <content type="html"><![CDATA[<p>I was tired of repeating the same old pattern. Send a kill signal. Check with pgrep. Did the process exit? Send a kill -9.</p>
+
+<p>Now all my knowledge has been permanently dumped here:</p>
+
+<p><a href="https://github.com/alanfranz/killmesoftly">Kill Me Softly on GitHub</a></p>
+
+<p>If you want to kill a process by letting it to exit gracefully, and yet kill it without mercy if it&rsquo;s too slow to exit, that&rsquo;s your new favourite shell script.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Unfreezing your desktop: when Compiz goes wrong]]></title>
@@ -184,60 +199,6 @@ Defaults    timestamp_timeout=120
 <p>This means that sudo will ask for a password every two hours instead of the default (15 minutes on most installations). You can use -1 in order to never let it expire (I don&rsquo;t suggest that &ndash; 8-10 hours should be enough for everybody.)</p>
 
 <p>The only drawback is that such timeout is per shell, not system-wide &ndash; i.e. if you open multiple terminals, you&rsquo;ll have to enter the password again for each new terminal instance.</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Ubuntu: faster release upgrade]]></title>
-    <link href="http://mostlyunixish.franzoni.eu/blog/2014/09/25/ubuntu-faster-release-upgrade/"/>
-    <updated>2014-09-25T13:34:00+02:00</updated>
-    <id>http://mostlyunixish.franzoni.eu/blog/2014/09/25/ubuntu-faster-release-upgrade</id>
-    <content type="html"><![CDATA[<p>It might be high time to update to the latest <a href="https://wiki.ubuntu.com/TrustyTahr/ReleaseNotes">Ubuntu 14.04</a>.</p>
-
-<p>I think that the upgrade process that is provided by Canonical is slightly underoptimal: if you&rsquo;re using a
-local mirror which can provide a very fast download of all packages, they&rsquo;ll usually be disabled during the
-upgrade process, and an official mirror (possibile one very far away) will be employed.</p>
-
-<p>This can lead to a very slow and painful upgrade process.</p>
-
-<p>The solution is easy.</p>
-
-<p>The following instructions regard moving from 12.04 (precise) to 14.04 (trusty)</p>
-
-<h2>Switch your sources</h2>
-
-<p>Assuming that your official ubuntu sources are configured from <code>/etc/apt/sources.list</code> just do something like:</p>
-
-<p><div class='bogus-wrapper'><notextile><figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>sudo sed -i.old -e &rsquo;s/precise/trusty/g' /etc/apt/sources.list</span></code></pre></td></tr></table></div></figure></notextile></div></p>
-
-<p>I&rsquo;m not considering other sources in <code>/etc/apt/sources.list.d</code>, since they&rsquo;ll be disabled whatsoever; but if you happen
-to have ubuntu sources there as well, you should repeat the SEDding process for each file.</p>
-
-<h2>Update your index</h2>
-
-<p><div class='bogus-wrapper'><notextile><figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>sudo apt-get update</span></code></pre></td></tr></table></div></figure></notextile></div></p>
-
-<h2>Download updated packages without installing</h2>
-
-<p><div class='bogus-wrapper'><notextile><figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>sudo apt-get dist-upgrade &mdash;download-only</span></code></pre></td></tr></table></div></figure></notextile></div></p>
-
-<h2>Revert to old sources</h2>
-
-<p><div class='bogus-wrapper'><notextile><figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>sudo mv -f /etc/apt/sources.list.old /etc/apt/sources.list</span></code></pre></td></tr></table></div></figure></notextile></div></p>
-
-<h2>Update index again</h2>
-
-<p><div class='bogus-wrapper'><notextile><figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>sudo apt-get update</span></code></pre></td></tr></table></div></figure></notextile></div></p>
-
-<h2>Rejoice!</h2>
-
-<p>Now you can just follow the <a href="https://wiki.ubuntu.com/TrustyTahr/ReleaseNotes#Upgrading_from_Ubuntu_12.04_LTS_or_Ubuntu_13.10">upgrade instructions</a> and
-almost nothing will be downloaded during the upgrade, because everything is already on your hard drive.</p>
 ]]></content>
   </entry>
   

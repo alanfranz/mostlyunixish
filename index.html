@@ -9,7 +9,7 @@
   <meta name="author" content="Alan Franzoni">
 
   
-  <meta name="description" content="A desktop freeze is something that&rsquo;s not so rare nowadays &ndash; that&rsquo;s not good, but we shouldn&rsquo;t get desperate about that. I &hellip;">
+  <meta name="description" content="I was tired of repeating the same old pattern. Send a kill signal. Check with pgrep. Did the process exit? Send a kill -9. Now all my knowledge has &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -78,6 +78,48 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/12/16/kill-me-softly/">Kill Me Softly: Killing a Process the Right Way</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-12-16T20:10:00+01:00" pubdate data-updated="true">Dec 16<span>th</span>, 2014</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>I was tired of repeating the same old pattern. Send a kill signal. Check with pgrep. Did the process exit? Send a kill -9.</p>
+
+<p>Now all my knowledge has been permanently dumped here:</p>
+
+<p><a href="https://github.com/alanfranz/killmesoftly">Kill Me Softly on GitHub</a></p>
+
+<p>If you want to kill a process by letting it to exit gracefully, and yet kill it without mercy if it&rsquo;s too slow to exit, that&rsquo;s your new favourite shell script.</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -223,86 +265,6 @@
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2014/12/10/ssh-hostname-shortcuts/">SSH Hostnames Configuration and Shortcuts</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2014-12-10T13:20:00+01:00" pubdate data-updated="true">Dec 10<span>th</span>, 2014</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>This is another old trick, but I like to tell the world about such amenities.</p>
-
-<p>I often find people writing command lines such as:</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>ssh arcane-system-user@someextremelylong.andimpossibiletotype.anderrorprone.hostname.com</span></code></pre></td></tr></table></div></figure>
-
-
-<p>or, worse</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>ssh idliketorememberwhichuser@10.20.30.40</span></code></pre></td></tr></table></div></figure>
-
-
-<p>or maybe it was</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>ssh someuserimashamedof@1.2.3.4</span></code></pre></td></tr></table></div></figure>
-
-
-<p>yes, sometimes ssh is simply tedious.</p>
-
-<p>But you can do better. In fact, you can do <strong>much</strong> better.</p>
-
-<p>your <em>~/.ssh/config</em> or <em>/etc/ssh/ssh_config</em> can contain <strong>Host</strong> configuration sections; I have already blogged about such directives when I told the world about stopping <a href="blog/2012/08/26/ssh-client-stop-complaining-inside-my-network/">key verification compliants</a> &ndash; they&rsquo;re very flexible, indeed.</p>
-
-<p>Consider adding <strong>Host</strong> directives in your configuration for your most used services:</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>Host myniceserver
-</span><span class='line'>    Hostname myniceserver.mylove.com
-</span><span class='line'>    Port 12345
-</span><span class='line'>    User teddybear</span></code></pre></td></tr></table></div></figure>
-
-
-<p>And then you can just</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>ssh myniceserver</span></code></pre></td></tr></table></div></figure>
-
-
-<p>You can override most options on a per-server basis and/or select a certain private key for connections.</p>
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/blog/page/2/">&larr; Older</a>
@@ -318,6 +280,10 @@
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2014/12/16/kill-me-softly/">Kill Me Softly: killing a process the right way</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2014/12/12/unfreeze-window-manager/">Unfreezing your desktop: when Compiz goes wrong</a>
       </li>
     
@@ -331,10 +297,6 @@
     
       <li class="post">
         <a href="/blog/2014/11/11/how-often-sudo-asks-for-your-password/">I wish sudo would ask for my password less often</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2014/09/25/ubuntu-faster-release-upgrade/">Ubuntu: faster release upgrade</a>
       </li>
     
   </ul>

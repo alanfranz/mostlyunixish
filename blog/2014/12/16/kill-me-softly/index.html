@@ -5,12 +5,11 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Disown is your friend - Mostly Unixish</title>
+  <title>Kill Me Softly: killing a process the right way - Mostly Unixish</title>
   <meta name="author" content="Alan Franzoni">
 
   
-  <meta name="description" content="Bash builtin disown is a not-so-well known job control command, and yet
-it&rsquo;s an extremely useful one. So what? You&rsquo;ve started a remote &hellip;">
+  <meta name="description" content="I was tired of repeating the same old pattern. Send a kill signal. Check with pgrep. Did the process exit? Send a kill -9. Now all my knowledge has &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -19,7 +18,7 @@ it&rsquo;s an extremely useful one. So what? You&rsquo;ve started a remote &hell
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://mostlyunixish.franzoni.eu/blog/2012/08/22/disown-is-your-friend/">
+  <link rel="canonical" href="http://mostlyunixish.franzoni.eu/blog/2014/12/16/kill-me-softly/">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <script src="/javascripts/modernizr-2.0.js"></script>
@@ -82,7 +81,7 @@ it&rsquo;s an extremely useful one. So what? You&rsquo;ve started a remote &hell
   
   <header>
     
-      <h1 class="entry-title">Disown Is Your Friend</h1>
+      <h1 class="entry-title">Kill Me Softly: Killing a Process the Right Way</h1>
     
     
       <p class="meta">
@@ -98,24 +97,20 @@ it&rsquo;s an extremely useful one. So what? You&rsquo;ve started a remote &hell
   
 
 
-<time datetime="2012-08-22T19:22:00+02:00" pubdate data-updated="true">Aug 22<span>nd</span>, 2012</time>
+<time datetime="2014-12-16T20:10:00+01:00" pubdate data-updated="true">Dec 16<span>th</span>, 2014</time>
         
       </p>
     
   </header>
 
 
-<div class="entry-content"><p>Bash builtin <em>disown</em> is a not-so-well known <a href="http://www.gnu.org/software/bash/manual/html_node/Job-Control-Builtins.html">job control command</a>, and yet
-it&rsquo;s an extremely useful one.</p>
+<div class="entry-content"><p>I was tired of repeating the same old pattern. Send a kill signal. Check with pgrep. Did the process exit? Send a kill -9.</p>
 
-<p>So what? You&rsquo;ve started a remote ssh session, launched some command which is taking very, very long to complete, and you just want to go home, or maybe you
-feel your connectivity may drop, and so on&hellip; and you forgot to launch <a href="http://www.gnu.org/software/screen">screen</a> (possibly with <a href="https://launchpad.net/byobu">byobu</a>)
-or <a href="http://tmux.sourceforge.net">tmux</a> before starting your work!</p>
+<p>Now all my knowledge has been permanently dumped here:</p>
 
-<p>Now you&rsquo;re desperate and you&rsquo;d just like to go home, but you fear your longstanding jobs will quit if you close your terminal.</p>
+<p><a href="https://github.com/alanfranz/killmesoftly">Kill Me Softly on GitHub</a></p>
 
-<p>Just background your job, launch <em>disown</em> and all the jobs in background will receive no notification whatsoever of your saying goodbye to them;
-of course you won&rsquo;t be able to read their output to the terminal.</p>
+<p>If you want to kill a process by letting it to exit gracefully, and yet kill it without mercy if it&rsquo;s too slow to exit, that&rsquo;s your new favourite shell script.</p>
 </div>
 
 
@@ -138,12 +133,12 @@ of course you won&rsquo;t be able to read their output to the terminal.</p>
   
 
 
-<time datetime="2012-08-22T19:22:00+02:00" pubdate data-updated="true">Aug 22<span>nd</span>, 2012</time>
+<time datetime="2014-12-16T20:10:00+01:00" pubdate data-updated="true">Dec 16<span>th</span>, 2014</time>
       
 
 <span class="categories">
   
-    <a class='category' href='/blog/categories/bash/'>bash</a>, <a class='category' href='/blog/categories/linux/'>linux</a>, <a class='category' href='/blog/categories/ssh/'>ssh</a>
+    <a class='category' href='/blog/categories/kill/'>kill</a>, <a class='category' href='/blog/categories/linux/'>linux</a>, <a class='category' href='/blog/categories/processmanagement/'>processmanagement</a>
   
 </span>
 
@@ -152,7 +147,7 @@ of course you won&rsquo;t be able to read their output to the terminal.</p>
     
       <div class="sharing">
   
-  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://mostlyunixish.franzoni.eu/blog/2012/08/22/disown-is-your-friend/" data-via="franzeur" data-counturl="http://mostlyunixish.franzoni.eu/blog/2012/08/22/disown-is-your-friend/" >Tweet</a>
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://mostlyunixish.franzoni.eu/blog/2014/12/16/kill-me-softly/" data-via="franzeur" data-counturl="http://mostlyunixish.franzoni.eu/blog/2014/12/16/kill-me-softly/" >Tweet</a>
   
   
   <div class="g-plusone" data-size="medium"></div>
@@ -165,10 +160,8 @@ of course you won&rsquo;t be able to read their output to the terminal.</p>
     
     <p class="meta">
       
-        <a class="basic-alignment left" href="/blog/2012/06/25/purging-outdated-kernels-on-systems-with-enabled-autoupdate/" title="Previous Post: Purging outdated kernels on systems with unattended-upgrades">&laquo; Purging outdated kernels on systems with unattended-upgrades</a>
+        <a class="basic-alignment left" href="/blog/2014/12/12/unfreeze-window-manager/" title="Previous Post: Unfreezing your desktop: when Compiz goes wrong">&laquo; Unfreezing your desktop: when Compiz goes wrong</a>
       
-      
-        <a class="basic-alignment right" href="/blog/2012/08/23/thunderbird-temporary-directory/" title="Next Post: Thunderbird temporary directory">Thunderbird temporary directory &raquo;</a>
       
     </p>
   </footer>
@@ -239,8 +232,8 @@ of course you won&rsquo;t be able to read their output to the terminal.</p>
       
         
         // var disqus_developer = 1;
-        var disqus_identifier = 'http://mostlyunixish.franzoni.eu/blog/2012/08/22/disown-is-your-friend/';
-        var disqus_url = 'http://mostlyunixish.franzoni.eu/blog/2012/08/22/disown-is-your-friend/';
+        var disqus_identifier = 'http://mostlyunixish.franzoni.eu/blog/2014/12/16/kill-me-softly/';
+        var disqus_url = 'http://mostlyunixish.franzoni.eu/blog/2014/12/16/kill-me-softly/';
         var disqus_script = 'embed.js';
       
     (function () {
