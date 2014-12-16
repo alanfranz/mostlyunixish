@@ -4,7 +4,7 @@
   <title><![CDATA[Mostly Unixish]]></title>
   <link href="http://mostlyunixish.franzoni.eu/atom.xml" rel="self"/>
   <link href="http://mostlyunixish.franzoni.eu/"/>
-  <updated>2014-12-16T18:56:59+01:00</updated>
+  <updated>2014-12-16T18:58:26+01:00</updated>
   <id>http://mostlyunixish.franzoni.eu/</id>
   <author>
     <name><![CDATA[Alan Franzoni]]></name>
@@ -25,6 +25,8 @@
 <p><a href="https://github.com/alanfranz/killmesoftly">Kill Me Softly on GitHub</a></p>
 
 <p>If you want to kill a process by letting it to exit gracefully, and yet kill it without mercy if it&rsquo;s too slow to exit, that&rsquo;s your new favourite shell script.</p>
+
+<p>You can discuss this on <a href="https://news.ycombinator.com/item?id=8758057">Hacker News</a> as well</p>
 ]]></content>
   </entry>
   
