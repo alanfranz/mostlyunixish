@@ -4,7 +4,7 @@
   <title><![CDATA[Category: debian | Mostly Unixish]]></title>
   <link href="http://mostlyunixish.franzoni.eu/blog/categories/debian/atom.xml" rel="self"/>
   <link href="http://mostlyunixish.franzoni.eu/"/>
-  <updated>2014-12-12T09:07:39+01:00</updated>
+  <updated>2014-12-16T12:16:29+01:00</updated>
   <id>http://mostlyunixish.franzoni.eu/</id>
   <author>
     <name><![CDATA[Alan Franzoni]]></name>
@@ -165,6 +165,8 @@ apt-get remove --purge -y `ubuntu_get_obsolete_kernel_and_headers_pkgs.py`
 </code></p>
 
 <p><strong>WARNING</strong>: recent changes to the way Ubuntu marks dependencies and provided names for kernel headers require that you uncomment a couple of lines in the script towards the end; just remove the # at the beginning of the lines 46 and 47.</p>
+
+<p><strong>UPDATE</strong>: in recent Ubuntu versions, just invoking <code>apt-get autoremove --purge</code> will do the trick. Such command will remove all automatically installed packages that are no longer required in the running system. It can remove other packages beyond outdated kernels, by the way.</p>
 ]]></content>
   </entry>
   
