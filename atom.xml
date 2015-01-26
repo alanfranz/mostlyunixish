@@ -4,7 +4,7 @@
   <title><![CDATA[Mostly Unixish]]></title>
   <link href="http://mostlyunixish.franzoni.eu/atom.xml" rel="self"/>
   <link href="http://mostlyunixish.franzoni.eu/"/>
-  <updated>2014-12-16T18:58:26+01:00</updated>
+  <updated>2015-01-26T15:12:08+01:00</updated>
   <id>http://mostlyunixish.franzoni.eu/</id>
   <author>
     <name><![CDATA[Alan Franzoni]]></name>
@@ -268,7 +268,9 @@ almost nothing will be downloaded during the upgrade, because everything is alre
     <link href="http://mostlyunixish.franzoni.eu/blog/2014/09/03/keep-your-tomcat-instance-up-to-date-and-separate-configuration/"/>
     <updated>2014-09-03T19:52:00+02:00</updated>
     <id>http://mostlyunixish.franzoni.eu/blog/2014/09/03/keep-your-tomcat-instance-up-to-date-and-separate-configuration</id>
-    <content type="html"><![CDATA[<p>Today I&rsquo;m gonna share something that I figured out some times ago: how do I keep
+    <content type="html"><![CDATA[<p><strong>UPDATED:</strong> 26th January 2015, with Tomcat 8 support.</p>
+
+<p>Today I&rsquo;m gonna share something that I figured out some times ago: how do I keep
 my <a href="http://tomcat.apache.org">tomcat</a> installation up to date on my servers?</p>
 
 <p>Of course I&rsquo;m not willing to automatically switch majors, but I&rsquo;d like to pull bugfix
@@ -287,12 +289,14 @@ and webapp dir.</p>
 <p>For this setup, I use Tomcat7 and I chose to employ <em>/etc/tomcat7/conf</em> as a configuration directory, <em>/opt/tomcat7/latest</em> as tomcat7 own directory, <em>/opt/tomcat7/webapps</em> for our webapps, <em>/opt/tomcat7/logs</em>,
 <em>/opt/tomcat7/temp</em>, <em>/opt/tomcat7/work</em> as logging, temp and work directory, respectively.</p>
 
-<p>To begin with, create a user (maybe a service user, I&rsquo;ll leave the details to you) <em>tomcat</em> with a main group <em>tomcat</em> as well, which we&rsquo;ll use to run the servlet container.</p>
+<p>The same applies for tomcat8, it&rsquo;s just the prefix that will change.</p>
 
-<p>Now make sure your <a href="http://puppetlabs.com/">Puppet</a> manifest includes the tomcat7 class. In order to do so, you&rsquo;ll need this custom fact that helps the system determine the very latest tomcat7 version,
+<p>To begin with, create a user (maybe a service user, I&rsquo;ll leave the details to you) <em>tomcat</em> with a main group <em>tomcat</em> as well, which we&rsquo;ll use to run the servlet container &ndash; you can pick a different user if you like, the class allows you to choose.</p>
+
+<p>Now make sure your <a href="http://puppetlabs.com/">Puppet</a> manifest includes the <strong>tomcat_versioned</strong> class with the proper parameters. In order to do so, you&rsquo;ll need this custom fact that helps the system determine the very latest tomcat7 version,
 place it in your custom facts directory:</p>
 
-<figure class='code'><figcaption><span>find_apache_tomcat7_latest.py </span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span>find_apache_tomcat_latest_versions.py</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -306,30 +310,26 @@ place it in your custom facts directory:</p>
 <span class='line-number'>12</span>
 <span class='line-number'>13</span>
 <span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
 </pre></td><td class='code'><pre><code class='python'><span class='line'><span class="c">#!/usr/bin/env python</span>
-</span><span class='line'><span class="c"># add as fact, drop this into /etc/facter/facts.d/</span>
-</span><span class='line'><span class="c"># requires python with lxml installed,(usually a python-lxml package is available in most distributions)</span>
+</span><span class='line'><span class="c"># requires lxml</span>
 </span><span class='line'><span class="kn">from</span> <span class="nn">lxml.etree</span> <span class="kn">import</span> <span class="n">HTML</span>
 </span><span class='line'><span class="kn">import</span> <span class="nn">re</span>
 </span><span class='line'><span class="kn">import</span> <span class="nn">sys</span>
 </span><span class='line'><span class="kn">import</span> <span class="nn">urllib</span>
 </span><span class='line'>
-</span><span class='line'><span class="n">pattern</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s">&quot;^7\.0\.\d\d\d?$&quot;</span><span class="p">)</span>
-</span><span class='line'>
-</span><span class='line'><span class="n">root</span> <span class="o">=</span> <span class="n">HTML</span><span class="p">(</span><span class="n">urllib</span><span class="o">.</span><span class="n">urlopen</span><span class="p">(</span><span class="s">&quot;http://tomcat.apache.org/download-70.cgi&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">root</span><span class="o">.</span><span class="n">iterdescendants</span><span class="p">():</span>
-</span><span class='line'>  <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">text</span><span class="p">,</span> <span class="nb">basestring</span><span class="p">)</span> <span class="ow">and</span> <span class="n">pattern</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">strip</span><span class="p">()):</span>
-</span><span class='line'>      <span class="k">print</span> <span class="s">&quot;tomcat7_latest_version={0}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
+</span><span class='line'><span class="k">for</span> <span class="n">version</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">):</span>
+</span><span class='line'>  <span class="n">pattern</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s">&quot;^{0}\.0\.\d\d\d?$&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">version</span><span class="p">))</span>
+</span><span class='line'>  <span class="n">root</span> <span class="o">=</span> <span class="n">HTML</span><span class="p">(</span><span class="n">urllib</span><span class="o">.</span><span class="n">urlopen</span><span class="p">(</span><span class="s">&quot;http://tomcat.apache.org/download-{0}0.cgi&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">version</span><span class="p">))</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
+</span><span class='line'>  <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">root</span><span class="o">.</span><span class="n">iterdescendants</span><span class="p">():</span>
+</span><span class='line'>      <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">text</span><span class="p">,</span> <span class="nb">basestring</span><span class="p">)</span> <span class="ow">and</span> <span class="n">pattern</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">strip</span><span class="p">()):</span>
+</span><span class='line'>      <span class="k">print</span> <span class="s">&quot;tomcat{1}_latest_version={0}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">strip</span><span class="p">(),</span> <span class="n">version</span><span class="p">)</span>
 </span><span class='line'>      <span class="k">break</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>and the tomcat7 class, of course:</p>
+<p>and the tomcat_versioned class, of course; just pass the major of the tomcat you&rsquo;d like to use, and it will find the latest tomcat update for such major, and install it in <em>/opt/tomcatX</em>:</p>
 
-<figure class='code'><figcaption><span>tomcat7.pp</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span>tomcat_versioned.pp</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -412,88 +412,90 @@ place it in your custom facts directory:</p>
 <span class='line-number'>81</span>
 <span class='line-number'>82</span>
 <span class='line-number'>83</span>
-</pre></td><td class='code'><pre><code class='puppet'><span class='line'><span class="c-Singleline"># this will install latest tomcat7 from apache website, and yet retain your</span>
+<span class='line-number'>84</span>
+</pre></td><td class='code'><pre><code class='puppet'><span class='line'><span class="c-Singleline"># this will install latest tomcat from apache website, and yet retain your</span>
 </span><span class='line'><span class="c-Singleline"># config from /etc/tomcat7/conf</span>
-</span><span class='line'><span class="c-Singleline"># tested with puppet 3.6</span>
+</span><span class='line'><span class="c-Singleline"># tested with puppet 3.7 and tomcat 7 and 8.</span>
 </span><span class='line'>
-</span><span class='line'><span class="kd">class</span> <span class="nc">tomcat7</span> <span class="p">{</span>
-</span><span class='line'>  <span class="nv">$tomcat_full_version</span> <span class="o">=</span> <span class="nv">$tomcat7_latest_version</span>
+</span><span class='line'><span class="kd">class</span> <span class="nc">tomcat_versioned</span><span class="p">(</span><span class="nv">$tomcat_major</span><span class="p">=</span><span class="m">8</span><span class="p">,</span> <span class="nv">$tomcat_user</span><span class="p">=</span><span class="s2">&quot;tomcat&quot;</span><span class="p">)</span> <span class="p">{</span><span class="c-Singleline"></span>
+</span><span class='line'><span class="c-Singleline">   # assumption: the user should exist, it won&#39;t be created</span>
+</span><span class='line'><span class="c-Singleline">   # you should define a tomcatX service outside this class</span>
+</span><span class='line'>  <span class="nv">$tf</span> <span class="o">=</span> <span class="nf">getvar</span><span class="p">(</span><span class="s2">&quot;tomcat</span><span class="si">${tomcat_major}</span><span class="s2">_latest_version&quot;</span><span class="p">)</span>
+</span><span class='line'>  <span class="nv">$tm</span> <span class="o">=</span> <span class="s2">&quot;tomcat</span><span class="si">${tomcat_major}</span><span class="s2">&quot;</span>
 </span><span class='line'>
-</span><span class='line'>  <span class="nc">exec</span> <span class="p">{</span> <span class="s2">&quot;/bin/tar xvf apache-tomcat-archive.tar.gz&quot;</span><span class="p">:</span>
-</span><span class='line'>      <span class="nt">creates</span> <span class="p">=&gt;</span><span class="s2">&quot;/opt/tomcat7/apache-tomcat7-</span><span class="si">${tomcat_full_version}</span><span class="s2">&quot;</span><span class="p">,</span>
-</span><span class='line'>      <span class="nt">cwd</span> <span class="p">=&gt;</span> <span class="s2">&quot;/opt/tomcat7&quot;</span><span class="p">,</span>
-</span><span class='line'>      <span class="nt">refreshonly</span> <span class="p">=&gt;</span> <span class="ss">true</span><span class="p">,</span>
-</span><span class='line'>      <span class="nt">alias</span> <span class="p">=&gt;</span> <span class="s2">&quot;tomcat7_unpack&quot;</span><span class="p">,</span>
-</span><span class='line'>      <span class="nt">require</span> <span class="p">=&gt;</span> <span class="nc">File</span><span class="p">[</span><span class="s2">&quot;/opt/tomcat&quot;</span><span class="p">]</span>
-</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>  <span class="nc">exec</span> <span class="p">{</span> <span class="s2">&quot;/bin/tar xvf apache-</span><span class="si">${tm}</span><span class="s2">-archive.tar.gz&quot;</span><span class="p">:</span>
+</span><span class='line'>  <span class="nt">creates</span> <span class="p">=&gt;</span><span class="s2">&quot;/opt/</span><span class="si">${tm}</span><span class="s2">/apache-</span><span class="si">${tm}</span><span class="s2">-</span><span class="si">${tf}</span><span class="s2">&quot;</span><span class="p">,</span>
+</span><span class='line'>  <span class="nt">cwd</span> <span class="p">=&gt;</span> <span class="s2">&quot;/opt/</span><span class="si">${tm}</span><span class="s2">&quot;</span><span class="p">,</span>
+</span><span class='line'>  <span class="nt">refreshonly</span> <span class="p">=&gt;</span> <span class="ss">true</span><span class="p">,</span>
+</span><span class='line'>  <span class="nt">alias</span> <span class="p">=&gt;</span> <span class="s2">&quot;</span><span class="si">${tm}</span><span class="s2">_unpack&quot;</span><span class="p">,</span>
+</span><span class='line'>  <span class="nt">require</span> <span class="p">=&gt;</span> <span class="nc">File</span><span class="p">[</span><span class="s2">&quot;/opt/</span><span class="si">${tm}</span><span class="s2">&quot;</span><span class="p">]</span>
+</span><span class='line'><span class="p">}</span>
 </span><span class='line'>
-</span><span class='line'>  <span class="nc">file</span> <span class="p">{</span> <span class="s2">&quot;/opt/tomcat&quot;</span><span class="p">:</span>
-</span><span class='line'>      <span class="nt">ensure</span> <span class="p">=&gt;</span> <span class="s2">&quot;directory&quot;</span><span class="p">,</span>
-</span><span class='line'>      <span class="nt">mode</span> <span class="p">=&gt;</span> <span class="m">0755</span><span class="p">,</span>
-</span><span class='line'>      <span class="nt">owner</span> <span class="p">=&gt;</span> <span class="s2">&quot;root&quot;</span><span class="p">,</span>
-</span><span class='line'>      <span class="nt">group</span> <span class="p">=&gt;</span> <span class="s2">&quot;root&quot;</span>
-</span><span class='line'>  <span class="p">}</span>
-</span><span class='line'>      
-</span><span class='line'>
-</span><span class='line'>  <span class="nc">file</span> <span class="p">{</span> <span class="s2">&quot;/opt/tomcat7/apache-tomcat-archive.tar.gz&quot;</span><span class="p">:</span>
-</span><span class='line'>      <span class="nt">ensure</span> <span class="p">=&gt;</span> <span class="s2">&quot;present&quot;</span><span class="p">,</span>
-</span><span class='line'>      <span class="nt">source</span> <span class="p">=&gt;</span> <span class="s2">&quot;/tmp/apache-tomcat-</span><span class="si">${tomcat_full_version}</span><span class="s2">.tar.gz&quot;</span><span class="p">,</span>
-</span><span class='line'>      <span class="nt">require</span> <span class="p">=&gt;</span> <span class="nc">Exec</span><span class="p">[</span><span class="s2">&quot;tomcat7_download_latest&quot;</span><span class="p">],</span>
-</span><span class='line'>      <span class="nt">notify</span> <span class="p">=&gt;</span> <span class="nc">Exec</span><span class="p">[</span><span class="s2">&quot;tomcat7_unpack&quot;</span><span class="p">]</span>
-</span><span class='line'>      <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="nc">exec</span> <span class="p">{</span> <span class="s2">&quot;/usr/bin/wget --timestamping http://www.eu.apache.org/dist/tomcat/tomcat-7/v</span><span class="si">${tomcat_full_version}</span><span class="s2">/bin/apache-tomcat-</span><span class="si">${tomcat_full_version}</span><span class="s2">.tar.gz&quot;</span><span class="p">:</span>
-</span><span class='line'>      <span class="nt">alias</span> <span class="p">=&gt;</span> <span class="s2">&quot;tomcat7_download_latest&quot;</span><span class="p">,</span>
-</span><span class='line'>      <span class="nt">cwd</span> <span class="p">=&gt;</span> <span class="s2">&quot;/tmp&quot;</span>
-</span><span class='line'>  <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="nc">exec</span> <span class="p">{</span> <span class="s2">&quot;/bin/ln -sf --no-target-directory apache-tomcat-</span><span class="si">${tomcat_full_version}</span><span class="s2"> latest&quot;</span><span class="p">:</span>
-</span><span class='line'>      <span class="nt">refreshonly</span> <span class="p">=&gt;</span> <span class="ss">true</span><span class="p">,</span>
-</span><span class='line'>      <span class="nt">subscribe</span> <span class="p">=&gt;</span> <span class="nc">Exec</span><span class="p">[</span><span class="s2">&quot;tomcat7_unpack&quot;</span><span class="p">],</span>
-</span><span class='line'>      <span class="nt">cwd</span> <span class="p">=&gt;</span> <span class="s2">&quot;/opt/tomcat7&quot;</span><span class="p">,</span>
-</span><span class='line'>      <span class="nt">alias</span> <span class="p">=&gt;</span> <span class="s2">&quot;tomcat7_symlink&quot;</span>
-</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'><span class="nc">file</span> <span class="p">{</span> <span class="s2">&quot;/opt/</span><span class="si">${tm}</span><span class="s2">&quot;</span><span class="p">:</span>
+</span><span class='line'><span class="nt">ensure</span> <span class="p">=&gt;</span> <span class="s2">&quot;directory&quot;</span><span class="p">,</span>
+</span><span class='line'><span class="nt">mode</span> <span class="p">=&gt;</span> <span class="m">0755</span><span class="p">,</span>
+</span><span class='line'><span class="nt">owner</span> <span class="p">=&gt;</span> <span class="s2">&quot;root&quot;</span><span class="p">,</span>
+</span><span class='line'><span class="nt">group</span> <span class="p">=&gt;</span> <span class="s2">&quot;root&quot;</span>
+</span><span class='line'><span class="p">}</span>
 </span><span class='line'>
 </span><span class='line'>
+</span><span class='line'><span class="nc">file</span> <span class="p">{</span> <span class="s2">&quot;/opt/</span><span class="si">${tm}</span><span class="s2">/apache-</span><span class="si">${tm}</span><span class="s2">-archive.tar.gz&quot;</span><span class="p">:</span>
+</span><span class='line'><span class="nt">ensure</span> <span class="p">=&gt;</span> <span class="s2">&quot;present&quot;</span><span class="p">,</span>
+</span><span class='line'><span class="nt">source</span> <span class="p">=&gt;</span> <span class="s2">&quot;/tmp/apache-tomcat-</span><span class="si">${tf}</span><span class="s2">.tar.gz&quot;</span><span class="p">,</span>
+</span><span class='line'><span class="nt">require</span> <span class="p">=&gt;</span> <span class="nc">Exec</span><span class="p">[</span><span class="s2">&quot;</span><span class="si">${tm}</span><span class="s2">_download_latest&quot;</span><span class="p">],</span>
+</span><span class='line'><span class="nt">notify</span> <span class="p">=&gt;</span> <span class="nc">Exec</span><span class="p">[</span><span class="s2">&quot;</span><span class="si">${tm}</span><span class="s2">_unpack&quot;</span><span class="p">]</span>
+</span><span class='line'><span class="p">}</span>
 </span><span class='line'>
-</span><span class='line'>  <span class="nc">exec</span> <span class="p">{</span> <span class="s2">&quot;/bin/rm -rf conf.orig &amp;&amp; /bin/mv -f conf conf.orig &amp;&amp; /bin/ln -sf --no-target-directory /etc/tomcat7/conf conf&quot;</span><span class="p">:</span>
-</span><span class='line'>      <span class="nt">refreshonly</span> <span class="p">=&gt;</span> <span class="ss">true</span><span class="p">,</span>
-</span><span class='line'>      <span class="nt">cwd</span> <span class="p">=&gt;</span> <span class="s2">&quot;/opt/tomcat7/latest&quot;</span><span class="p">,</span>
-</span><span class='line'>      <span class="nt">subscribe</span> <span class="p">=&gt;</span> <span class="nc">Exec</span><span class="p">[</span><span class="s2">&quot;tomcat7_symlink&quot;</span><span class="p">],</span>
-</span><span class='line'>      <span class="c-Singleline"># notify =&gt; Service[&quot;tomcat7&quot;],</span>
-</span><span class='line'>      <span class="nt">alias</span> <span class="p">=&gt;</span> <span class="s2">&quot;tomcat7_config_move&quot;</span>
-</span><span class='line'>  <span class="p">}</span><span class="c-Singleline"></span>
+</span><span class='line'><span class="nc">exec</span> <span class="p">{</span> <span class="s2">&quot;/usr/bin/wget --timestamping http://www.eu.apache.org/dist/tomcat/tomcat-</span><span class="si">${tomcat_major}</span><span class="s2">/v</span><span class="si">${tf}</span><span class="s2">/bin/apache-tomcat-</span><span class="si">${tf}</span><span class="s2">.tar.gz&quot;</span><span class="p">:</span>
+</span><span class='line'><span class="nt">alias</span> <span class="p">=&gt;</span> <span class="s2">&quot;</span><span class="si">${tm}</span><span class="s2">_download_latest&quot;</span><span class="p">,</span>
+</span><span class='line'><span class="nt">cwd</span> <span class="p">=&gt;</span> <span class="s2">&quot;/tmp&quot;</span>
+</span><span class='line'><span class="p">}</span>
 </span><span class='line'>
-</span><span class='line'><span class="c-Singleline">   # first-time only executions. I might like to abstract some logic if I were a bit less lazy than I am.</span>
-</span><span class='line'><span class="c-Singleline">   # in order to stay on the safe side, we never let the normal user to access our files; this may be relaxed,</span>
-</span><span class='line'><span class="c-Singleline">   # depending on your context.</span>
-</span><span class='line'>
-</span><span class='line'><span class="c-Singleline">   # this contains our config. our servlet container should be able to read it, but never write it.</span>
-</span><span class='line'>  <span class="nc">exec</span> <span class="p">{</span> <span class="s2">&quot;/bin/mkdir -p /etc/tomcat7 &amp;&amp; /bin/cp -r /opt/tomcat7/latest/conf.orig /etc/tomcat7/conf &amp;&amp; /bin/chmod 0750 /etc/tomcat7/conf &amp;&amp; /bin/chown root:tomcat /etc/tomcat7/conf &quot;</span><span class="p">:</span>
-</span><span class='line'>      <span class="nt">creates</span> <span class="p">=&gt;</span> <span class="s2">&quot;/etc/tomcat7/conf&quot;</span><span class="p">,</span>
-</span><span class='line'>      <span class="nt">subscribe</span> <span class="p">=&gt;</span> <span class="nc">Exec</span><span class="p">[</span><span class="s2">&quot;tomcat7_config_move&quot;</span><span class="p">]</span>
-</span><span class='line'>  <span class="p">}</span><span class="c-Singleline"></span>
-</span><span class='line'><span class="c-Singleline">   </span>
-</span><span class='line'><span class="c-Singleline">   # this will contain the actual code of our webapps. Again, the container must be able to read them, </span>
-</span><span class='line'><span class="c-Singleline">   # never write to them.</span>
-</span><span class='line'>  <span class="nc">exec</span> <span class="p">{</span> <span class="s2">&quot;/bin/mkdir -p -m 0750 /opt/tomcat7/webapps &amp;&amp; /bin/chown root:tomcat /opt/tomcat7/webapps&quot;</span><span class="p">:</span>
-</span><span class='line'>      <span class="nt">creates</span> <span class="p">=&gt;</span> <span class="s2">&quot;/etc/tomcat7/webapps&quot;</span><span class="p">,</span>
-</span><span class='line'>  <span class="p">}</span><span class="c-Singleline"></span>
-</span><span class='line'>
-</span><span class='line'><span class="c-Singleline">   # those are working directories where the container must be able to write.</span>
-</span><span class='line'>  <span class="nc">exec</span> <span class="p">{</span> <span class="s2">&quot;/bin/mkdir -p -m 0770 /opt/tomcat7/work &amp;&amp; /bin/chown root:tomcat /opt/tomcat7/work&quot;</span><span class="p">:</span>
-</span><span class='line'>      <span class="nt">creates</span> <span class="p">=&gt;</span> <span class="s2">&quot;/etc/tomcat7/work&quot;</span><span class="p">,</span>
-</span><span class='line'>  <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="nc">exec</span> <span class="p">{</span> <span class="s2">&quot;/bin/mkdir -p -m 0770 /opt/tomcat7/temp &amp;&amp; /bin/chown root:tomcat /opt/tomcat7/temp&quot;</span><span class="p">:</span>
-</span><span class='line'>      <span class="nt">creates</span> <span class="p">=&gt;</span> <span class="s2">&quot;/etc/tomcat7/temp&quot;</span><span class="p">,</span>
-</span><span class='line'>  <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="nc">exec</span> <span class="p">{</span> <span class="s2">&quot;/bin/mkdir -p -m 0770 /opt/tomcat7/logs &amp;&amp; /bin/chown root:tomcat /opt/tomcat7/logs&quot;</span><span class="p">:</span>
-</span><span class='line'>      <span class="nt">creates</span> <span class="p">=&gt;</span> <span class="s2">&quot;/etc/tomcat7/logs&quot;</span><span class="p">,</span>
-</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'><span class="nc">exec</span> <span class="p">{</span> <span class="s2">&quot;/bin/ln -sf --no-target-directory apache-tomcat-</span><span class="si">${tf}</span><span class="s2"> latest&quot;</span><span class="p">:</span>
+</span><span class='line'><span class="nt">refreshonly</span> <span class="p">=&gt;</span> <span class="ss">true</span><span class="p">,</span>
+</span><span class='line'><span class="nt">subscribe</span> <span class="p">=&gt;</span> <span class="nc">Exec</span><span class="p">[</span><span class="s2">&quot;</span><span class="si">${tm}</span><span class="s2">_unpack&quot;</span><span class="p">],</span>
+</span><span class='line'><span class="nt">cwd</span> <span class="p">=&gt;</span> <span class="s2">&quot;/opt/</span><span class="si">${tm}</span><span class="s2">&quot;</span><span class="p">,</span>
+</span><span class='line'><span class="nt">alias</span> <span class="p">=&gt;</span> <span class="s2">&quot;</span><span class="si">${tm}</span><span class="s2">_symlink&quot;</span>
+</span><span class='line'><span class="p">}</span>
 </span><span class='line'>
 </span><span class='line'>
+</span><span class='line'>
+</span><span class='line'><span class="nc">exec</span> <span class="p">{</span> <span class="s2">&quot;/bin/rm -rf conf.orig &amp;&amp; /bin/mv -f conf conf.orig &amp;&amp; /bin/ln -sf --no-target-directory /etc/</span><span class="si">${tm}</span><span class="s2">/conf conf&quot;</span><span class="p">:</span>
+</span><span class='line'><span class="nt">refreshonly</span> <span class="p">=&gt;</span> <span class="ss">true</span><span class="p">,</span>
+</span><span class='line'><span class="nt">cwd</span> <span class="p">=&gt;</span> <span class="s2">&quot;/opt/</span><span class="si">${tm}</span><span class="s2">/latest&quot;</span><span class="p">,</span>
+</span><span class='line'><span class="nt">subscribe</span> <span class="p">=&gt;</span> <span class="nc">Exec</span><span class="p">[</span><span class="s2">&quot;</span><span class="si">${tm}</span><span class="s2">_symlink&quot;</span><span class="p">],</span>
+</span><span class='line'><span class="nt">notify</span> <span class="p">=&gt;</span> <span class="nc">Service</span><span class="p">[</span><span class="s2">&quot;</span><span class="si">${tm}</span><span class="s2">&quot;</span><span class="p">],</span>
+</span><span class='line'><span class="nt">alias</span> <span class="p">=&gt;</span> <span class="s2">&quot;</span><span class="si">${tm}</span><span class="s2">_config_move&quot;</span>
+</span><span class='line'><span class="p">}</span><span class="c-Singleline"></span>
+</span><span class='line'>
+</span><span class='line'><span class="c-Singleline"># first-time only executions. I might like to abstract some logic if I were a bit less lazy than I am.</span>
+</span><span class='line'><span class="c-Singleline"># in order to stay on the safe side, we never let the normal user to access our files; this may be relaxed,</span>
+</span><span class='line'><span class="c-Singleline"># depending on your context.</span>
+</span><span class='line'>
+</span><span class='line'><span class="c-Singleline"># this contains our config. our servlet container should be able to read it, but never write it.</span>
+</span><span class='line'><span class="nc">exec</span> <span class="p">{</span> <span class="s2">&quot;/bin/mkdir -p /etc/</span><span class="si">${tm}</span><span class="s2"> &amp;&amp; /bin/cp -r /opt/</span><span class="si">${tm}</span><span class="s2">/latest/conf.orig /etc/</span><span class="si">${tm}</span><span class="s2">/conf &amp;&amp; /bin/chmod 0750 /etc/</span><span class="si">${tm}</span><span class="s2">/conf &amp;&amp; /bin/chown -R root:</span><span class="si">${tomcat_user}</span><span class="s2"> /etc/</span><span class="si">${tm}</span><span class="s2">/conf &amp;&amp; /bin/chmod 0640 /etc/</span><span class="si">${tm}</span><span class="s2">/conf/*&quot;</span><span class="p">:</span>
+</span><span class='line'><span class="nt">creates</span> <span class="p">=&gt;</span> <span class="s2">&quot;/etc/</span><span class="si">${tm}</span><span class="s2">/conf&quot;</span><span class="p">,</span>
+</span><span class='line'><span class="nt">subscribe</span> <span class="p">=&gt;</span> <span class="nc">Exec</span><span class="p">[</span><span class="s2">&quot;</span><span class="si">${tm}</span><span class="s2">_config_move&quot;</span><span class="p">]</span>
+</span><span class='line'><span class="p">}</span><span class="c-Singleline"></span>
+</span><span class='line'>
+</span><span class='line'><span class="c-Singleline"># this will contain the actual code of our webapps. Again, the container must be able to read them,</span>
+</span><span class='line'><span class="c-Singleline"># never write to them.</span>
+</span><span class='line'><span class="nc">exec</span> <span class="p">{</span> <span class="s2">&quot;/bin/mkdir -p -m 0750 /opt/</span><span class="si">${tm}</span><span class="s2">/webapps &amp;&amp; /bin/chown root:</span><span class="si">${tomcat_user}</span><span class="s2"> /opt/</span><span class="si">${tm}</span><span class="s2">/webapps&quot;</span><span class="p">:</span>
+</span><span class='line'><span class="nt">creates</span> <span class="p">=&gt;</span> <span class="s2">&quot;/opt/</span><span class="si">${tm}</span><span class="s2">/webapps&quot;</span><span class="p">,</span>
+</span><span class='line'><span class="p">}</span><span class="c-Singleline"></span>
+</span><span class='line'>
+</span><span class='line'><span class="c-Singleline"># those are working directories where the container must be able to write.</span>
+</span><span class='line'><span class="nc">exec</span> <span class="p">{</span> <span class="s2">&quot;/bin/mkdir -p -m 0770 /opt/</span><span class="si">${tm}</span><span class="s2">/work &amp;&amp; /bin/chown root:</span><span class="si">${tomcat_user}</span><span class="s2"> /opt/</span><span class="si">${tm}</span><span class="s2">/work&quot;</span><span class="p">:</span>
+</span><span class='line'><span class="nt">creates</span> <span class="p">=&gt;</span> <span class="s2">&quot;/opt/</span><span class="si">${tm}</span><span class="s2">/work&quot;</span><span class="p">,</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="nc">exec</span> <span class="p">{</span> <span class="s2">&quot;/bin/mkdir -p -m 0770 /opt/</span><span class="si">${tm}</span><span class="s2">/temp &amp;&amp; /bin/chown root:</span><span class="si">${tomcat_user}</span><span class="s2"> /opt/</span><span class="si">${tm}</span><span class="s2">/temp&quot;</span><span class="p">:</span>
+</span><span class='line'><span class="nt">creates</span> <span class="p">=&gt;</span> <span class="s2">&quot;/opt/</span><span class="si">${tm}</span><span class="s2">/temp&quot;</span><span class="p">,</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="nc">exec</span> <span class="p">{</span> <span class="s2">&quot;/bin/mkdir -p -m 0770 /opt/</span><span class="si">${tm}</span><span class="s2">/logs &amp;&amp; /bin/chown root:</span><span class="si">${tomcat_user}</span><span class="s2"> /opt/</span><span class="si">${tm}</span><span class="s2">/logs&quot;</span><span class="p">:</span>
+</span><span class='line'><span class="nt">creates</span> <span class="p">=&gt;</span> <span class="s2">&quot;/opt/</span><span class="si">${tm}</span><span class="s2">/logs&quot;</span><span class="p">,</span>
+</span><span class='line'><span class="p">}</span>
 </span><span class='line'>}
 </span></code></pre></td></tr></table></div></figure>
 

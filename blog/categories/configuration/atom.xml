@@ -4,7 +4,7 @@
   <title><![CDATA[Category: configuration | Mostly Unixish]]></title>
   <link href="http://mostlyunixish.franzoni.eu/blog/categories/configuration/atom.xml" rel="self"/>
   <link href="http://mostlyunixish.franzoni.eu/"/>
-  <updated>2014-12-16T18:58:26+01:00</updated>
+  <updated>2015-01-26T15:12:08+01:00</updated>
   <id>http://mostlyunixish.franzoni.eu/</id>
   <author>
     <name><![CDATA[Alan Franzoni]]></name>
@@ -18,7 +18,9 @@
     <link href="http://mostlyunixish.franzoni.eu/blog/2014/09/03/keep-your-tomcat-instance-up-to-date-and-separate-configuration/"/>
     <updated>2014-09-03T19:52:00+02:00</updated>
     <id>http://mostlyunixish.franzoni.eu/blog/2014/09/03/keep-your-tomcat-instance-up-to-date-and-separate-configuration</id>
-    <content type="html"><![CDATA[<p>Today I&rsquo;m gonna share something that I figured out some times ago: how do I keep
+    <content type="html"><![CDATA[<p><strong>UPDATED:</strong> 26th January 2015, with Tomcat 8 support.</p>
+
+<p>Today I&rsquo;m gonna share something that I figured out some times ago: how do I keep
 my <a href="http://tomcat.apache.org">tomcat</a> installation up to date on my servers?</p>
 
 <p>Of course I&rsquo;m not willing to automatically switch majors, but I&rsquo;d like to pull bugfix
@@ -37,127 +39,132 @@ and webapp dir.</p>
 <p>For this setup, I use Tomcat7 and I chose to employ <em>/etc/tomcat7/conf</em> as a configuration directory, <em>/opt/tomcat7/latest</em> as tomcat7 own directory, <em>/opt/tomcat7/webapps</em> for our webapps, <em>/opt/tomcat7/logs</em>,
 <em>/opt/tomcat7/temp</em>, <em>/opt/tomcat7/work</em> as logging, temp and work directory, respectively.</p>
 
-<p>To begin with, create a user (maybe a service user, I&rsquo;ll leave the details to you) <em>tomcat</em> with a main group <em>tomcat</em> as well, which we&rsquo;ll use to run the servlet container.</p>
+<p>The same applies for tomcat8, it&rsquo;s just the prefix that will change.</p>
 
-<p>Now make sure your <a href="http://puppetlabs.com/">Puppet</a> manifest includes the tomcat7 class. In order to do so, you&rsquo;ll need this custom fact that helps the system determine the very latest tomcat7 version,
+<p>To begin with, create a user (maybe a service user, I&rsquo;ll leave the details to you) <em>tomcat</em> with a main group <em>tomcat</em> as well, which we&rsquo;ll use to run the servlet container &ndash; you can pick a different user if you like, the class allows you to choose.</p>
+
+<p>Now make sure your <a href="http://puppetlabs.com/">Puppet</a> manifest includes the <strong>tomcat_versioned</strong> class with the proper parameters. In order to do so, you&rsquo;ll need this custom fact that helps the system determine the very latest tomcat7 version,
 place it in your custom facts directory:</p>
 
-<p>``` python find_apache_tomcat7_latest.py</p>
+<p>``` python find_apache_tomcat_latest_versions.py</p>
 
 <h1>!/usr/bin/env python</h1>
 
-<h1>add as fact, drop this into /etc/facter/facts.d/</h1>
-
-<h1>requires python with lxml installed,(usually a python-lxml package is available in most distributions)</h1>
+<h1>requires lxml</h1>
 
 <p>from lxml.etree import HTML
 import re
 import sys
 import urllib</p>
 
-<p>pattern = re.compile(&ldquo;^7.0.\d\d\d?$&rdquo;)</p>
+<p>for version in (7,8):</p>
 
-<p>root = HTML(urllib.urlopen(&ldquo;<a href="http://tomcat.apache.org/download-70.cgi">http://tomcat.apache.org/download-70.cgi</a>&rdquo;).read())</p>
-
-<p>for e in root.iterdescendants():</p>
-
-<pre><code>if isinstance(e.text, basestring) and pattern.match(e.text.strip()):
-    print "tomcat7_latest_version={0}".format(e.text.strip())
+<pre><code>pattern = re.compile("^{0}\.0\.\d\d\d?$".format(version))
+root = HTML(urllib.urlopen("http://tomcat.apache.org/download-{0}0.cgi".format(version)).read())
+for e in root.iterdescendants():
+    if isinstance(e.text, basestring) and pattern.match(e.text.strip()):
+    print "tomcat{1}_latest_version={0}".format(e.text.strip(), version)
     break
 </code></pre>
 
 <p>```</p>
 
-<p>and the tomcat7 class, of course:</p>
+<p>and the tomcat_versioned class, of course; just pass the major of the tomcat you&rsquo;d like to use, and it will find the latest tomcat update for such major, and install it in <em>/opt/tomcatX</em>:</p>
 
-<p>``` puppet tomcat7.pp</p>
+<p>``` puppet tomcat_versioned.pp</p>
 
-<h1>this will install latest tomcat7 from apache website, and yet retain your</h1>
+<h1>this will install latest tomcat from apache website, and yet retain your</h1>
 
 <h1>config from /etc/tomcat7/conf</h1>
 
-<h1>tested with puppet 3.6</h1>
+<h1>tested with puppet 3.7 and tomcat 7 and 8.</h1>
 
-<p>class tomcat7 {</p>
+<p>class tomcat_versioned($tomcat_major=8, $tomcat_user=&ldquo;tomcat&rdquo;) {</p>
 
-<pre><code>$tomcat_full_version = $tomcat7_latest_version
+<pre><code># assumption: the user should exist, it won't be created
+# you should define a tomcatX service outside this class
+$tf = getvar("tomcat${tomcat_major}_latest_version")
+$tm = "tomcat${tomcat_major}"
 
-exec { "/bin/tar xvf apache-tomcat-archive.tar.gz":
-    creates =&gt;"/opt/tomcat7/apache-tomcat7-${tomcat_full_version}",
-    cwd =&gt; "/opt/tomcat7",
-    refreshonly =&gt; true,
-    alias =&gt; "tomcat7_unpack",
-    require =&gt; File["/opt/tomcat"]
-}
-
-file { "/opt/tomcat":
-    ensure =&gt; "directory",
-    mode =&gt; 0755,
-    owner =&gt; "root",
-    group =&gt; "root"
-}
-
-
-file { "/opt/tomcat7/apache-tomcat-archive.tar.gz":
-    ensure =&gt; "present",
-    source =&gt; "/tmp/apache-tomcat-${tomcat_full_version}.tar.gz",
-    require =&gt; Exec["tomcat7_download_latest"],
-    notify =&gt; Exec["tomcat7_unpack"]
-    }
-
-exec { "/usr/bin/wget --timestamping http://www.eu.apache.org/dist/tomcat/tomcat-7/v${tomcat_full_version}/bin/apache-tomcat-${tomcat_full_version}.tar.gz":
-    alias =&gt; "tomcat7_download_latest",
-    cwd =&gt; "/tmp"
-}
-
-exec { "/bin/ln -sf --no-target-directory apache-tomcat-${tomcat_full_version} latest":
-    refreshonly =&gt; true,
-    subscribe =&gt; Exec["tomcat7_unpack"],
-    cwd =&gt; "/opt/tomcat7",
-    alias =&gt; "tomcat7_symlink"
-}
-
-
-
-exec { "/bin/rm -rf conf.orig &amp;&amp; /bin/mv -f conf conf.orig &amp;&amp; /bin/ln -sf --no-target-directory /etc/tomcat7/conf conf":
-    refreshonly =&gt; true,
-    cwd =&gt; "/opt/tomcat7/latest",
-    subscribe =&gt; Exec["tomcat7_symlink"],
-    # notify =&gt; Service["tomcat7"],
-    alias =&gt; "tomcat7_config_move"
-}
-
-# first-time only executions. I might like to abstract some logic if I were a bit less lazy than I am.
-# in order to stay on the safe side, we never let the normal user to access our files; this may be relaxed,
-# depending on your context.
-
-# this contains our config. our servlet container should be able to read it, but never write it.
-exec { "/bin/mkdir -p /etc/tomcat7 &amp;&amp; /bin/cp -r /opt/tomcat7/latest/conf.orig /etc/tomcat7/conf &amp;&amp; /bin/chmod 0750 /etc/tomcat7/conf &amp;&amp; /bin/chown root:tomcat /etc/tomcat7/conf ":
-    creates =&gt; "/etc/tomcat7/conf",
-    subscribe =&gt; Exec["tomcat7_config_move"]
-}
-
-# this will contain the actual code of our webapps. Again, the container must be able to read them, 
-# never write to them.
-exec { "/bin/mkdir -p -m 0750 /opt/tomcat7/webapps &amp;&amp; /bin/chown root:tomcat /opt/tomcat7/webapps":
-    creates =&gt; "/etc/tomcat7/webapps",
-}
-
-# those are working directories where the container must be able to write.
-exec { "/bin/mkdir -p -m 0770 /opt/tomcat7/work &amp;&amp; /bin/chown root:tomcat /opt/tomcat7/work":
-    creates =&gt; "/etc/tomcat7/work",
-}
-
-exec { "/bin/mkdir -p -m 0770 /opt/tomcat7/temp &amp;&amp; /bin/chown root:tomcat /opt/tomcat7/temp":
-    creates =&gt; "/etc/tomcat7/temp",
-}
-
-exec { "/bin/mkdir -p -m 0770 /opt/tomcat7/logs &amp;&amp; /bin/chown root:tomcat /opt/tomcat7/logs":
-    creates =&gt; "/etc/tomcat7/logs",
-}
+exec { "/bin/tar xvf apache-${tm}-archive.tar.gz":
+creates =&gt;"/opt/${tm}/apache-${tm}-${tf}",
+cwd =&gt; "/opt/${tm}",
+refreshonly =&gt; true,
+alias =&gt; "${tm}_unpack",
+require =&gt; File["/opt/${tm}"]
 </code></pre>
 
-<p>}
+<p>}</p>
+
+<p>file { &ldquo;/opt/${tm}&rdquo;:
+ensure => &ldquo;directory&rdquo;,
+mode => 0755,
+owner => &ldquo;root&rdquo;,
+group => &ldquo;root&rdquo;
+}</p>
+
+<p>file { &ldquo;/opt/${tm}/apache-${tm}-archive.tar.gz&rdquo;:
+ensure => &ldquo;present&rdquo;,
+source => &ldquo;/tmp/apache-tomcat-${tf}.tar.gz&rdquo;,
+require => Exec[&ldquo;${tm}<em>download_latest&rdquo;],
+notify => Exec[&ldquo;${tm}</em>unpack&rdquo;]
+}</p>
+
+<p>exec { &ldquo;/usr/bin/wget &mdash;timestamping <a href="http://www.eu.apache.org/dist/tomcat/tomcat-$">http://www.eu.apache.org/dist/tomcat/tomcat-$</a>{tomcat_major}/v${tf}/bin/apache-tomcat-${tf}.tar.gz&rdquo;:
+alias => &ldquo;${tm}_download_latest&rdquo;,
+cwd => &ldquo;/tmp&rdquo;
+}</p>
+
+<p>exec { &ldquo;/bin/ln -sf &mdash;no-target-directory apache-tomcat-${tf} latest&rdquo;:
+refreshonly => true,
+subscribe => Exec[&ldquo;${tm}<em>unpack&rdquo;],
+cwd => &ldquo;/opt/${tm}&rdquo;,
+alias => &ldquo;${tm}</em>symlink&rdquo;
+}</p>
+
+<p>exec { &ldquo;/bin/rm -rf conf.orig &amp;&amp; /bin/mv -f conf conf.orig &amp;&amp; /bin/ln -sf &mdash;no-target-directory /etc/${tm}/conf conf&rdquo;:
+refreshonly => true,
+cwd => &ldquo;/opt/${tm}/latest&rdquo;,
+subscribe => Exec[&ldquo;${tm}<em>symlink&rdquo;],
+notify => Service[&ldquo;${tm}&rdquo;],
+alias => &ldquo;${tm}</em>config_move&rdquo;
+}</p>
+
+<h1>first-time only executions. I might like to abstract some logic if I were a bit less lazy than I am.</h1>
+
+<h1>in order to stay on the safe side, we never let the normal user to access our files; this may be relaxed,</h1>
+
+<h1>depending on your context.</h1>
+
+<h1>this contains our config. our servlet container should be able to read it, but never write it.</h1>
+
+<p>exec { &ldquo;/bin/mkdir -p /etc/${tm} &amp;&amp; /bin/cp -r /opt/${tm}/latest/conf.orig /etc/${tm}/conf &amp;&amp; /bin/chmod 0750 /etc/${tm}/conf &amp;&amp; /bin/chown -R root:${tomcat_user} /etc/${tm}/conf &amp;&amp; /bin/chmod 0640 /etc/${tm}/conf/*&rdquo;:
+creates => &ldquo;/etc/${tm}/conf&rdquo;,
+subscribe => Exec[&ldquo;${tm}_config_move&rdquo;]
+}</p>
+
+<h1>this will contain the actual code of our webapps. Again, the container must be able to read them,</h1>
+
+<h1>never write to them.</h1>
+
+<p>exec { &ldquo;/bin/mkdir -p -m 0750 /opt/${tm}/webapps &amp;&amp; /bin/chown root:${tomcat_user} /opt/${tm}/webapps&rdquo;:
+creates => &ldquo;/opt/${tm}/webapps&rdquo;,
+}</p>
+
+<h1>those are working directories where the container must be able to write.</h1>
+
+<p>exec { &ldquo;/bin/mkdir -p -m 0770 /opt/${tm}/work &amp;&amp; /bin/chown root:${tomcat_user} /opt/${tm}/work&rdquo;:
+creates => &ldquo;/opt/${tm}/work&rdquo;,
+}</p>
+
+<p>exec { &ldquo;/bin/mkdir -p -m 0770 /opt/${tm}/temp &amp;&amp; /bin/chown root:${tomcat_user} /opt/${tm}/temp&rdquo;:
+creates => &ldquo;/opt/${tm}/temp&rdquo;,
+}</p>
+
+<p>exec { &ldquo;/bin/mkdir -p -m 0770 /opt/${tm}/logs &amp;&amp; /bin/chown root:${tomcat_user} /opt/${tm}/logs&rdquo;:
+creates => &ldquo;/opt/${tm}/logs&rdquo;,
+}
+}
 ```</p>
 
 <p>The tomcat7 service is trivial and omitted, fill it in by yourself (or delete it).</p>
