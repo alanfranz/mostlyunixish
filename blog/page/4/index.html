@@ -9,7 +9,8 @@
   <meta name="author" content="Alan Franzoni">
 
   
-  <meta name="description" content="Sometimes when performing your daily apt-get update, you&rsquo;ll experience messages like E: The package lists or status file could not be parsed or &hellip;">
+  <meta name="description" content="Sometimes you need to write a quick shell script; many a time, you need to put it on a server,
+and launch it every now and then, or run it in a cron &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -78,6 +79,143 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2013/10/08/quick-log-for-bash-scripts/">Quick Log for Bash Scripts, With Line Limit</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-10-08T21:18:00+02:00" pubdate data-updated="true">Oct 8<span>th</span>, 2013</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Sometimes you need to write a quick shell script; many a time, you need to put it on a server,
+and launch it every now and then, or run it in a cron job. That script may end up doing something
+important and/or altering the state of the server machine.</p>
+
+<p>If that script starts being using often enough, you&rsquo;ll want logging as well, and that can be
+a complex beast to tame, for logs require rotation and deletion, otherwise the beast will eat up
+all your disk space. Setting up <a href="http://linuxcommand.org/man_pages/logrotate8.html">logrotate</a> for a
+single shell script looks like an overkill to me most of the times.</p>
+
+<p>So what? Many a times logging will be neglected, and you&rsquo;ll lose the ability to track what happened
+and why.</p>
+
+<p>This is my quick recipe for a basic bash logging solution with line-based truncation: the logfile
+will never exceed <strong>RETAIN_NUM_LINES</strong> lines (actually, it will never exceed such size when the script
+is launched, so the number of lines when the script has run is RETAIN_NUM_LINES + number of lines logged by
+the script).</p>
+
+<p>Whenever you use the <em>log</em> function you&rsquo;ll get output on stdout as well, complete with a timestamp.</p>
+
+<figure class='code'><figcaption><span> (quicklog.sh)</span> <a href='/downloads/code/quicklog.sh'>download</a></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="c">#!/bin/bash</span>
+</span><span class='line'>
+</span><span class='line'><span class="c"># set LOGFILE to the full path of your desired logfile; make sure</span>
+</span><span class='line'><span class="c"># you have write permissions there. set RETAIN_NUM_LINES to the</span>
+</span><span class='line'><span class="c"># maximum number of lines that should be retained at the beginning</span>
+</span><span class='line'><span class="c"># of your program execution.</span>
+</span><span class='line'><span class="c"># execute &#39;logsetup&#39; once at the beginning of your script, then </span>
+</span><span class='line'><span class="c"># use &#39;log&#39; how many times you like.</span>
+</span><span class='line'>
+</span><span class='line'><span class="nv">LOGFILE</span><span class="o">=</span>quicklog.sh.log
+</span><span class='line'><span class="nv">RETAIN_NUM_LINES</span><span class="o">=</span>10
+</span><span class='line'>
+</span><span class='line'><span class="k">function </span>logsetup <span class="o">{</span>
+</span><span class='line'>    <span class="nv">TMP</span><span class="o">=</span><span class="k">$(</span>tail -n <span class="nv">$RETAIN_NUM_LINES</span> <span class="nv">$LOGFILE</span> 2&gt;/dev/null<span class="k">)</span> <span class="o">&amp;&amp;</span> <span class="nb">echo</span> <span class="s2">&quot;${TMP}&quot;</span> &gt; <span class="nv">$LOGFILE</span>
+</span><span class='line'>    <span class="nb">exec</span> &gt; &gt;<span class="o">(</span>tee -a <span class="nv">$LOGFILE</span><span class="o">)</span>
+</span><span class='line'>    <span class="nb">exec </span>2&gt;&amp;1
+</span><span class='line'><span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">function </span>log <span class="o">{</span>
+</span><span class='line'>    <span class="nb">echo</span> <span class="s2">&quot;[$(date)]: $*&quot;</span>
+</span><span class='line'><span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>logsetup
+</span><span class='line'>
+</span><span class='line'>log hello this is a log
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Launch this a lot of times and you&rsquo;ll end up with this:</p>
+
+<figure class='code'><figcaption><span> (quicklog.sh.log)</span> <a href='/downloads/code/quicklog.sh.log'>download</a></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='text'><span class='line'>[Tue Oct  8 20:57:49 CEST 2013]: hello this is a log
+</span><span class='line'>[Tue Oct  8 20:57:49 CEST 2013]: hello this is a log
+</span><span class='line'>[Tue Oct  8 20:57:50 CEST 2013]: hello this is a log
+</span><span class='line'>[Tue Oct  8 20:57:50 CEST 2013]: hello this is a log
+</span><span class='line'>[Tue Oct  8 20:57:50 CEST 2013]: hello this is a log
+</span><span class='line'>[Tue Oct  8 20:57:50 CEST 2013]: hello this is a log
+</span><span class='line'>[Tue Oct  8 20:57:51 CEST 2013]: hello this is a log
+</span><span class='line'>[Tue Oct  8 20:57:51 CEST 2013]: hello this is a log
+</span><span class='line'>[Tue Oct  8 20:57:51 CEST 2013]: hello this is a log
+</span><span class='line'>[Tue Oct  8 20:57:51 CEST 2013]: hello this is a log
+</span><span class='line'>[Tue Oct  8 20:57:52 CEST 2013]: hello this is a log
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Enjoy!</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -193,59 +331,6 @@ for such global hotkeys.</p>
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2012/11/06/ssh-copy-id-with-nonstandard-sshd-port/">Ssh-copy-id With Nonstandard Sshd Port</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-11-06T22:49:00+01:00" pubdate data-updated="true">Nov 6<span>th</span>, 2012</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><ul>
-<li><strong>UPDATE:</strong> modern ssh-copy-id often support a -p parameter for the port. So this trick is unnecessary and won&rsquo;t probably work. *</li>
-</ul>
-
-
-<p><a href="http://linux.die.net/man/1/ssh-copy-id">ssh-copy-id</a> is a cool script which is usually distributed along openssh client nowadays;
-it performs an automatic install of your local public SSH key to a remote server. Its syntax is simply:</p>
-
-<p><code>ssh-copy-id [-i [identity_file]] [user@]machine</code></p>
-
-<p>You may have spotted there&rsquo;s no builtin way of telling it what&rsquo;s the port of the remote server; a workaround exists which leverages
-the way arguments are passed to the script (it&rsquo;s a simple bash file, take a look at it. You can find various versions around <a href="https://gist.github.com/378862">the internet</a>).</p>
-
-<p>Just do this:</p>
-
-<p><code>ssh-copy-id '-p [port_number] [-i [identity_file]] [user@]machine'</code></p>
-
-<p>And enjoy your newly-added SSH key!</p>
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/blog/page/5/">&larr; Older</a>
@@ -263,6 +348,10 @@ the way arguments are passed to the script (it&rsquo;s a simple bash file, take 
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2015/01/27/chmod-capital-X/">chmod and the capital X</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2014/12/16/kill-me-softly/">Kill Me Softly: killing a process the right way</a>
       </li>
     
@@ -276,10 +365,6 @@ the way arguments are passed to the script (it&rsquo;s a simple bash file, take 
     
       <li class="post">
         <a href="/blog/2014/12/10/ssh-hostname-shortcuts/">SSH Hostnames configuration and shortcuts</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2014/11/11/how-often-sudo-asks-for-your-password/">I wish sudo would ask for my password less often</a>
       </li>
     
   </ul>

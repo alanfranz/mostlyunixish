@@ -4,7 +4,7 @@
   <title><![CDATA[Category: linux | Mostly Unixish]]></title>
   <link href="http://mostlyunixish.franzoni.eu/blog/categories/linux/atom.xml" rel="self"/>
   <link href="http://mostlyunixish.franzoni.eu/"/>
-  <updated>2015-01-26T15:12:08+01:00</updated>
+  <updated>2015-01-27T09:15:24+01:00</updated>
   <id>http://mostlyunixish.franzoni.eu/</id>
   <author>
     <name><![CDATA[Alan Franzoni]]></name>
@@ -12,6 +12,41 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[chmod and the capital X]]></title>
+    <link href="http://mostlyunixish.franzoni.eu/blog/2015/01/27/chmod-capital-X/"/>
+    <updated>2015-01-27T13:32:00+01:00</updated>
+    <id>http://mostlyunixish.franzoni.eu/blog/2015/01/27/chmod-capital-X</id>
+    <content type="html"><![CDATA[<p>This is one very, very, very interesting piece of ancient wisdom.</p>
+
+<p>Suppose you need to change permissions for some directories. Maybe the permissions are too strict, e.g. something like 700 for directories and 600 for files, and you need to give access to some other group and not just the owner.</p>
+
+<p>As you know, execute permission on directories is required for traversal. So you might think doing something like:</p>
+
+<p><code>bash
+chmod -R g+rx /var/somedirectory
+</code></p>
+
+<p>This would probably work, but would leave you in a sad state: you&rsquo;ll get the executable bit set on files that are not supposed to be executable at all, which may be just annoying but may get risky as well.</p>
+
+<p>A great alternative is:</p>
+
+<p><code>bash
+chmod -R g+rX /var/somedirectory
+</code></p>
+
+<p>the capital X means: <em>set the executable bit only if the target a) is a directory b) has already at least one executable bit set for any one of user, group, others</em>.</p>
+
+<p>There&rsquo;s another alternative that may be appealing in some situations, at least when you want to give the group the same permissions as the owner:</p>
+
+<p><code>bash
+chmod -R g=u /var/somedirectory
+</code></p>
+
+<p>This will give any file the group permissions identical to the user&rsquo;s permission.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Kill Me Softly: killing a process the right way]]></title>
@@ -170,37 +205,6 @@ ssh myniceserver
 </code></p>
 
 <p>You can override most options on a per-server basis and/or select a certain private key for connections.</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[I wish sudo would ask for my password less often]]></title>
-    <link href="http://mostlyunixish.franzoni.eu/blog/2014/11/11/how-often-sudo-asks-for-your-password/"/>
-    <updated>2014-11-11T13:28:00+01:00</updated>
-    <id>http://mostlyunixish.franzoni.eu/blog/2014/11/11/how-often-sudo-asks-for-your-password</id>
-    <content type="html"><![CDATA[<p>This is a <strong>very</strong> old trick, but I find many people doesn&rsquo;t know about it yet.</p>
-
-<p>If you&rsquo;re using sudo <a href="https://help.ubuntu.com/community/RootSudo">(and you definitely should)</a>, one minor complaint is that you need to re-enter your password quite often.</p>
-
-<p>One common pseudo-solution is to completely disable the password for executing sudo with such user; while it may be a good idea sometimes, it does decrease the overall security &ndash; if you happen to forget an open shell or screen/tmux lingering somewhere, you give total power to whoever gets in touch with it.</p>
-
-<p>If you happen to let people into your sudo-enabled account with your ssh key, anybody that can get hold of your ssh key will get <strong>root access</strong> to your servers. It&rsquo;s not the best possible scenario.</p>
-
-<p>There&rsquo;s a very simply workaround: just edit your sudoers file!</p>
-
-<p><code>
-sudo visudo
-</code></p>
-
-<p>and add a line like that (or modify it if it&rsquo;s already there)</p>
-
-<p><code>
-Defaults    timestamp_timeout=120
-</code></p>
-
-<p>This means that sudo will ask for a password every two hours instead of the default (15 minutes on most installations). You can use -1 in order to never let it expire (I don&rsquo;t suggest that &ndash; 8-10 hours should be enough for everybody.)</p>
-
-<p>The only drawback is that such timeout is per shell, not system-wide &ndash; i.e. if you open multiple terminals, you&rsquo;ll have to enter the password again for each new terminal instance.</p>
 ]]></content>
   </entry>
   

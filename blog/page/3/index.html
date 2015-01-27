@@ -9,8 +9,7 @@
   <meta name="author" content="Alan Franzoni">
 
   
-  <meta name="description" content="UPDATED: 26th January 2015, with Tomcat 8 support. Today I&rsquo;m gonna share something that I figured out some times ago: how do I keep
-my tomcat &hellip;">
+  <meta name="description" content="It might be high time to update to the latest Ubuntu 14.04. I think that the upgrade process that is provided by Canonical is slightly underoptimal: &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -79,6 +78,92 @@ my tomcat &hellip;">
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/09/25/ubuntu-faster-release-upgrade/">Ubuntu: Faster Release Upgrade</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-09-25T13:34:00+02:00" pubdate data-updated="true">Sep 25<span>th</span>, 2014</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>It might be high time to update to the latest <a href="https://wiki.ubuntu.com/TrustyTahr/ReleaseNotes">Ubuntu 14.04</a>.</p>
+
+<p>I think that the upgrade process that is provided by Canonical is slightly underoptimal: if you&rsquo;re using a
+local mirror which can provide a very fast download of all packages, they&rsquo;ll usually be disabled during the
+upgrade process, and an official mirror (possibile one very far away) will be employed.</p>
+
+<p>This can lead to a very slow and painful upgrade process.</p>
+
+<p>The solution is easy.</p>
+
+<p>The following instructions regard moving from 12.04 (precise) to 14.04 (trusty)</p>
+
+<h2>Switch your sources</h2>
+
+<p>Assuming that your official ubuntu sources are configured from <code>/etc/apt/sources.list</code> just do something like:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>sudo sed -i.old -e 's/precise/trusty/g' /etc/apt/sources.list</span></code></pre></td></tr></table></div></figure>
+
+
+<p>I&rsquo;m not considering other sources in <code>/etc/apt/sources.list.d</code>, since they&rsquo;ll be disabled whatsoever; but if you happen
+to have ubuntu sources there as well, you should repeat the SEDding process for each file.</p>
+
+<h2>Update your index</h2>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>sudo apt-get update</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>Download updated packages without installing</h2>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>sudo apt-get dist-upgrade --download-only</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>Revert to old sources</h2>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>sudo mv -f /etc/apt/sources.list.old /etc/apt/sources.list</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>Update index again</h2>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>sudo apt-get update</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>Rejoice!</h2>
+
+<p>Now you can just follow the <a href="https://wiki.ubuntu.com/TrustyTahr/ReleaseNotes#Upgrading_from_Ubuntu_12.04_LTS_or_Ubuntu_13.10">upgrade instructions</a> and
+almost nothing will be downloaded during the upgrade, because everything is already on your hard drive.</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -545,143 +630,6 @@ and you&rsquo;re done.</p>
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2013/10/08/quick-log-for-bash-scripts/">Quick Log for Bash Scripts, With Line Limit</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-10-08T21:18:00+02:00" pubdate data-updated="true">Oct 8<span>th</span>, 2013</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>Sometimes you need to write a quick shell script; many a time, you need to put it on a server,
-and launch it every now and then, or run it in a cron job. That script may end up doing something
-important and/or altering the state of the server machine.</p>
-
-<p>If that script starts being using often enough, you&rsquo;ll want logging as well, and that can be
-a complex beast to tame, for logs require rotation and deletion, otherwise the beast will eat up
-all your disk space. Setting up <a href="http://linuxcommand.org/man_pages/logrotate8.html">logrotate</a> for a
-single shell script looks like an overkill to me most of the times.</p>
-
-<p>So what? Many a times logging will be neglected, and you&rsquo;ll lose the ability to track what happened
-and why.</p>
-
-<p>This is my quick recipe for a basic bash logging solution with line-based truncation: the logfile
-will never exceed <strong>RETAIN_NUM_LINES</strong> lines (actually, it will never exceed such size when the script
-is launched, so the number of lines when the script has run is RETAIN_NUM_LINES + number of lines logged by
-the script).</p>
-
-<p>Whenever you use the <em>log</em> function you&rsquo;ll get output on stdout as well, complete with a timestamp.</p>
-
-<figure class='code'><figcaption><span> (quicklog.sh)</span> <a href='/downloads/code/quicklog.sh'>download</a></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="c">#!/bin/bash</span>
-</span><span class='line'>
-</span><span class='line'><span class="c"># set LOGFILE to the full path of your desired logfile; make sure</span>
-</span><span class='line'><span class="c"># you have write permissions there. set RETAIN_NUM_LINES to the</span>
-</span><span class='line'><span class="c"># maximum number of lines that should be retained at the beginning</span>
-</span><span class='line'><span class="c"># of your program execution.</span>
-</span><span class='line'><span class="c"># execute &#39;logsetup&#39; once at the beginning of your script, then </span>
-</span><span class='line'><span class="c"># use &#39;log&#39; how many times you like.</span>
-</span><span class='line'>
-</span><span class='line'><span class="nv">LOGFILE</span><span class="o">=</span>quicklog.sh.log
-</span><span class='line'><span class="nv">RETAIN_NUM_LINES</span><span class="o">=</span>10
-</span><span class='line'>
-</span><span class='line'><span class="k">function </span>logsetup <span class="o">{</span>
-</span><span class='line'>    <span class="nv">TMP</span><span class="o">=</span><span class="k">$(</span>tail -n <span class="nv">$RETAIN_NUM_LINES</span> <span class="nv">$LOGFILE</span> 2&gt;/dev/null<span class="k">)</span> <span class="o">&amp;&amp;</span> <span class="nb">echo</span> <span class="s2">&quot;${TMP}&quot;</span> &gt; <span class="nv">$LOGFILE</span>
-</span><span class='line'>    <span class="nb">exec</span> &gt; &gt;<span class="o">(</span>tee -a <span class="nv">$LOGFILE</span><span class="o">)</span>
-</span><span class='line'>    <span class="nb">exec </span>2&gt;&amp;1
-</span><span class='line'><span class="o">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">function </span>log <span class="o">{</span>
-</span><span class='line'>    <span class="nb">echo</span> <span class="s2">&quot;[$(date)]: $*&quot;</span>
-</span><span class='line'><span class="o">}</span>
-</span><span class='line'>
-</span><span class='line'>logsetup
-</span><span class='line'>
-</span><span class='line'>log hello this is a log
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Launch this a lot of times and you&rsquo;ll end up with this:</p>
-
-<figure class='code'><figcaption><span> (quicklog.sh.log)</span> <a href='/downloads/code/quicklog.sh.log'>download</a></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-</pre></td><td class='code'><pre><code class='text'><span class='line'>[Tue Oct  8 20:57:49 CEST 2013]: hello this is a log
-</span><span class='line'>[Tue Oct  8 20:57:49 CEST 2013]: hello this is a log
-</span><span class='line'>[Tue Oct  8 20:57:50 CEST 2013]: hello this is a log
-</span><span class='line'>[Tue Oct  8 20:57:50 CEST 2013]: hello this is a log
-</span><span class='line'>[Tue Oct  8 20:57:50 CEST 2013]: hello this is a log
-</span><span class='line'>[Tue Oct  8 20:57:50 CEST 2013]: hello this is a log
-</span><span class='line'>[Tue Oct  8 20:57:51 CEST 2013]: hello this is a log
-</span><span class='line'>[Tue Oct  8 20:57:51 CEST 2013]: hello this is a log
-</span><span class='line'>[Tue Oct  8 20:57:51 CEST 2013]: hello this is a log
-</span><span class='line'>[Tue Oct  8 20:57:51 CEST 2013]: hello this is a log
-</span><span class='line'>[Tue Oct  8 20:57:52 CEST 2013]: hello this is a log
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Enjoy!</p>
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/blog/page/4/">&larr; Older</a>
@@ -699,6 +647,10 @@ the script).</p>
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2015/01/27/chmod-capital-X/">chmod and the capital X</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2014/12/16/kill-me-softly/">Kill Me Softly: killing a process the right way</a>
       </li>
     
@@ -712,10 +664,6 @@ the script).</p>
     
       <li class="post">
         <a href="/blog/2014/12/10/ssh-hostname-shortcuts/">SSH Hostnames configuration and shortcuts</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2014/11/11/how-often-sudo-asks-for-your-password/">I wish sudo would ask for my password less often</a>
       </li>
     
   </ul>
